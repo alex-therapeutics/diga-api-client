@@ -98,13 +98,17 @@
                         <configuration>
                             <xsdOptions>
                                 <xsdOption>
-                                    <xsd>${basedir}/src/main/resources/xsd/EDFC0-Pruefung_2.0.0.xsd</xsd>
-                                    <packagename>com.alextherapeutics.diga.model.xml.pruefung</packagename>
+                                    <xsdDir>${basedir}/src/main/resources/xsd/</xsdDir>
+                                    <packagename>com.alextherapeutics.diga.model.xml</packagename>
                                 </xsdOption>
-                                <xsdOption>
-                                    <xsd>${basedir}/src/main/resources/xsd/EDRE0-MVZ_2.0.0.xsd</xsd>
-                                    <packagename>com.alextherapeutics.diga.model.xml.krankenmapping</packagename>
-                                </xsdOption>
+                                <!--                                <xsdOption>-->
+                                <!--                                    <xsd>${basedir}/src/main/resources/xsd/EDFC0-Pruefung_2.0.0.xsd</xsd>-->
+                                <!--                                    <packagename>com.alextherapeutics.diga.model.xml.pruefung</packagename>-->
+                                <!--                                </xsdOption>-->
+                                <!--                                <xsdOption>-->
+                                <!--                                    <xsd>${basedir}/src/main/resources/xsd/EDRE0-MVZ_2.0.0.xsd</xsd>-->
+                                <!--                                    <packagename>com.alextherapeutics.diga.model.xml.krankenmapping</packagename>-->
+                                <!--                                </xsdOption>-->
                             </xsdOptions>
                         </configuration>
                     </execution>

@@ -1,7 +1,7 @@
 package com.alextherapeutics.diga;
 
-import com.alextherapeutics.diga.model.xml.krankenmapping.KostentraegerMappingverzeichnis;
-import com.alextherapeutics.diga.model.xml.krankenmapping.KrankenkasseninformationCtp;
+import com.alextherapeutics.diga.model.xml.KrankenkasseninformationCtp;
+import com.alextherapeutics.diga.model.xml.KostentraegerMappingverzeichnis;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

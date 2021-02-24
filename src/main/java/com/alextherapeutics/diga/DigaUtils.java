@@ -1,7 +1,6 @@
 package com.alextherapeutics.diga;
 
-
-import com.alextherapeutics.diga.model.xml.pruefung.VerfahrenskennungStp;
+import com.alextherapeutics.diga.model.xml.VerfahrenskennungStp;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;

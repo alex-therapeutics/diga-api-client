@@ -1,9 +1,9 @@
 package com.alextherapeutics.diga;
 
-import com.alextherapeutics.diga.model.xml.pruefung.NachrichtentypStp;
-import com.alextherapeutics.diga.model.xml.pruefung.ObjectFactory;
-import com.alextherapeutics.diga.model.xml.pruefung.PruefungFreischaltcode;
-import com.alextherapeutics.diga.model.xml.pruefung.VerfahrenskennungStp;
+import com.alextherapeutics.diga.model.xml.NachrichtentypStp;
+import com.alextherapeutics.diga.model.xml.ObjectFactory;
+import com.alextherapeutics.diga.model.xml.PruefungFreischaltcode;
+import com.alextherapeutics.diga.model.xml.VerfahrenskennungStp;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class DigaCodeValidationRequestFactory {
 
     private JAXBContext context;
     private Marshaller marshaller;
-    private ObjectFactory objectFactory;
+    private com.alextherapeutics.diga.model.xml.ObjectFactory objectFactory;
     private DatatypeFactory datatypeFactory;
 
     private static final String PRUEFUNG_VERSION = "002.000.000";
