@@ -1,6 +1,5 @@
 package com.alextherapeutics.diga.model;
 
-import com.alextherapeutics.diga.DigaEncryptionException;
 import de.tk.opensource.secon.SECON;
 import de.tk.opensource.secon.SeconException;
 import de.tk.opensource.secon.Subscriber;
@@ -14,13 +13,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * An encryption attempt
+ * Attempt to encrypt an inputstream using SECON
  */
 @Builder
 @Slf4j
 public class DigaEncryption {
     /**
-     * The
+     * The encrypting subscriber
      */
     @NonNull
     private Subscriber subscriber;
@@ -38,9 +37,8 @@ public class DigaEncryption {
     /**
      * Encrypt the contents as a byte array output stream
      * @return
-     * @throws DigaEncryptionException
      */
-    public ByteArrayOutputStream encrypt() throws DigaEncryptionException {
+    public ByteArrayOutputStream encrypt() throws IOException, SeconException {
         try (var output = new ByteArrayOutputStream()) {
             SECON.copy(
                     () -> new ByteArrayInputStream(encryptionTarget.readAllBytes()),
@@ -49,9 +47,6 @@ public class DigaEncryption {
                     )
             );
             return output;
-        } catch (SeconException | IOException e) {
-            log.error("Error during encryption:", e);
-            throw new DigaEncryptionException(e.getMessage());
         }
     }
 }

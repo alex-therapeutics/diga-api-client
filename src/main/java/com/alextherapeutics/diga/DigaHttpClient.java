@@ -1,18 +1,16 @@
 package com.alextherapeutics.diga;
 
 import com.alextherapeutics.diga.model.DigaApiRequest;
-import com.alextherapeutics.diga.model.DigaApiResponse;
+import com.alextherapeutics.diga.model.DigaApiResponseEncrypted;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import nl.altindag.ssl.SSLFactory;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -51,26 +49,32 @@ public class DigaHttpClient {
      * @return
      * @throws DigaHttpClientException
      */
-    public DigaApiResponse post(DigaApiRequest request) throws DigaHttpClientException {
+    public DigaApiResponseEncrypted post(DigaApiRequest request) throws DigaHttpClientException {
         try {
             var httpResponse = client.newCall(
                     toOkHttpRequest(request)
             ).execute();
-            return DigaApiResponse.builder()
-                    .statusCode(httpResponse.code())
-                    .body(httpResponse.body().string())
-                    .build();
-
+            return parseResponse(httpResponse);
         } catch (IOException e) {
             log.error("Http request failed", e);
             throw new DigaHttpClientException(e.getMessage());
         }
     }
 
-    /**
-     * Return the API request as an OkHttpRequest
-     * @return
-     */
+    private DigaApiResponseEncrypted parseResponse(Response okHttpResponse) throws IOException {
+        var responseBuilder = DigaApiResponseEncrypted.builder()
+                .statusCode(okHttpResponse.code());
+        var multiPartReader = new MultipartReader(okHttpResponse.body());
+        MultipartReader.Part nextPart = null;
+        do {
+            nextPart = multiPartReader.nextPart();
+            responseBuilder = parsePart(nextPart, responseBuilder);
+        }
+        while (nextPart != null);
+        multiPartReader.close();
+        return responseBuilder.build();
+    }
+
     private Request toOkHttpRequest(DigaApiRequest digaApiRequest) {
         var body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -84,7 +88,6 @@ public class DigaHttpClient {
                 .post(body)
                 .build();
     }
-
 
     private void init() throws DigaHttpClientException {
         try {
@@ -109,5 +112,43 @@ public class DigaHttpClient {
             throw new DigaHttpClientException(e.getMessage());
         }
     }
+    private boolean headerContainsFormDataName(Headers headers, String name) {
+        var it = headers.iterator();
+        var result = false;
+        while (it.hasNext()) {
+            var next = it.next();
+            if (next.getSecond().contains(name)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
 
+    private DigaApiResponseEncrypted.DigaApiResponseEncryptedBuilder parsePart(
+                    MultipartReader.Part part,
+                    DigaApiResponseEncrypted.DigaApiResponseEncryptedBuilder builder) throws IOException {
+        if (part == null) {
+            return builder;
+        }
+        var headers = part.headers();
+        if (headerContainsFormDataName(headers, "iksender")) { // TODO make enum
+            return builder.senderIK(
+                    part.body().readString(StandardCharsets.UTF_8)
+            );
+        } else if (headerContainsFormDataName(headers, "ikempfaenger")) {
+            return builder.recipientIK(
+                    part.body().readString(StandardCharsets.UTF_8)
+            );
+        } else if (headerContainsFormDataName(headers, "verfahren")) {
+            return builder.verfahren(
+                    part.body().readString(StandardCharsets.UTF_8)
+            );
+        } else if (headerContainsFormDataName(headers, "nutzdaten")) {
+            return builder.encryptedBody(
+                    part.body().readByteArray()
+            );
+        }
+        return builder;
+    }
 }

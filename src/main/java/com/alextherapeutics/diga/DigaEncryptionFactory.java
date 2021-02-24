@@ -1,5 +1,6 @@
 package com.alextherapeutics.diga;
 
+import com.alextherapeutics.diga.model.DigaDecryption;
 import com.alextherapeutics.diga.model.DigaEncryption;
 import de.tk.opensource.secon.*;
 import lombok.Builder;
@@ -47,7 +48,14 @@ public class DigaEncryptionFactory {
         return DigaEncryption.builder()
                 .subscriber(subscriber);
     }
-
+    /**
+     * Start a new decryption attempt with the factory defaults.
+     * @return
+     */
+    public DigaDecryption.DigaDecryptionBuilder newDecryption() {
+        return DigaDecryption.builder()
+                .subscriber(subscriber);
+    }
     private void init() throws SeconException {
         this.identity = SECON.identity(
                 SECON.keyStore(

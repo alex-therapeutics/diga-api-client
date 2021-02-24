@@ -47,7 +47,7 @@ public class DigaApiClient {
                     codeInformation.getFullDigaCode(),
                     codeInformation.getInsuranceCompanyIKNumber()
             );
-            var encryptedXmlRequest = encryptionFactory.newEncryption()
+            var encryptRequestAttempt = encryptionFactory.newEncryption()
                     .encryptionTarget(new ByteArrayInputStream(xmlRequest))
                     .recipientAlias(DigaUtils.ikNumberWithPrefix(codeInformation.getInsuranceCompanyIKNumber()))
                     .build();
@@ -55,10 +55,19 @@ public class DigaApiClient {
                     .url(DigaUtils.buildPostDigaEndpoint(codeInformation.getEndpoint()))
                     .senderIK(senderIk)
                     .recipientIK(codeInformation.getInsuranceCompanyIKNumber())
-                    .encryptedContent(encryptedXmlRequest.encrypt())
+                    .encryptedContent(encryptRequestAttempt.encrypt())
                     .build();
-            return httpClient.post(httpApiRequest);
-        } catch (DigaEncryptionException | IOException | JAXBException | DigaHttpClientException e) {
+            var encryptedResponse = httpClient.post(httpApiRequest);
+            var decryptResponseBodyAttempt = encryptionFactory.newDecryption()
+                    .decryptionTarget(new ByteArrayInputStream(encryptedResponse.getEncryptedBody()))
+                    .build();
+            return DigaApiResponse.builder()
+                    .statusCode(encryptedResponse.getStatusCode())
+                    .body(
+                            IOUtils.toString(decryptResponseBodyAttempt.decrypt().toByteArray(), "UTF-8")
+                    )
+                    .build();
+        } catch (IOException | JAXBException | DigaHttpClientException | SeconException e) {
             log.error("Failed to validate DiGA code", e);
             throw new DigaApiException(e);
         }
