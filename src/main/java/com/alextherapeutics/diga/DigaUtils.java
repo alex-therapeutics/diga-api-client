@@ -1,10 +1,5 @@
 package com.alextherapeutics.diga;
 
-import com.alextherapeutics.diga.model.xml.VerfahrenskennungStp;
-
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
-
 public class DigaUtils {
     /**
      * Remove IK from an IK number (IK#######) if it exists.
@@ -31,18 +26,6 @@ public class DigaUtils {
     }
 
     /**
-     * Create a XML body with a test request which should return OK
-     * @param handler
-     * @param receiverIk
-     * @return
-     * @throws JAXBException
-     * @throws IOException
-     */
-    public static byte[] createOkXmlTestRequest(DigaXmlRequestWriter handler, String receiverIk) throws JAXBException, IOException {
-        return handler.createCodeValidationRequest("77AAAAAAAAAAAAAX", receiverIk, VerfahrenskennungStp.TDFC_0);
-    }
-
-    /**
      * Given an endpoint as contanied in the health insurance company mapping file (f.e diga.bitmarck-daten.de),
      * return the full https endpoint to POST codes to (f.e https://diga.bitmarck-daten.de/diga)
      * @param endpoint
@@ -54,5 +37,9 @@ public class DigaUtils {
         sb.append(endpoint);
         sb.append("/diga");
         return sb.toString();
+    }
+
+    public static boolean isDigaTestCode(String code) {
+        return code.startsWith("77");
     }
 }

@@ -1,5 +1,6 @@
 package com.alextherapeutics.diga.model;
 
+import com.alextherapeutics.diga.DigaErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,9 +12,8 @@ import lombok.Data;
 public class DigaApiResponseError {
     /**
      * An API error code as described in the documentation at
-     * https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
      */
-    private int errorCode;
+    private DigaErrorCode errorCode;
     /**
      * A description of the error
      */

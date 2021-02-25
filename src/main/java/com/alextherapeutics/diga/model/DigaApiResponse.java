@@ -3,6 +3,7 @@ package com.alextherapeutics.diga.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,6 +13,13 @@ import java.util.List;
 @Builder
 @Data
 public class DigaApiResponse {
+    /**
+     * The code which has been validated.
+     */
+    private String validatedDigaCode;
+
+    // TODO figure out what this translation means ("tag der leistungserbringung" from "antwort")
+    private Date dayOfServiceProvision;
     /**
      * The HTTP code received from the API. Note that this does not inform us on if our XML request was successful,
      * only if the request was successfully processed. For example, you can get HTTP 200 but the XML body can contain

@@ -1,5 +1,6 @@
 package com.alextherapeutics.diga;
 
+import com.alextherapeutics.diga.model.DigaCodeInformation;
 import com.alextherapeutics.diga.model.xml.NachrichtentypStp;
 import com.alextherapeutics.diga.model.xml.ObjectFactory;
 import com.alextherapeutics.diga.model.xml.PruefungFreischaltcode;
@@ -49,22 +50,22 @@ public class DigaXmlRequestWriter {
 
     /**
      * Return a byte array containing a PruefungFreischaltcode - Anfrage XML request
-     * @param digaCode
-     * @param receiverIk
      * @return
      * @throws JAXBException
      * @throws IOException
      */
-    public byte[] createCodeValidationRequest(String digaCode, String receiverIk) throws JAXBException, IOException {
-        return createCodeValidationRequest(digaCode,receiverIk, VerfahrenskennungStp.EDFC_0);
-    }
-    public byte[] createCodeValidationRequest(String digaCode, String receiverIk, VerfahrenskennungStp processIdentifier) throws JAXBException, IOException {
-        var receiverIkWithoutPrefix = DigaUtils.ikNumberWithoutPrefix(receiverIk);
+    public byte[] createCodeValidationRequest(DigaCodeInformation codeInformation) throws JAXBException, IOException {
+        var processIdentifier = DigaUtils.isDigaTestCode(codeInformation.getFullDigaCode())
+                ? VerfahrenskennungStp.TDFC_0
+                : VerfahrenskennungStp.EDFC_0;
+
+
+        var receiverIkWithoutPrefix = DigaUtils.ikNumberWithoutPrefix(codeInformation.getInsuranceCompanyIKNumber());
         var anfrage = objectFactory.createPruefungFreischaltcodeAnfrage();
         anfrage.setIKDiGAHersteller(senderIk);
         anfrage.setIKKrankenkasse(receiverIkWithoutPrefix);
         anfrage.setDiGAID(digaId);
-        anfrage.setFreischaltcode(digaCode);
+        anfrage.setFreischaltcode(codeInformation.getFullDigaCode());
 
         var request = objectFactory.createPruefungFreischaltcode();
         request.setAnfrage(anfrage);

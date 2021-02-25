@@ -33,11 +33,16 @@ public class DigaXmlRequestReader {
     public DigaApiResponse readCodeValidationResponse(InputStream decryptedResponse) throws JAXBException, IOException {
         var bytes = decryptedResponse.readAllBytes();
         var response = (PruefungFreischaltcode) unmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+        validateCodeValidationResponse(response);
 
+        // appendix 4 at https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
+        // seems to differ from the current xsd schema definition. watch for changes here
         return DigaApiResponse.builder()
                 .rawXmlBody(IOUtils.toString(bytes, "UTF-8"))
                 .hasError(response.getNachrichtentyp().equals(NachrichtentypStp.FEH))
                 .errors(getErrors(response))
+                .validatedDigaCode(response.getAntwort() == null ? null : response.getAntwort().getFreischaltcode())
+                .dayOfServiceProvision(response.getAntwort() == null ? null : response.getAntwort().getTagDerLeistungserbringung().toGregorianCalendar().getTime())
                 .build();
     }
     private List<DigaApiResponseError> getErrors(PruefungFreischaltcode request) {
@@ -45,7 +50,22 @@ public class DigaXmlRequestReader {
         return errors == null
                 ? Collections.emptyList()
                 : errors.stream()
-                .map(fehlerinformation -> new DigaApiResponseError(fehlerinformation.getFehlernummer().intValue(), fehlerinformation.getFehlertext()))
+                .map(fehlerinformation -> new DigaApiResponseError(DigaErrorCode.fromCode(fehlerinformation.getFehlernummer().intValue()), fehlerinformation.getFehlertext()))
                 .collect(Collectors.toList());
+    }
+
+    // log errors if the response looks strange, for manual inspection (it is difficult to know what can go wrong at this point)
+    // dont throw exception because the process may work anyway if we are lucky
+    private void validateCodeValidationResponse(PruefungFreischaltcode response) {
+        if (response.getNachrichtentyp().equals(NachrichtentypStp.ANF)) {
+            log.error("Received ANF (request) type in a response from the DiGA API. Should be ANT or FEH. Response: {}", response.toString());
+        }
+        if (!response.getVersion().equals(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION.getVersionNumber())) {
+            log.error(
+                    "Received code validation response with version mismatch. Supported version: {), Response version: {}",
+                    DigaSupportedXsdVersion.DIGA_CODE_VALIDATION.getVersionNumber(),
+                    response.getVersion()
+            );
+        }
     }
 }

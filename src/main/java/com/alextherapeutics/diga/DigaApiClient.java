@@ -2,6 +2,7 @@ package com.alextherapeutics.diga;
 
 import com.alextherapeutics.diga.model.DigaApiRequest;
 import com.alextherapeutics.diga.model.DigaApiResponse;
+import com.alextherapeutics.diga.model.DigaCodeInformation;
 import de.tk.opensource.secon.SeconException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -42,12 +43,30 @@ public class DigaApiClient {
      * @return
      */
     public DigaApiResponse validateDigaCode(String digaCode) throws DigaApiException {
+        return performCodeValidation(
+                codeParser.parseCode(digaCode)
+        );
+    }
+
+    /**
+     * Send a test request to the endpoint of the company of the provided company prefix
+     * You can find prefixes in the health insurance company mapping file at https://kkv.gkv-diga.de/
+     * @param insuranceCompanyPrefix
+     * @return
+     */
+    public DigaApiResponse sendTestRequest(DigaApiTestCode testCode, String insuranceCompanyPrefix) throws DigaApiException {
+        var healthInsuranceInformation = healthInsuranceDirectory.getInformation(insuranceCompanyPrefix);
+        var testCodeInformation = DigaCodeInformation.builder()
+                .fullDigaCode(testCode.getCode())
+                .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
+                .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
+                .build();
+        return performCodeValidation(testCodeInformation);
+    }
+
+    private DigaApiResponse performCodeValidation(DigaCodeInformation codeInformation) throws DigaApiException {
         try {
-            var codeInformation = codeParser.parseCode(digaCode);
-            var xmlRequest = xmlRequestWriter.createCodeValidationRequest(
-                    codeInformation.getFullDigaCode(),
-                    codeInformation.getInsuranceCompanyIKNumber()
-            );
+            var xmlRequest = xmlRequestWriter.createCodeValidationRequest(codeInformation);
             var encryptRequestAttempt = encryptionFactory.newEncryption()
                     .encryptionTarget(new ByteArrayInputStream(xmlRequest))
                     .recipientAlias(DigaUtils.ikNumberWithPrefix(codeInformation.getInsuranceCompanyIKNumber()))
