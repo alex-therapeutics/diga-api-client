@@ -39,6 +39,11 @@ public class DigaUtils {
         return sb.toString();
     }
 
+    /**
+     * Return whether a given DiGA code is a test code or not.
+     * @param code
+     * @return
+     */
     public static boolean isDigaTestCode(String code) {
         return code.startsWith("77");
     }

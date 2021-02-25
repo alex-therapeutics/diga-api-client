@@ -30,9 +30,6 @@ public class DigaXmlRequestWriter {
     private ObjectFactory objectFactory;
     private DatatypeFactory datatypeFactory;
 
-    private static final String PRUEFUNG_VERSION = "002.000.000";
-    private static final String PRUEFUNG_GUELTIGAB = "2020-07-01";
-
     @Builder
     public DigaXmlRequestWriter(@NonNull String senderIk, @NonNull String digaId) throws JAXBException {
         this.senderIk = DigaUtils.ikNumberWithoutPrefix(senderIk);
@@ -70,11 +67,11 @@ public class DigaXmlRequestWriter {
         var request = objectFactory.createPruefungFreischaltcode();
         request.setAnfrage(anfrage);
         request.setVerfahrenskennung(processIdentifier);
-        request.setGueltigab(datatypeFactory.newXMLGregorianCalendar(PRUEFUNG_GUELTIGAB));
+        request.setGueltigab(datatypeFactory.newXMLGregorianCalendar(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_DATE.getValue()));
         request.setAbsender(senderIk);
         request.setEmpfaenger(receiverIkWithoutPrefix);
         request.setNachrichtentyp(NachrichtentypStp.ANF);
-        request.setVersion(PRUEFUNG_VERSION);
+        request.setVersion(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_VERSION.getValue());
 
         try (var res = new ByteArrayOutputStream()) {
             marshaller.marshal(request, res);

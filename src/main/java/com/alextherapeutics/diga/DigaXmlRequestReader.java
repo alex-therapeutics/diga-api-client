@@ -60,10 +60,10 @@ public class DigaXmlRequestReader {
         if (response.getNachrichtentyp().equals(NachrichtentypStp.ANF)) {
             log.error("Received ANF (request) type in a response from the DiGA API. Should be ANT or FEH. Response: {}", response.toString());
         }
-        if (!response.getVersion().equals(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION.getVersionNumber())) {
+        if (!response.getVersion().equals(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_VERSION.getValue())) {
             log.error(
                     "Received code validation response with version mismatch. Supported version: {), Response version: {}",
-                    DigaSupportedXsdVersion.DIGA_CODE_VALIDATION.getVersionNumber(),
+                    DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_VERSION.getValue(),
                     response.getVersion()
             );
         }
