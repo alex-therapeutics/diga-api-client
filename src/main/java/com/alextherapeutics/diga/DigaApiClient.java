@@ -79,7 +79,7 @@ public class DigaApiClient {
                     .build();
             var httpResponse = httpClient.post(httpApiRequest);
             var decryptResponseBodyAttempt = encryptionFactory.newDecryption()
-                    .decryptionTarget(new ByteArrayInputStream(httpResponse.getEncryptedBody()))
+                    .decryptionTarget(httpResponse.getEncryptedBody())
                     .build();
             var response = xmlRequestReader.readCodeValidationResponse(new ByteArrayInputStream(decryptResponseBodyAttempt.decrypt().toByteArray()));
             response.setHttpStatusCode(httpResponse.getStatusCode());
