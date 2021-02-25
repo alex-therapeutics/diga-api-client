@@ -22,7 +22,8 @@ public class DigaApiClient {
     private DigaHttpClient httpClient;
     private DigaCodeParser codeParser;
     private DigaHealthInsuranceDirectory healthInsuranceDirectory;
-    private DigaCodeValidationRequestFactory validationRequestFactory;
+    private DigaXmlRequestWriter xmlRequestWriter;
+    private DigaXmlRequestReader xmlRequestReader;
     private String senderIk;
 
     /**
@@ -43,7 +44,7 @@ public class DigaApiClient {
     public DigaApiResponse validateDigaCode(String digaCode) throws DigaApiException {
         try {
             var codeInformation = codeParser.parseCode(digaCode);
-            var xmlRequest = validationRequestFactory.createCodeValidationRequest(
+            var xmlRequest = xmlRequestWriter.createCodeValidationRequest(
                     codeInformation.getFullDigaCode(),
                     codeInformation.getInsuranceCompanyIKNumber()
             );
@@ -57,16 +58,13 @@ public class DigaApiClient {
                     .recipientIK(codeInformation.getInsuranceCompanyIKNumber())
                     .encryptedContent(encryptRequestAttempt.encrypt())
                     .build();
-            var encryptedResponse = httpClient.post(httpApiRequest);
+            var httpResponse = httpClient.post(httpApiRequest);
             var decryptResponseBodyAttempt = encryptionFactory.newDecryption()
-                    .decryptionTarget(new ByteArrayInputStream(encryptedResponse.getEncryptedBody()))
+                    .decryptionTarget(new ByteArrayInputStream(httpResponse.getEncryptedBody()))
                     .build();
-            return DigaApiResponse.builder()
-                    .statusCode(encryptedResponse.getStatusCode())
-                    .body(
-                            IOUtils.toString(decryptResponseBodyAttempt.decrypt().toByteArray(), "UTF-8")
-                    )
-                    .build();
+            var response = xmlRequestReader.readCodeValidationResponse(new ByteArrayInputStream(decryptResponseBodyAttempt.decrypt().toByteArray()));
+            response.setHttpStatusCode(httpResponse.getStatusCode());
+            return response;
         } catch (IOException | JAXBException | DigaHttpClientException | SeconException e) {
             log.error("Failed to validate DiGA code", e);
             throw new DigaApiException(e);
@@ -92,10 +90,11 @@ public class DigaApiClient {
                     .certificatesPassword(settings.getHealthInsurancePublicKeyStorePassword())
                     .build();
             codeParser = new DigaCodeParser(healthInsuranceDirectory);
-            validationRequestFactory = DigaCodeValidationRequestFactory.builder()
+            xmlRequestWriter = DigaXmlRequestWriter.builder()
                     .digaId(settings.getSenderDigaId())
                     .senderIk(settings.getSenderIkNUmber())
                     .build();
+            xmlRequestReader = new DigaXmlRequestReader();
             senderIk = settings.getSenderIkNUmber();
         } catch (SeconException | JAXBException | DigaHttpClientException | IOException e) {
             log.error("DigA API client initialization failed", e);

@@ -9,7 +9,7 @@ import lombok.NonNull;
  */
 @Builder
 @Getter
-public class DigaApiResponseEncrypted {
+public class DigaApiHttpResponse {
     @NonNull
     private int statusCode;
     @NonNull

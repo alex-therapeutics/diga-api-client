@@ -1,7 +1,7 @@
 package com.alextherapeutics.diga;
 
 import com.alextherapeutics.diga.model.DigaApiRequest;
-import com.alextherapeutics.diga.model.DigaApiResponseEncrypted;
+import com.alextherapeutics.diga.model.DigaApiHttpResponse;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class DigaHttpClient {
      * @return
      * @throws DigaHttpClientException
      */
-    public DigaApiResponseEncrypted post(DigaApiRequest request) throws DigaHttpClientException {
+    public DigaApiHttpResponse post(DigaApiRequest request) throws DigaHttpClientException {
         try {
             var httpResponse = client.newCall(
                     toOkHttpRequest(request)
@@ -61,8 +61,8 @@ public class DigaHttpClient {
         }
     }
 
-    private DigaApiResponseEncrypted parseResponse(Response okHttpResponse) throws IOException {
-        var responseBuilder = DigaApiResponseEncrypted.builder()
+    private DigaApiHttpResponse parseResponse(Response okHttpResponse) throws IOException {
+        var responseBuilder = DigaApiHttpResponse.builder()
                 .statusCode(okHttpResponse.code());
         var multiPartReader = new MultipartReader(okHttpResponse.body());
         MultipartReader.Part nextPart = null;
@@ -125,9 +125,9 @@ public class DigaHttpClient {
         return result;
     }
 
-    private DigaApiResponseEncrypted.DigaApiResponseEncryptedBuilder parsePart(
+    private DigaApiHttpResponse.DigaApiHttpResponseBuilder parsePart(
                     MultipartReader.Part part,
-                    DigaApiResponseEncrypted.DigaApiResponseEncryptedBuilder builder) throws IOException {
+                    DigaApiHttpResponse.DigaApiHttpResponseBuilder builder) throws IOException {
         if (part == null) {
             return builder;
         }

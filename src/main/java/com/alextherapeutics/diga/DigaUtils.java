@@ -38,7 +38,7 @@ public class DigaUtils {
      * @throws JAXBException
      * @throws IOException
      */
-    public static byte[] createOkXmlTestRequest(DigaCodeValidationRequestFactory handler, String receiverIk) throws JAXBException, IOException {
+    public static byte[] createOkXmlTestRequest(DigaXmlRequestWriter handler, String receiverIk) throws JAXBException, IOException {
         return handler.createCodeValidationRequest("77AAAAAAAAAAAAAX", receiverIk, VerfahrenskennungStp.TDFC_0);
     }
 
