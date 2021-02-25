@@ -1,5 +1,6 @@
 package com.alextherapeutics.diga.model;
 
+import com.alextherapeutics.diga.DigaPrescriptionType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,6 +18,11 @@ public class DigaApiResponse {
      * The code which has been validated.
      */
     private String validatedDigaCode;
+
+    /**
+     * Which type of prescription was granted (renewal, initial)
+     */
+    private DigaPrescriptionType prescriptionType;
 
     // TODO figure out what this translation means ("tag der leistungserbringung" from "antwort")
     private Date dayOfServiceProvision;

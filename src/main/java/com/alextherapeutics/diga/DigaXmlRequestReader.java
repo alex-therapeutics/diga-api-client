@@ -43,6 +43,11 @@ public class DigaXmlRequestReader {
                 .errors(getErrors(response))
                 .validatedDigaCode(response.getAntwort() == null ? null : response.getAntwort().getFreischaltcode())
                 .dayOfServiceProvision(response.getAntwort() == null ? null : response.getAntwort().getTagDerLeistungserbringung().toGregorianCalendar().getTime())
+                .prescriptionType(
+                        response.getAntwort() == null
+                                ? null
+                                : DigaPrescriptionType.fromIdentifier(response.getAntwort().getDiGAVEID().substring(5))
+                )
                 .build();
     }
     private List<DigaApiResponseError> getErrors(PruefungFreischaltcode request) {
