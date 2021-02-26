@@ -3,6 +3,8 @@ package com.alextherapeutics.diga;
 import com.alextherapeutics.diga.implementation.*;
 import com.alextherapeutics.diga.model.*;
 import de.tk.opensource.secon.SeconException;
+import lombok.Builder;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -11,44 +13,52 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
- * Main entry point to interact with the DiGA API
- * Create using a DigaApiClientSettings object which contains required input
+ * Main entry point to perform code validation against the DiGA API.
+ *
+ * You can create this class in two ways:
+ *
+ * - Create a client using a {@link DigaApiClientSettings} object, which will create a working client with default
+ * class implementations provided by this library. The settings object will contain the input required to set up
+ * a working client.
+ *
+ * - Or you can create a client using the builder {@link DigaApiClientBuilder}, where you will control yourself
+ * which class implementations are used. This enables you to write custom implementations for some or all of the
+ * interfaces, like for example providing your own {@link DigaHttpClient}. Note that you have to provide a value
+ * for each builder property. If you want to use default classes for some values, you can do so, just instantiate
+ * them yourself (they are public). Look at the private "initDefault" method in this class for inspiration on how
+ * to do that.
  */
 @Slf4j
+@Builder
 public final class DigaApiClient {
-
+    @NonNull
     private DigaEncryptionFactory encryptionFactory;
+    @NonNull
     private DigaHttpClient httpClient;
+    @NonNull
     private DigaCodeParser codeParser;
+    @NonNull
     private DigaHealthInsuranceDirectory healthInsuranceDirectory;
+    @NonNull
     private DigaXmlRequestWriter xmlRequestWriter;
+    @NonNull
     private DigaXmlRequestReader xmlRequestReader;
+    @NonNull
     private String senderIk;
 
     /**
      * Create a working Diga API client with default class implementations.
-     * @param settings
+     * @param settings - required inputs for creating all default class implementations
      * @throws DigaApiException
      */
     public DigaApiClient(DigaApiClientSettings settings) throws DigaApiException {
-        init(settings);
+        initDefault(settings);
     }
-    /**
-     * Create a DiGA API client with control over which class implementations to use.
-     * You must provide an implementation for each interface.
-     * Feel free to use the default ones (they have public constructors or builders) in
-     * cases where you don't want to write your own.
-     */
-    // maybe you can have builder.default with default methods to call?
-    // builder constr
-//    @Builder
-//    public DigaApiClient(
-//    )
 
     /**
-     * Validate a patient's DiGA code.
-     * @param digaCode
-     * @return
+     * Attempt to validate a patient's DiGA code against the API.
+     * @param digaCode - the full code (16 letters) as a String object.
+     * @return a {@link DigaApiResponse} object containing information on the response from the API.
      */
     public DigaApiResponse validateDigaCode(String digaCode) throws DigaApiException {
         return performCodeValidation(
@@ -80,7 +90,7 @@ public final class DigaApiClient {
                     .recipientAlias(DigaUtils.ikNumberWithPrefix(codeInformation.getInsuranceCompanyIKNumber()))
                     .build();
             var encryptedXmlBody = encryptRequestAttempt.encrypt().toByteArray();
-            var httpApiRequest = DigaApiRequest.builder()
+            var httpApiRequest = DigaApiHttpRequest.builder()
                     .url(DigaUtils.buildPostDigaEndpoint(codeInformation.getEndpoint()))
                     .senderIK(senderIk)
                     .recipientIK(codeInformation.getInsuranceCompanyIKNumber())
@@ -96,12 +106,13 @@ public final class DigaApiClient {
             response.setRawXmlRequestBodyEncrypted(encryptedXmlBody);
             return response;
         } catch (IOException | JAXBException | DigaHttpClientException | SeconException e) {
+            // TODO catch all here is probably bad
             log.error("Failed to validate DiGA code", e);
             throw new DigaApiException(e);
         }
     }
 
-    private void init(DigaApiClientSettings settings) throws DigaApiException {
+    private void initDefault(DigaApiClientSettings settings) throws DigaApiException {
         try {
             var privateKeyStoreBytes = IOUtils.toByteArray(settings.getPrivateKeyStoreFile());
             var healthInsurancePublicKeyStoreBytes = IOUtils.toByteArray(settings.getHealthInsurancePublicKeyStoreFile());

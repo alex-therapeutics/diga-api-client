@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2020 rel. 2 (x64) (http://www.altova.com) von Alexandra Dieste (GKV Spitzenverband) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gkv-datenaustausch.de/XMLSchema/EDFC0-basis/2.0.0" xmlns:GI4X-basis="GI4X:/xml-schema/GI4X-basis/2.0" targetNamespace="http://www.gkv-datenaustausch.de/XMLSchema/EDFC0-basis/2.0.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0.0">
+	<xs:import namespace="GI4X:/xml-schema/GI4X-basis/2.0" schemaLocation="GI4X-basis-2.0.0.xsd">
+		<xs:annotation>
+			<xs:documentation> Importieren von GKV weit gültigen Datentypen</xs:documentation>
+		</xs:annotation>
+	</xs:import>
+	<!--=========================== -->
+	<!--=====     Typdefinition   ========= -->
+	<!--=====     einfache Typen  ======= -->
+	<!--=========================== -->
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Base32_Stp">
+		<xs:annotation>
+			<xs:documentation>Eine 'Base32_Stp' Zeichenkette enthält nur Zeichen aus dem Zeichensatz Base32 ohne Pad. Mindestens ein Zeichen lang.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:minLength value="1"/>
+			<xs:pattern value="[A-Z2-7]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Base32_2_Stp">
+		<xs:annotation>
+			<xs:documentation>Eine 'Base32_Stp' Zeichenkette der Länge 2</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Base32_Stp">
+			<xs:minLength value="2"/>
+			<xs:maxLength value="2"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:complexType name="KK_ID_Stp">
+		<xs:annotation>
+			<xs:documentation>ID</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Kostentraegerkuerzel" type="Base32_2_Stp"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:ID" use="required"/>
+	</xs:complexType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Base32_16__Stp">
+		<xs:annotation>
+			<xs:documentation>Eine 'Base32_Stp' Zeichenkette der Länge 16</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Base32_Stp">
+			<xs:minLength value="16"/>
+			<xs:maxLength value="16"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="DiGA_Nummer_Stp">
+		<xs:annotation>
+			<xs:documentation>DiGA Nummer gemäß BfArM Verzeichnis</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="200"/>
+		</xs:restriction>
+	</xs:simpleType>
+		<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="DiGA_ID_Stp">
+		<xs:annotation>
+			<xs:documentation>DiGA ID gemäß BfArM Verzeichnis</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value="\d{5}"></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+			<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="DiGA_VE_ID_Stp">
+		<xs:annotation>
+			<xs:documentation>DiGA-VE-ID gemäß BfArM Verzeichnis</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value="\d{8}"></xs:pattern>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Numerische_Werteliste_1stellig_Stp">
+		<xs:annotation>
+			<xs:documentation>Numerische_Werteliste_1stellig</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:positiveInteger">
+			<xs:totalDigits value="1"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Fehlercode_Stp">
+		<xs:annotation>
+			<xs:documentation>Fehlercode</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:positiveInteger">
+			<xs:totalDigits value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Fehlertext_Stp">
+		<xs:annotation>
+			<xs:documentation>Fehlertext ohne Zeilenumbrüche</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:whiteSpace value="collapse"/>
+			<xs:minLength value="1"/>
+			<xs:maxLength value="600"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Numerische_Werteliste_Stp">
+		<xs:annotation>
+			<xs:documentation>Numerische_Werteliste 3-stellig</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:nonNegativeInteger">
+			<xs:totalDigits value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Name_Stp">
+		<xs:annotation>
+			<xs:documentation>Name des Kostentraegers gemäß DiGA RiLi, TA Anlage 1 - "Schlüssel Kostentraegerkuerzel"</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Endpunkt_KS_Stp">
+		<xs:annotation>
+			<xs:documentation>Endpunkt der Kommunikationsstelle des Kostentraegers gemäß DiGA RiLi, TA Anlage 1"</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="200"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Strasse_Stp">
+		<xs:annotation>
+			<xs:documentation>Strasse bzw. Zusatz zur Straße oder Postfach. Es muss mindestens ein Zeichen enthalten sein.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="200"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Postalische_Zusaetze_Stp">
+		<xs:annotation>
+			<xs:documentation>Postalische Zusätze  bzw. nähere Empfängerbezeichnungen des Kostenträgers</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="200"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Ort_Stp">
+		<xs:annotation>
+			<xs:documentation>Name eines Ortes (Gemeinde, Ortschaft oder Stadt). Es muss mindestens ein Zeichen enthalten sein.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="EmailAdresse_Stp">
+		<xs:annotation>
+			<xs:documentation>Email-Adresse. Auf eine formale Patternprüfung wird hier aus Komplexitätsgründen verzichtet.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="45"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Rufnummer_Stp">
+		<xs:annotation>
+			<xs:documentation>Datentyp zur Repräsentation numerischer Rufnummern, z.Bsp als Telefonnummer oder Faxnummer. </xs:documentation>
+			<xs:appinfo>
+				<Kommentar>Wegen der unterschiedlichen Formate für die Repräsentation von Rufnummern wird hier auf eine Prüfung, z. Bsp. nach DIN 5008 verzichtet.</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="30"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Version_Stp">
+		<xs:annotation>
+			<xs:documentation>Version der Nachricht</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="11"/>
+			<xs:minLength value="11"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Verfahrenskennung_Stp">
+		<xs:annotation>
+			<xs:documentation>Verfahrenskennung gemäß TA</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="5"/>
+			<xs:maxLength value="5"/>
+			<xs:enumeration value="EDFC0"/>
+			<xs:enumeration value="TDFC0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:simpleType name="Nachrichtentyp_Stp">
+		<xs:annotation>
+			<xs:documentation>Nachrichtentyp, Anfrage (ANF), Antwort (ANT) oder Fehlernachricht (FEH)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="3"/>
+			<xs:maxLength value="3"/>
+			<xs:enumeration value="ANF"/>
+			<xs:enumeration value="ANT"/>
+			<xs:enumeration value="FEH"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--=====     Typdefinition   ======= -->
+	<xs:attributeGroup name="header">
+		<xs:attribute name="verfahrenskennung" type="Verfahrenskennung_Stp" use="required">
+			<xs:annotation>
+				<xs:documentation>Verfahrenskennzeichen gemäß Technischer Anlage der Richtlinie nach §302 Abs. 2 SGB V DiGA: "EDFC0" oder "TDFC0"</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="nachrichtentyp" type="Nachrichtentyp_Stp" use="required">
+			<xs:annotation>
+				<xs:documentation>Nachrichtentyp, Anfrage (ANF), Antwort (ANT) oder Fehlernachricht (FEH)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="absender" type="GI4X-basis:IK_Stp" use="required">
+			<xs:annotation>
+				<xs:documentation>IK des Absenders der Nachricht</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="empfaenger" type="GI4X-basis:IK_Stp" use="required">
+			<xs:annotation>
+				<xs:documentation>IK des Empfaengers der Nachricht</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<!--=====     Typdefinition   ======= -->
+	<xs:complexType name="Krankenkasseninformation_Ctp">
+		<xs:sequence>
+			<xs:element name="Kostentraegerkuerzel" type="Base32_2_Stp">
+				<xs:annotation>
+					<xs:documentation>2-stelliges Kürzel der Krankenkasse gemäß DiGA RiLi, TA Anlage 1 - "Schlüssel Kostentraegerkuerzel</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Kostentraegerkennung" type="GI4X-basis:IK_Stp">
+				<xs:annotation>
+					<xs:documentation>IK der Krankenkasse</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name_des_Kostentraegers" type="Name_Stp">
+				<xs:annotation>
+					<xs:documentation>Name der Krankenkasse</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IK_des_Rechnungsempfaengers" type="GI4X-basis:IK_Stp">
+				<xs:annotation>
+					<xs:documentation>Rechnungsempfaenger gemäß UStG</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="IK_Abrechnungsstelle" type="GI4X-basis:IK_Stp">
+				<xs:annotation>
+					<xs:documentation>(Technische) Abrechnungsstelle die im Auftrag für den Rechnungsempfänger tätig ist</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Name_Kommunikationsstelle" type="Name_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Name der Kommunikationsstelle</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Endpunkt_Kommunikationsstelle" type="Endpunkt_KS_Stp">
+				<xs:annotation>
+					<xs:documentation>Endpunkt der Kommunikationsstelle</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Versandart" type="Numerische_Werteliste_1stellig_Stp">
+				<xs:annotation>
+					<xs:documentation>Für eine Übergangszeit soll es auch ermöglicht werden, dass Abrechnungen alternativ postalisch oder E-Mail basiert zu versenden sind. Für die Abrechnung gilt die in der Versandart hinterlegte Option. Für den Freischaltcode ist immer die elektronische Schnittstelle zu verwenden. Mittelfristig wird die Abrechnung vollständig auf die elektronische Schnittstelle umgestellt. 
+1 = elektronisch via Schnittstelle (siehe Zeile 10-12) 
+2 = elektronisch via eMail 
+3 = postalisch  
+								</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="EMail_Kostentraeger" type="EmailAdresse_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>EMail Adresse des Kostenträgers zum Versand der Rechnung. Dieses Feld MUSS belegt werden, wenn Versandart= 2 (bedingtes Mussfeld)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Postalische_Zusaetze" type="Postalische_Zusaetze_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Postalische Zusätze  bzw. nähere Empfängerbezeichnungen (Abteilung, etc.) des Kostenträgers bei postalischem Versand</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Strasse_Postfach" type="Strasse_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Strasse resp Postfach des Kostenträgers bei postalischem Versand. Dieses Feld MUSS belegt werden, wenn Versandart= 3 (bedingtes Mussfeld)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Hausnummer_Postfachnummer" type="GI4X-basis:Hausnummer_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Haus- resp Postfachnummer des Kostenträgers bei postalischem Versand. Dieses Feld MUSS belegt werden, wenn Versandart= 3 (bedingtes Mussfeld)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="PLZ" type="GI4X-basis:Postleitzahl_DE_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>PLZ des Kostenträgers bei postalischem Versand. Dieses Feld MUSS belegt werden, wenn Versandart= 3 (bedingtes Mussfeld)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Ort" type="Ort_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Ort des Kostenträgers bei postalischem Versand. Dieses Feld MUSS belegt werden, wenn Versandart= 3 (bedingtes Mussfeld)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Kontaktdaten_Technisch_Telefon" type="Rufnummer_Stp">
+				<xs:annotation>
+					<xs:documentation>Telefon des technischen/betrieblichen Kontakts</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Kontaktdaten_Technisch_EMail" type="EmailAdresse_Stp">
+				<xs:annotation>
+					<xs:documentation>EMail des technischen/betrieblichen Kontakts</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Nummer" type="xs:ID" use="required"/>
+	</xs:complexType>
+</xs:schema>

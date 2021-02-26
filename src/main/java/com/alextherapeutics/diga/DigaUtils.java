@@ -1,5 +1,8 @@
 package com.alextherapeutics.diga;
 
+/**
+ * Utility methods
+ */
 public final class DigaUtils {
     /**
      * Remove IK from an IK number (IK#######) if it exists.

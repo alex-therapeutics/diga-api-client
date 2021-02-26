@@ -1,9 +1,9 @@
 package com.alextherapeutics.diga.implementation;
 
-import com.alextherapeutics.diga.model.DigaSupportedXsdVersion;
 import com.alextherapeutics.diga.DigaUtils;
 import com.alextherapeutics.diga.DigaXmlRequestWriter;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
+import com.alextherapeutics.diga.model.DigaSupportedXsdVersion;
 import com.alextherapeutics.diga.model.xml.NachrichtentypStp;
 import com.alextherapeutics.diga.model.xml.ObjectFactory;
 import com.alextherapeutics.diga.model.xml.PruefungFreischaltcode;

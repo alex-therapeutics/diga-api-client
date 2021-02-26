@@ -3,8 +3,8 @@ package com.alextherapeutics.diga.implementation;
 import com.alextherapeutics.diga.DigaHttpClient;
 import com.alextherapeutics.diga.DigaHttpClientException;
 import com.alextherapeutics.diga.DigaUtils;
+import com.alextherapeutics.diga.model.DigaApiHttpRequest;
 import com.alextherapeutics.diga.model.DigaApiHttpResponse;
-import com.alextherapeutics.diga.model.DigaApiRequest;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,6 @@ import java.security.cert.CertificateException;
  * Default HTTP client using OkHttp configured to trust the insurance company certificates
  * and provide yuor own certificate with each request.
  */
-
 @Slf4j
 public class DigaOkHttpClient implements DigaHttpClient {
     private byte[] keyStoreFileContent;
@@ -48,7 +47,7 @@ public class DigaOkHttpClient implements DigaHttpClient {
     }
 
     @Override
-    public DigaApiHttpResponse post(DigaApiRequest request) throws DigaHttpClientException {
+    public DigaApiHttpResponse post(DigaApiHttpRequest request) throws DigaHttpClientException {
         try {
             var httpResponse = client.newCall(
                     toOkHttpRequest(request)
@@ -74,16 +73,16 @@ public class DigaOkHttpClient implements DigaHttpClient {
         return responseBuilder.build();
     }
 
-    private Request toOkHttpRequest(DigaApiRequest digaApiRequest) {
+    private Request toOkHttpRequest(DigaApiHttpRequest digaApiHttpRequest) {
         var body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("iksender", DigaUtils.ikNumberWithoutPrefix(digaApiRequest.getSenderIK()))
-                .addFormDataPart("ikempfaenger", DigaUtils.ikNumberWithoutPrefix(digaApiRequest.getRecipientIK()))
-                .addFormDataPart("verfahren", digaApiRequest.getVerfahren())
-                .addFormDataPart("nutzdaten", "anfrage.cms", RequestBody.create(digaApiRequest.getEncryptedContent()))
+                .addFormDataPart("iksender", DigaUtils.ikNumberWithoutPrefix(digaApiHttpRequest.getSenderIK()))
+                .addFormDataPart("ikempfaenger", DigaUtils.ikNumberWithoutPrefix(digaApiHttpRequest.getRecipientIK()))
+                .addFormDataPart("verfahren", digaApiHttpRequest.getVerfahren())
+                .addFormDataPart("nutzdaten", "anfrage.cms", RequestBody.create(digaApiHttpRequest.getEncryptedContent()))
                 .build();
         return new Request.Builder()
-                .url(digaApiRequest.getUrl())
+                .url(digaApiHttpRequest.getUrl())
                 .post(body)
                 .build();
     }

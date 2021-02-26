@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Error codes corresponding to Annex 5 at
+ * Code Validation error codes listed in Annex 5 at
  * https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
  */
 public enum DigaErrorCode {

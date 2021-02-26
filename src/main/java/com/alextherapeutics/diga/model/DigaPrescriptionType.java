@@ -11,6 +11,7 @@ import java.util.Map;
  * official documentation.
  * If your DiGA is the same price no matter if it's a first-time purchase or a renewal, this might just be unspecified
  * each time. Or in the future some new values might show up that we haven't seen before.
+ * Probably you will not have to use this. If you do, and it is important to you, please consider contributing!
  */
 @Slf4j
 public enum DigaPrescriptionType {

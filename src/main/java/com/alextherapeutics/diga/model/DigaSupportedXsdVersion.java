@@ -3,7 +3,8 @@ package com.alextherapeutics.diga.model;
 import lombok.Getter;
 
 /**
- * Supported xsd version constants
+ * Supported xsd version constants.
+ * These are the versions currently supported by this library.
  */
 public enum DigaSupportedXsdVersion {
 

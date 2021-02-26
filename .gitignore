@@ -4,5 +4,4 @@ target/
 *.p12
 *.xml
 !pom.xml
-*.xsd
 **/Main.java

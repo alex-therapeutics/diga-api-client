@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2020 rel. 2 (x64) (http://www.altova.com), Stand vom 01.07.2020 - Entwurfstatus -->
+<xs:schema xmlns:dd="GI4X:/data-dictionary" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:GI4X-basis="GI4X:/xml-schema/GI4X-basis/2.0" targetNamespace="GI4X:/xml-schema/GI4X-basis/2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0.0">
+	<xs:annotation>
+		<xs:documentation>
+Dieses Schema enthält die allgemeinen Datentypdefinitionen, die in der GKV Verwendung finden.
+Fachverfahren sollen dieses Schema und die darin enthaltenen Komponenten verwenden, oder ihren
+Bedürfnissen entsprechend einschränken - soweit die Definition dies zulässt.
+
+Fachverfahren können über diese Definitionen hinaus eigene Definitionen festlegen und falls diese von fachübergreifender
+Bedeutung sind einen Change Request an die UAG XML einreichen.
+
+Änderungshistorie:
+Version 1.0.0:
+	Autor: UAG XML
+		Initiale Erstellung des Data Dictionary Schemas
+Version 2.0.0:
+	Autor: UAG XML
+		Einführen des Typs KVNR_Alt_Stp für alte, variabel lange Krankenversichertennummern
+		Einschränken des Typs KVNR_Stp auf den neuen unveränderlichen Teil der eindeutigen Krankenversichertennummer.
+			</xs:documentation>
+	</xs:annotation>
+	<!--Basisdatentypen-->
+	<xs:simpleType name="Datum_Stp" dd:category="Basis">
+		<xs:annotation>
+			<xs:documentation>Dieser Datentyp dient der Repräsentation eines tagesgenauen Datums und umfasst den Tag der um 00:00 Uhr Mitteleuropäische Zeit (MEZ/CET) bzw. Mitteleuropäischer Sommerzeit (MESZ/CEST) beginnt und bis 00:00 (exklusive) des nächsten Tages dauert. Die MEZ ist als UTC+1, die MESZ als UTC+2 definiert (koordinierte Weltzeit +1 Stunde, bzw +2 Stunden).
+Das zu verwendende Datumsformat ist eine Einschränkung von xs:date (ISO 8601) auf JJJJ-MM-TT, da die Zeitzone durch diese Definition vorgegeben ist.
+</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+				Wenn dieser Datentyp für Stichtage verwendet wird, so ist das angegebene Datum als inklusive anzusehen.</Kommentar>
+				<Beispiele>2008-04-29</Beispiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:date">
+			<xs:pattern value="[0-9]{4}-[0-9]{2}-[0-9]{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Datum_Uhrzeit_Stp" dd:category="Basis">
+		<xs:annotation>
+			<xs:documentation>Dieser Datentyp dient der Repräsentation eines minutengenauen Zeitpunkts. Die verwendete Zeitzone ist je nach Datum und Uhrzeit entweder die Mitteleuropäische Zeit (MEZ/CET) bzw. Mitteleuropäische Sommerzeit (MESZ/CEST). Die MEZ ist als UTC+1 Stunde, die MESZ als UTC+2 Stunden definiert (koordinierte Weltzeit +1 Stunde, bzw +2 Stunden). 
+Dieser Datentyp verzichtet bewußt auf eine Unterscheidung des am Tag der Winter- auf Sommerzeitumstellung doppelt auftretenden Zeitraums von 2:00 bis 3:00 Uhr.
+Das verwendete Format ist eine Einschränkung von xs:dateTime (ISO 8601) auf JJJJ-MM-TT'T'HH:mm</xs:documentation>
+			<xs:appinfo>
+				<Kommentar/>
+				<Beispiele>2008-04-29T10:35</Beispiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:dateTime">
+			<xs:pattern value="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="UngenauesDatum_Ctp" final="extension" dd:category="Basis">
+		<xs:annotation>
+			<xs:documentation>Dieser Datentyp erlaubt die Spezifikation eines Datums, bei dem eventuell der Tag oder Monat nicht exakt bekannt sind. Die Genauigkeit wird über das optionale Attribut 'genauigkeit' festgelegt:
+Fehlt das Attribut oder hat das Attribut den Wert 'Tag' handelt es sich um ein tagesgenaues Datum. Hat das Attribut den Wert 'Monat', ist das Datum monatsgenau, d.h. der Monat ist bekannt, der Tag ist nicht exakt bekannt. Hat das Attribut den Wert 'Jahr', ist nur das im Datum angegebene Jahr genau bekannt.
+Auch bei ungenauen Angaben muß der Wert sämtliche Bestandteile (Jahr, Monat, Tag) enthalten, damit die XML Schema Prüfung keinen Fehler produziert. Für monatsgenaue Datumsangeben sollte als Tag '01' verwendet werden, bei jahresgenauen Datumsangaben sollte als Monat-Tag Wert '01-01' angegeben werden.
+</xs:documentation>
+			<xs:appinfo>
+				<Kommentar/>
+				<Beispiele><![CDATA[
+<Geburtsdatum>1969-12-13</Geburtsdatum> Tagesgenaue Angabe
+<Geburtsdatum genauigkeit="Tag">1969-12-13</Geburtsdatum> Tagesgenaue Angabe
+<Geburtsdatum genauigkeit="Monat">1969-12-01</Geburtsdatum> Monatsgenaue Angabe
+<Geburtsdatum genauigkeit="Jahr">1969-01-01</Geburtsdatum> Jahresgenaue Angabe
+				]]></Beispiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="GI4X-basis:Datum_Stp">
+				<xs:attribute name="genauigkeit" use="optional">
+					<xs:annotation>
+						<xs:documentation>Bedeutung s. UngenauesDatum_Ctp</xs:documentation>
+					</xs:annotation>
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Tag"/>
+							<xs:enumeration value="Monat"/>
+							<xs:enumeration value="Jahr"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:simpleType name="ISO88591_Stp" dd:category="Basis">
+		<xs:annotation>
+			<xs:documentation>Eine 'ISO88591_Stp' Zeichenkette enthält nur Zeichen aus dem Zeichensatz ISO-8859-1 ohne Zeilenumbrüche (CR/LF) und Tab. Dieser Datentyp sollte als Basis für einfache Zeichenkettenfelder verwendet werden, bei denen Zeilenumbrüche/Tabs in den Daten nicht erwünscht sind.
+			</xs:documentation>
+			<xs:appinfo>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:pattern value="[&#x0020;-&#x00FF;]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ISO88591_Text_Stp" dd:category="Basis">
+		<xs:annotation>
+			<xs:documentation>
+Eine 'ISO88591_Text_Stp' Zeichenkette enthält  Zeichen aus dem Zeichensatz ISO-8859-1.
+Dieser Datentyp kann Zeilenumbrüche/Tabs enthalten und sollte als Basis für mehrzeilige Texte verwendet werden.
+			</xs:documentation>
+			<xs:appinfo>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:pattern value="[\n\r\t&#x0020;-&#x00FF;]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- -->
+	<!--Anschrift / Adresse-->
+	<xs:simpleType name="Hausnummer_Stp" dd:category="Anschrift / Adresse">
+		<xs:annotation>
+			<xs:documentation>Eine Hausnummer dient der genauen Lokalisierung eines Grundstuecks, Gebaeudes oder Gebaeudeteils (Eingang) in einer Strasse. Hausnummern koennen entsprechend der ueblichen Praxis in vielen Gemeinden mit ergaenzenden Angaben zur weiteren Unterteilung versehen werden, etwa "12a" oder "17 1/3".
+Da manche Gebaeude oder Organisationen sich als Einheit ueber mehrere Hausnummern erstrecken, koennen auch Hausnummernbereiche angegeben werden, etwa "12a - 12e" oder "1 - 3".</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+Die Schreibweise für ergänzende Angaben und für Hausnummernbereiche ist in Deutschland uneinheitlich und kann daher nicht genau vorgegeben werden. Eine Aufteilung in numerische und diverse weitere Zusätze wurde bewusst nicht vorgenommen.
+			</Kommentar>
+				<Beispiele>212 12a 17
+1/3 12a - 12e
+12 a-e 1 - 3</Beispiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="15"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Ort_Stp" dd:category="Anschrift / Adresse">
+		<xs:annotation>
+			<xs:documentation>Das Element Ort enthält den Namen eines Ortes (Gemeinde, Ortschaft oder Stadt).</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+Als Ortsname sollte der amtliche Gemeindename genutzt werden.
+			</Kommentar>
+				<Beispiele/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="34"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Postleitzahl_Stp" dd:category="Anschrift / Adresse">
+		<xs:annotation>
+			<xs:documentation>Eine Postleitzahl ist eine Angabe, um postalische Zustellgebiete unabhängig von Gebietskoerperschaften (Gemeinde, Kreis, …) zu bezeichnen.</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+In Deutschland sind durch Postleitzahlen bezeichnete Bereiche und verwaltungspolitische Grenzen in der Regel aufeinander abgestimmt. Größere Gemeinden und Städte sind häufig in mehrere Postleitzahlengebiete aufgeteilt. Postleitzahlen werden durch die Deutsche Post AG verwaltet. Eine Beschränkung auf deutsche Postleitzahlen (5-stellig) wurde bewusst nicht vorgenommen. Für diese existiert die Einschränkung 'Postleitzahl_DE_Stp'.
+			</Kommentar>
+				<Beispiele>64331</Beispiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Postleitzahl_DE_Stp" final="#all" dd:category="Anschrift / Adresse">
+		<xs:annotation>
+			<xs:documentation>Eine genau 5 stellige deutsche Postleitzahl</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>Sollte als Einschränkung von 'Postleitzahl_Stp' verwendet werden, falls die Verwendung ausschliesslich deutsche Postleitzahlen zulässt.</Kommentar>
+				<Beispiele>64331</Beispiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:Postleitzahl_Stp">
+			<xs:minLength value="5"/>
+			<xs:maxLength value="5"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Strasse_Stp" dd:category="Anschrift / Adresse">
+		<xs:annotation>
+			<xs:documentation>
+Als Straßenname bezeichnet man den Namen, den eine Straße zur Unterscheidung von anderen Straßen trägt. Straßennamen im weiteren Sinne sind dabei auch die Namen von Plätzen und Brücken
+			</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+Die längste Strasse in Deutschland ist die 'Bischöflich-Geistlicher-Rat-Josef-Zinnbauer-Straße' in Dingolfing
+			</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="55"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Anschrift_Ctp" final="extension" dd:category="Anschrift / Adresse">
+		<xs:annotation>
+			<xs:documentation>Anschrift einer natürlichen Person oder Institution</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Strasse" type="GI4X-basis:Strasse_Stp" minOccurs="0"/>
+			<xs:element name="Hausnummer" type="GI4X-basis:Hausnummer_Stp" minOccurs="0"/>
+			<xs:element name="Postleitzahl" type="GI4X-basis:Postleitzahl_Stp" minOccurs="0"/>
+			<xs:element name="Ort" type="GI4X-basis:Ort_Stp" minOccurs="0"/>
+			<xs:element name="Land" type="GI4X-basis:Laenderkennzeichen_Stp" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!--Beispiel einer Einschränkung durch Fachanwendung
+	<xs:element name="Anschrift">
+		<xs:annotation>
+			<xs:documentation>Einschränkung der Anschrift durch Fachanwendung</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="GI4X-basis:Anschrift_Ctp">
+					<xs:sequence>
+						<xs:element name="Strasse" type="GI4X-basis:Strasse_Stp"/>
+						<xs:element name="Hausnummer" type="GI4X-basis:Hausnummer_Stp"/>
+						<xs:element name="Postleitzahl" type="GI4X-basis:Postleitzahl_DE_Stp"/>
+						<xs:element name="Ort" type="GI4X-basis:Ort_Stp"/>
+						<xs:element name="Land" type="GI4X-basis:Laenderkennzeichen_Stp" minOccurs="0" maxOccurs="0"/>
+					</xs:sequence>
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	-->
+	<!-- -->
+	<!--Name-->
+	<xs:simpleType name="Nachname_Stp" dd:category="Name">
+		<xs:annotation>
+			<xs:documentation>Dieser Datentyp modelliert den Nachnamen einer Person.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Namensvorsatz_Stp" dd:category="Name">
+		<xs:annotation>
+			<xs:documentation>Dieser Datentyp modelliert den Namensvorsatz einer Person. Die erlaubten Werte sind durch Anlage 6 DEÜV vorgegeben.</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>Dieser Datentyp wird aufgrund der sich häufiger ändernden Schlüsseltabelle nicht über eine Enumeration der erlaubten Werte in XML Schema geprüft.</Kommentar>
+				<Beispiele>Graf</Beispiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Namenszusatz_Stp" dd:category="Name">
+		<xs:annotation>
+			<xs:documentation>Dieser Typ modelliert den Namenszusatz einer Person. Die erlaubten Werte sind durch Anlage 7 DEÜV vorgegeben.</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>Dieser Datentyp wird aufgrund der sich häufiger ändernden Schlüsseltabelle nicht über eine Enumeration der erlaubten Werte in XML Schema geprüft.</Kommentar>
+				<Beispiele/>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Namenstitel_Stp" dd:category="Name">
+		<xs:annotation>
+			<xs:documentation>Dieser Datentyp modelliert den Namenstitel einer Person.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Vorname_Stp" dd:category="Name">
+		<xs:annotation>
+			<xs:documentation>Dieser Datentyp modelliert den Vornamen einer Person.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="35"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Name_Ctp" final="extension" dd:category="Name">
+		<xs:annotation>
+			<xs:documentation>Repräsentation aller möglichen Namensbestandteile einer natürlichen Person</xs:documentation>
+			<xs:appinfo>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Titel" type="GI4X-basis:Namenstitel_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Namenstitel einer Person.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Vorname" type="GI4X-basis:Vorname_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Vorname einer Person</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Nachname" type="GI4X-basis:Nachname_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Nachname einer Person</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Namensvorsatz" type="GI4X-basis:Namensvorsatz_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Namensvorsatz einer Person nach Anlage 6 DEÜV</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Namenszusatz" type="GI4X-basis:Namenszusatz_Stp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Namenszusatz einer Person nach Anlage 7 DEÜV</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- -->
+	<!--Person-->
+	<xs:complexType name="Person_Ctp" final="extension" dd:category="Person">
+		<xs:annotation>
+			<xs:documentation>Basisinformationen zu einer natürlichen Person</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Name" type="GI4X-basis:Name_Ctp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Name der Person , einschränkbar</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Anschrift" type="GI4X-basis:Anschrift_Ctp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Anschrift der Person, einschränkbar</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Geburtsdatum" type="GI4X-basis:UngenauesDatum_Ctp" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Geburtsdatum der Person</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- -->
+	<!--Identifikationsmerkmale-->
+	<xs:simpleType name="KVNR_Allgemein_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>Krankenversichertennummer (im allgemeinen Format).
+Die Krankenversichertennummer besteht aus einem alphanumerischen und einem numerischen Baustein.
+Der unveränderbare Teil – dabei handelt es sich um die eigentliche Krankenversichertennummer, die ausschlaggebend für alle Verfahren ist – ist einer bestimmten Person, dem Hauptversicherten oder einem mitversicherten Familienangehörigen, zugeordnet und begleitet ihn ein Leben lang. Dieser Teil der neuen Krankenversichertennummer hat 10 Stellen.
+Der veränderbare Teil enthält Informationen über die Krankenkasse. Die 9-stellige Nummer ist das so genannte Institutionskennzeichen der Krankenkasse. Der Bezug eines Angehörigen zum Mitglied wird über einen weiteren Nummern-Teil hergestellt. Dieser ist 10 Stellen lang.
+In den Regelverfahren der Krankenkassen (Datenaustausch mit den Leistungserbringern, Gesundheitskarte etc.) werden der unveränderbare Teil, der veränderbare Teil und der Bezug eines Familienangehörigen jeweils in getrennten Datenfeldern verwendet. Für den Fall, dass für den unveränderbaren Teil (Stelle 1 - 10) und die Kassenzugehörigkeit (Stelle 11 - 19) in bestimmten Anwendungen nur ein Datenfeld zur Verfügung steht, ist eine zusätzliche Prüfziffer (Stelle 20) erforderlich. Werden alle drei Bestandteile der Krankenversichertennummer in einem Datenfeld verwendet, kommt ebenfalls eine zusätzliche Prüfziffer (Stelle 30) zum Einsatz.
+Die neue Krankenversichertennummer hat somit 20 Stellen für Hauptversicherte und 30 Stellen für Familienangehörige
+			</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>In Fachverfahren wird wahrscheinlich eine Trennung in die verschiedenen Komponenten erfolgen.</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="20"/>
+			<xs:maxLength value="30"/>
+			<xs:pattern value="[A-Z][0-9]{19}([0-9]{10})?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="KVNR_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>Datentyp für die Repräsentation des unveränderlichen (genau 10 stelligen) Teils der neuen Krankenversichertennummer.
+			</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+				</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="10"/>
+			<xs:maxLength value="10"/>
+			<xs:pattern value="[0-9A-Z][0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="KVNR_Alt_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>Datentyp für die Repräsentation alter (variabel langer) Krankenversichertennummern.
+			</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+				</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="9"/>
+			<xs:maxLength value="12"/>
+			<xs:pattern value="[0-9A-Z][0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IK_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>
+Das Institutionskennzeichen (IK) ist ein eindeutiges Merkmal zur Abrechnung mit den Trägern der Sozialversicherung. Alle Vertragspartner, die für die Sozialversicherungsträger Leistungen erbringen, erhalten ein Institutionskennzeichen für die maschinelle Erledigung des Abrechnungsverfahrens und den Zahlungsverkehr. 
+Das IK besteht aus 9 Ziffern.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="9"/>
+			<xs:maxLength value="9"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BNR_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>Betriebsnummer der Bundesagentur für Arbeit (BA)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="8"/>
+			<xs:maxLength value="8"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BSNR_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>Die Betriebsstättennummer, kurz BSNR, ist eine neunstellige Nummer, die im Rahmen der vertragsärztlichen Versorgung den Ort der Leistungserbringung (Betriebsstätte) eindeutig identifiziert. Sie wird aus der alten siebenstelligen Abrechnungsnummer erzeugt, indem als 8. und 9. Stelle die "00" ergänzt wird. 
+Weitere Orte der Leistungserbringung werden mit einer Nebenbetriebsstättennummer (NBSNR) belegt.
+</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="9"/>
+			<xs:maxLength value="9"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LANR_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>Die lebenslange Arztnummer, kurz LANR, ist eine neunstellige Nummer, die die zuständige Kassenärztliche Vereinigung bundesweit an jeden Arzt vergibt, der an der vertragsärztlichen Versorgung teilnimmt. Sie ist durch das Vertragsarztrechtsänderungsgesetz (VÄndG) zusammen mit der Betriebsstättennummer (BSNR) für jede kassenärztliche Praxis gesetzlich in der BRD vorgeschrieben und durch die Flexibilisierung der vertragsärztlichen Tätigkeit notwendig geworden. 
+LANR und BSNR sind seit dem 1. Juli 2008 gültig und ersetzen gemeinsam die alten KV-Abrechnungsnummern.
+			</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+					Werte dieses Typs sollten in Fachverfahren über eine geeignete Schlüsselprüfung validiert werden.
+			</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="9"/>
+			<xs:maxLength value="9"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Zahnarztnummer_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>Für die Zahnarztnummer existiert keine geeignete Einschränkung, außer das sie in GKV Verfahren zwischen 7 und 9 Stellen hat.
+			</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>
+					Werte dieses Typs sollten in Fachverfahren über eine geeignete Schlüsselprüfung validiert werden.
+			</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="7"/>
+			<xs:maxLength value="9"/>
+			<xs:pattern value="[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RVNR_Stp" dd:category="Identifikationsmerkmale / GKV">
+		<xs:annotation>
+			<xs:documentation>Die Rentenversicherungsnummer (RVNR)  ist ein aus Buchstaben und Ziffern bestehendes Kennzeichen zur Identifikation von versicherten Personen in der Gesetzlichen Rentenversicherung der Bundesrepublik Deutschland.
+Die RVNR ist alphanumerisch und 12 stellig.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="12"/>
+			<xs:maxLength value="12"/>
+			<xs:pattern value="[0-9]{8}[A-Z][0-9]{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- -->
+	<!-- -->
+	<!--XML Richtlinie / Metadaten-->
+	<xs:simpleType name="Logische_Version_Stp" dd:category="Richtlinie / Metadaten">
+		<xs:annotation>
+			<xs:documentation>Logische Verfahrensversion nach XML Richtlinie</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>Die Einschränkung erlaubt Werte >= 1.0.0 als logische Version</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[1-9][0-9]{0,2}\.(0|[1-9][0-9]{0,2})\.(0|[1-9][0-9]{0,2})"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:attribute name="logische_version" type="GI4X-basis:Logische_Version_Stp" dd:category="Richtlinie / Metadaten">
+		<xs:annotation>
+			<xs:documentation>Attribut für Logische Verfahrensversion nach XML Richtlinie. Dieses Attribut muss für die Wurzel von verfahrensspezifischen Nutzdaten verwendet werden, falls diese nicht von 'Wurzel_Ctp' abgeleitet werden können</xs:documentation>
+		</xs:annotation>
+	</xs:attribute>
+	<xs:complexType name="Wurzel_Ctp" final="restriction" dd:category="Richtlinie / Metadaten">
+		<xs:annotation>
+			<xs:documentation>Von diesem Typ sollten alle verfahrensspezifischen Nutzdaten abgeleitet sein.</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>Sollte es nicht möglich sein, verfahrensspezifische Nutzdaten von diesem Typ abzuleiten, dann muss das Attribut logische_version verwendet werden!</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:attribute name="logische_version" type="GI4X-basis:Logische_Version_Stp" use="required"/>
+	</xs:complexType>
+	<!-- -->
+	<!-- Verschiedenes-->
+	<xs:simpleType name="Versichertenstatus_Stp" dd:category="Verschiedenes">
+		<xs:annotation>
+			<xs:documentation>Versichertenstatus (der KVKarte)</xs:documentation>
+			<xs:appinfo>
+				<Kommentar>Eine genauere Definition ist wegen der unterschiedlichen Verwendung nicht möglich und den Fachverfahren überlassen.</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="5"/>
+			<xs:pattern value="[0-9A-Z&#x0020;]{1,5}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Laenderkennzeichen_Stp" dd:category="Verschiedenes">
+		<xs:annotation>
+			<xs:documentation>Länderkennzeichen nach Anlage 8 DEÜV</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="3"/>
+			<xs:pattern value="[A-Z]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="StaatSchluessel_Stp" dd:category="Verschiedenes">
+		<xs:annotation>
+			<xs:documentation>Schlüssel nach Anlage 8 DEÜV</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- -->
+	<!-- Kommunikation -->
+	<xs:simpleType name="Rufnummer_Stp" dd:category="Kommunikation">
+		<xs:annotation>
+			<xs:documentation>Datentyp zur Repräsentation numerischer Rufnummern, z.Bsp als Telefonnummer oder Faxnummer. </xs:documentation>
+			<xs:appinfo>
+				<Kommentar>Wegen der unterschiedlichen Formate für die Repräsentation von Rufnummern wird hier auf eine Prüfung, z. Bsp. nach DIN 5008 verzichtet.</Kommentar>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="GI4X-basis:ISO88591_Stp">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EmailAdresse_Stp" dd:category="Kommunikation">
+		<xs:annotation>
+			<xs:documentation>Email-Adresse nach RFC 2821 (max. Länge = 320). Auf eine formale Patternprüfung wird hier aus Komplexitätsgründen verzichtet.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="320"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- -->
+	<!-- Finanzen / Abrechnung -->
+	<xs:simpleType name="EuroBetrag_Stp" dd:category="Finanzen / Abrechnung">
+		<xs:annotation>
+			<xs:documentation>Geldbetrag in Euro, mit genau 2 Nachkommastellen</xs:documentation>
+			<xs:appinfo>
+				<Beispiele>0.23, 123.45,+5.00,-43.22 oder 17.00, NICHT aber 18.4, 19 oder 17,95</Beispiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="2"/>
+			<xs:pattern value="[+\-]?[0-9]+\.[0-9][0-9]"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CentBetrag_Stp" dd:category="Finanzen / Abrechnung">
+		<xs:annotation>
+			<xs:documentation>Einschränkung?
+Der Centbetrag ist ein in Cent bemessener Wert.
+Dieser Datentyp lässt sich z.Bsp. für Punktwerte verwenden: Ein Punktwert ist für die Vergütungshöhe einer ärztlichen Leistung entscheidend: Indem dieser Wert mit den Punkten einer ärztlichen Leistung des Einheitlichen Bewertungsmaßstabes multipliziert wird, errechnet sich die tatsächliche Vergütungshöhe dieser Leistung.
+Die Werte können negativ sein.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int"/>
+	</xs:simpleType>
+	<xs:simpleType name="Waehrung_Stp" dd:category="Finanzen / Abrechnung">
+		<xs:annotation>
+			<xs:documentation>3 stelliger Währungscode nach ISO 4217</xs:documentation>
+			<xs:appinfo>
+				<Beipiele>EUR,USD</Beipiele>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z]{3}"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
