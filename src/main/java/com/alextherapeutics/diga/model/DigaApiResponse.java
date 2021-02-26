@@ -1,6 +1,5 @@
 package com.alextherapeutics.diga.model;
 
-import com.alextherapeutics.diga.DigaPrescriptionType;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,7 +8,7 @@ import java.util.List;
 
 /**
  * Collects the information received from an API response
- * Contains information from both the HTTP response as well as the XML response
+ * Mutable object interacted with by several interfaces: Contains information from both the HTTP response as well as the XML response, and the original request.
  */
 @Builder
 @Data
@@ -42,7 +41,15 @@ public class DigaApiResponse {
      */
     private List<DigaApiResponseError> errors;
     /**
-     * The raw decrypted XML body encoded as an UTF-8 string, in case you wish to use it for something.
+     * The raw decrypted XML body encoded as an UTF-8 string.
      */
-    private String rawXmlBody;
+    private String rawXmlResponseBody;
+    /**
+     * The raw XML body pre-encryption encoded as an UTF-8 string.
+     */
+    private String rawXmlRequestBody;
+    /**
+     * The raw **encrypted** XML body.
+     */
+    private byte[] rawXmlRequestBodyEncrypted;
 }

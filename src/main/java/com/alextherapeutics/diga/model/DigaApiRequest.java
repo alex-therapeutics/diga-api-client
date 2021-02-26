@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.io.ByteArrayOutputStream;
-
 @Builder
 @Getter
 public class DigaApiRequest {
@@ -19,6 +17,6 @@ public class DigaApiRequest {
     @NonNull
     private String recipientIK;
     @NonNull
-    private ByteArrayOutputStream encryptedContent;
+    private byte[] encryptedContent;
 
 }

@@ -1,6 +1,5 @@
 package com.alextherapeutics.diga.model;
 
-import com.alextherapeutics.diga.DigaErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

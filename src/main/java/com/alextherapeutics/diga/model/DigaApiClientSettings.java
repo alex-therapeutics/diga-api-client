@@ -1,4 +1,4 @@
-package com.alextherapeutics.diga;
+package com.alextherapeutics.diga.model;
 
 import lombok.Builder;
 import lombok.Getter;

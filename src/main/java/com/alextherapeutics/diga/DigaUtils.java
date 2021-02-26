@@ -1,6 +1,6 @@
 package com.alextherapeutics.diga;
 
-public class DigaUtils {
+public final class DigaUtils {
     /**
      * Remove IK from an IK number (IK#######) if it exists.
      * @param IK

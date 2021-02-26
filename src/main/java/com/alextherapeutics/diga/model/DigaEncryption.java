@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Attempt to encrypt an inputstream using SECON
@@ -27,7 +26,7 @@ public class DigaEncryption {
      * The input to encrypt
      */
     @NonNull
-    private InputStream encryptionTarget;
+    private byte[] encryptionTarget;
     /**
      * The alias of the key in the public key directory
      */
@@ -39,14 +38,16 @@ public class DigaEncryption {
      * @return
      */
     public ByteArrayOutputStream encrypt() throws IOException, SeconException {
-        try (var output = new ByteArrayOutputStream()) {
-            SECON.copy(
-                    () -> new ByteArrayInputStream(encryptionTarget.readAllBytes()),
-                    subscriber.signAndEncryptTo(
-                            () -> output, recipientAlias
-                    )
-            );
-            return output;
+        try (var input = new ByteArrayInputStream(encryptionTarget)) {
+            try (var output = new ByteArrayOutputStream()) {
+                SECON.copy(
+                        () -> new ByteArrayInputStream(input.readAllBytes()),
+                        subscriber.signAndEncryptTo(
+                                () -> output, recipientAlias
+                        )
+                );
+                return output;
+            }
         }
     }
 }

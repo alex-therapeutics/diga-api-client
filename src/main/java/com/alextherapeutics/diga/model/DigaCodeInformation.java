@@ -9,11 +9,20 @@ import lombok.Getter;
 @Builder
 @Getter
 public class DigaCodeInformation {
+    /**
+     * The IK number of the insurance company that generated this code.
+     */
     private String insuranceCompanyIKNumber;
+    /**
+     * The name of the insurance company that generated this code.
+     */
     private String insuranceCompanyName;
+    /**
+     * The API endpoint of the insurance company that generated this code.
+     */
     private String endpoint;
     /**
-     * The full (unparsed) 16 character diga code
+     * The full (unparsed) 16 character diga code.
      */
     private String fullDigaCode;
     /**
