@@ -1,8 +1,8 @@
-# diga-api-client
+# DiGA API Client
 
-This library provides a client which interacts with the DiGA API to:
+This library provides a client which interacts with the DiGA ([Digital Health Application](https://www.bfarm.de/EN/MedicalDevices/DiGA/_node.html)) API to:
 - Validate DiGA codes against DiGA API endpoints
-- ~~Send bills to DiGA API endpoints using XRechnung~~ (TODO)
+- ~~Send bills to DiGA API endpoints using XRechnung~~ (In progress)
 
 The goal is to deliver a simple way for DiGA manufacturers to integrate with the DiGA API provided by health insurance companies (or their service providers).
 
@@ -11,19 +11,15 @@ We hope that creating an open source project will be a way for DiGA manufacturer
 [Contributions](CONTRIBUTING.md) are very welcome!
 
 Currently, the DiGA API endpoints seem to differ from eachother in some respects, so it will take an effort to create a stable integration against all of them.
-If you discover a case which has not been considered yet in this library, please open an Issue here on GitHub -  and perhaps also consider [contributing](CONTRIBUTING.md) with a Pull Request to handle it :)
-Also, if you have information on how to solve existing issues but don't want to get involved with solving it, please don't hesitate to comment on the issue anyway, to make it easier to solve! 
+If you discover a case which has not been considered yet in this library, please open an [Issue](https://github.com/alex-therapeutics/diga-api-client/issues/new) here on GitHub -  and perhaps also consider [contributing](CONTRIBUTING.md) with a Pull Request to handle it! :)
+
+Also, if you have information on how to solve existing issues but don't want to get involved with actual coding, please don't hesitate to comment on the issue anyway, to make it easier for someone else to solve! 
 All contributions are welcome, we do not expect you to commit code if you do not want to.
 
 ## Project Status
 The project is pre-first-release. Currently, the DiGA code validation works against the `diga.bitmarck-daten.de`, which
 is the endpoint used for many of the health insurance companies - a good first step. However, there are issues with other endpoints.
-The billing process with XRechnung is not started yet.
-
-The plan is next to build a billing request which works against the bitmarck endpoint, in order to have a working end-to-end process for both code validation and billing
-against one of the endpoints. After that, we will tackle the quirks of the other endpoints and step-by-step complete the integration
-against all of them.
-
+Integration with the billing process with XRechnung has not been started yet.
 
 ## Get Started
 ### Prerequisites
@@ -37,14 +33,14 @@ against all of them.
 * Java 11. Do you need Java 8? Submit an issue and tell us! There is still room to make such changes.
 
 ### Installation
-The plan is to release V1 of this library to maven central when it is stable enough (see [roadmap](#roadmap-to-v1-release)). 
+The plan is to release version `1.0.0` of this library to maven central when it is stable enough (see [roadmap](#roadmap-to-v1-release)). 
 Until then you need to build it to your local maven repository before importing it into your project.
 ```shell
 git clone https://github.com/alex-therapeutics/diga-api-client
 cd diga-api-client
 mvn clean install
 ```
-After doing this, you can import it in your `pom.xml`:
+Then, you can import it in your `pom.xml`:
 ```xml
 <dependency>
     <groupId>com.alextherapeutics</groupId>
@@ -139,7 +135,7 @@ public DigaApiClient createCustomApiClient() {
 ```
 
 When using the builder you are required to provide an implementation for all of the interfaces. For the ones you don't want to custom write,
-you can just intantiate the default implementations. See the code documentation for further details on what each interface does and how to instantiate the default implementations.
+you can just instantiate the default implementations. See the code documentation for further details on what each interface does and how to instantiate the default implementations.
 When writing custom implementations it can be a good idea to look at the default implementation first to see what it needs to do to work properly.
 
 ## Roadmap to V1 release
@@ -147,15 +143,22 @@ When writing custom implementations it can be a good idea to look at the default
 These goals have to be completed before V1 release
 
 - [ ] Sending test codes to a majority of endpoints has to work
-- [ ] Sending faulty but real code validation requests to a majority of endpoints has to return decryptable respones (because some evidence suggest that test requests are sometimes processed differently from real requests by some endpoints..)
+- [ ] Sending real code validation requests to a majority of endpoints has to return decryptable respones, even with faulty codes (because some evidence suggest that test requests are sometimes processed differently from real requests by some endpoints, we cannot test with only test codes unfortunately)
 - [ ] Sending XRechnung bills to Bitmarck's API, which as of the time of writing is the only API accepting them, works.
 
 More specific issues on these topics can be found in the [version 1 release project](https://github.com/alex-therapeutics/diga-api-client/projects/1)
 
 ## Versioning
 
-We use [semantic versionin](https://semver.org/)
+We use [semantic versioning](https://semver.org/)
+
+## Long-term plans & ideas
+
+These are some interesting ideas for futher development, if there is interest among users and the base integration is stable:
+
+- Create a Spring extension for dependency injection
+- Create a standalone docker container which can run separately and handle DiGA API integrations for non-Java users.
 
 ## Maintainers
 
-The project is currently maintained by the developer team at Alex Therapeutics, a Swedish company that develops software medical devices.. Contact max@alextherapeutics for inquiries which do not belong on Github. If you or your company wishes to help maintain this project, please let us know.
+This project is currently maintained by the developer team at [Alex Therapeutics](https://www.alextherapeutics.com/), a Swedish company that develops software medical devices. Contact [max@alextherapeutics.se](mailto:max@alextherapeutics.com) for inquiries which do not belong on Github. If you or your company wishes to help maintain this project, please let us know.
