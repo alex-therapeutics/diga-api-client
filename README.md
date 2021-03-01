@@ -18,7 +18,7 @@ All contributions are welcome, we do not expect you to commit code if you do not
 
 ## Project Status
 The project is pre-first-release. Currently, the DiGA code validation works against the `diga.bitmarck-daten.de`, which
-is the endpoint used for many of the health insurance companies - a good first step. However, there are issues with other endpoints.
+is the endpoint used for many (85/103 currently) of the health insurance companies - a good first step. However, there are issues with other endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
 Integration with the billing process with XRechnung has not been started yet.
 
 ## Get Started
