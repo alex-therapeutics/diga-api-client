@@ -3,6 +3,7 @@ package com.alextherapeutics.diga;
 import com.alextherapeutics.diga.implementation.*;
 import com.alextherapeutics.diga.model.*;
 import de.tk.opensource.secon.SeconException;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ import java.io.IOException;
  */
 @Slf4j
 @Builder
+@AllArgsConstructor
 public final class DigaApiClient {
     @NonNull
     private DigaEncryptionFactory encryptionFactory;
