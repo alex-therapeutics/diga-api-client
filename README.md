@@ -46,14 +46,18 @@ mvn clean install
 ```
 After doing this, you can import it in your `pom.xml`:
 ```xml
-<groupId>com.alextherapeutics</groupId>
-<artifactId>diga-api-client</artifactId>
-<version>1.0-SNAPSHOT</version>
+<dependency>
+    <groupId>com.alextherapeutics</groupId>
+    <artifactId>diga-api-client</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
 ```
+
 ### Usage
 
 This example assumes you put both your private certificate and the insurance companies certificates in `keystore.p12`,
 that the XML mapping file is called `mappings.xml`, and that you put these files in the `resources` folder.
+
 ```java
 // in Main.java
 var mappingFile = Main.class.getClassLoader().getResourceAsStream("mappings.xml");
@@ -80,6 +84,18 @@ You can also send a test request like this
 // send a test request to the insurance company with prefix "BY" which should be be processed as valid by the API
 var testResponse = apiClient.sendTestRequest(DigaApiTestCode.VALID, "BY"); 
 ```
+
+__Note__: Make sure you do __not__ put your keystore file in a _filtered_ resource location, because it will mess up the file when importing it as a resource. To be clear, if you have something like:
+```xml
+<resources>
+  <resource>
+    <directory>src/main/resources</directory>
+    <filtering>true</filtering>
+  </resource>
+</resources>
+```
+and your `.p12` file is located in src/main/resources, then you will get a `SECONException`. Solve this by putting your file somewhere else or [exclude it from filtering](https://stackoverflow.com/a/34750851/6428035).
+
 
 ### Advanced Usage
 
