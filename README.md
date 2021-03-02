@@ -30,7 +30,7 @@ Integration with the billing process with XRechnung has not been started yet.
   to make this process easier.
 * The XML mapping file for the health insurance companies which contains information on endpoints, IK numbers, code prefixes, etc.
   [This page](https://kkv.gkv-diga.de/) should provide an up-to-date file.
-* Java 11. Do you need Java 8? Submit an issue and tell us! There is still room to make such changes.
+* Java 11 or higher. Do you need Java 8? Submit an issue and tell us! There is still room to make such changes.
 
 ### Installation
 The plan is to release version `1.0.0` of this library to maven central when it is stable enough (see [roadmap](#roadmap-to-v1-release)). 

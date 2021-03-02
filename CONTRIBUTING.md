@@ -16,7 +16,7 @@ Then, fork the repository on GitHub or checkout a new branch, and let's get star
 
 ## Prerequisites
 
-You need a development environment for Java 11, for example an IDE like IntelliJ, Eclipse, etc.
+You need a development environment for Java 11 or higher, for example an IDE like IntelliJ, Eclipse, etc.
 If you want to run the client against a DiGA API, you will need your own client certificate and private key stores for
 encrypting data and establishing connections with the APIs. It is unfortunately not possible for us (the maintainers)
 to provide working certificates for testing as we only have our private certificate which we cannot share, for obvious reasons.
