@@ -162,3 +162,7 @@ These are some interesting ideas for futher development, if there is interest am
 ## Maintainers
 
 This project is currently maintained by the developer team at [Alex Therapeutics](https://www.alextherapeutics.com/), a Swedish company that develops software medical devices. Contact [max@alextherapeutics.se](mailto:max@alextherapeutics.com) for inquiries which do not belong on Github. If you or your company wishes to help maintain this project, please let us know.
+
+## License
+
+Distributed under the [Apache-2.0](LICENSE) license. Copyright is held by Alex Therapeutics AB and individual contributors.
