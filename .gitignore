@@ -1,0 +1,7 @@
+.idea/
+*.iml
+target/
+*.p12
+*.xml
+!pom.xml
+**/Main.java
