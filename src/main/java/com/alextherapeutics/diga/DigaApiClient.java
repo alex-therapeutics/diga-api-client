@@ -115,6 +115,11 @@ public final class DigaApiClient {
                     .senderIK(senderIk)
                     .recipientIK(codeInformation.getInsuranceCompanyIKNumber())
                     .encryptedContent(encryptedXmlBody)
+                    .processCode(
+                            DigaUtils.isDigaTestCode(codeInformation.getFullDigaCode())
+                                    ? DigaProcessCode.CODE_VALIDATION_TEST
+                                    : DigaProcessCode.CODE_VALIDATION
+                    )
                     .build();
             var httpResponse = httpClient.post(httpApiRequest);
             var decryptResponseBodyAttempt = encryptionFactory.newDecryption()

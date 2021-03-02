@@ -1,19 +1,37 @@
 # Status
 
 Check here to see if the library is known to be working or not against each DiGA endpoint, 
-together with information on how many companies are using each endpoint, and issue tracking if th endpoint is not working:
+together with information on how many companies are using each endpoint, and issue tracking if the endpoint is not working:
 
-## Code validation
+- CODE TEST OK = test codes are working
+- CODE TEST NOT OK = test codes are not working
+- CODE OK = real code validation has been attemped and verified to work
+- CODE NOT VERIFIED = real code validation probably works, but it has not been tested on a real code yet
+- CODE NOT OK = real code validation does not work
+- BILLING TEST OK = test bill is working
+- BILLING TEST NOT OK = test bill is not working
+- BILLING OK = billing has been attempted and verified to work
+- BILLING NOT VERIFIED = billing probably works, but it has not been verified with a real bill yet
+- BILLING NOT OK = billing does not work
 
-- [x] diga.bitmarck-daten.de - 85 companies
-- [ ] diga.apimisc.de - 3 companies - #3
-- [ ] diga-api.tk.de/diga/api/public/rest - 1 company - #4
-- [ ] da-api.gkvi.de - 5 companies - #5
-- [ ] diga.kkh.de - 1 company - #6
-- [ ] arge.da-api.aok.de - 3 companies - #7
-- [ ] itscare.da-api.aok.de - 3 companies - #8
-- [ ] kubus-it.da-api.aok.de - 2 companies - #9
 
-## Billing
+## Endpoints
 
-- [ ] diga.bitmarck-daten.de
+- diga.bitmarck-daten.de - 85 companies - CODE TEST OK - CODE NOT VERIFIED - BILLING TEST NOT OK - BILLING NOT OK
+- diga-api.tk.de/diga/api/public/rest - 1 company - CODE TEST OK - CODE NOT VERIFIED
+- da-api.gkvi.de - 5 companies - CODE TEST OK - CODE NOT VERIFIED
+- diga.kkh.de - 1 company - CODE TEST OK - CODE NOT VERIFIED
+- itscare.da-api.aok.de - 3 companies - CODE TEST OK - CODE NOT VERIFIED
+- kubus-it.da-api.aok.de - 2 companies - CODE TEST OK - CODE NOT VERIFIED
+- arge.da-api.aok.de - 3 companies - CODE TEST NOT OK - CODE NOT OK
+- diga.apimisc.de - 3 companies - CODE TEST NOT OK - CODE NOT OK
+
+## Summary 
+
+Endpoints covering 97/103 insurance companies are working with test code validation requests. 
+
+However, since this library is not used in production yet, we can not verify if real requests work or not. 
+We will update this as we find out. If you are using this library in production and you find out that a request to
+one of the un-verified endpoints works, please either send us a message or add a pull request updating this file.
+If you find out it doesn't work, create an Issue!
+

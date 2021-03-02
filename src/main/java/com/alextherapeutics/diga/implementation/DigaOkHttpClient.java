@@ -96,7 +96,7 @@ public class DigaOkHttpClient implements DigaHttpClient {
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("iksender", DigaUtils.ikNumberWithoutPrefix(digaApiHttpRequest.getSenderIK()))
                 .addFormDataPart("ikempfaenger", DigaUtils.ikNumberWithoutPrefix(digaApiHttpRequest.getRecipientIK()))
-                .addFormDataPart("verfahren", digaApiHttpRequest.getVerfahren())
+                .addFormDataPart("verfahren", digaApiHttpRequest.getProcessCode().getCode())
                 .addFormDataPart("nutzdaten", "anfrage.cms", RequestBody.create(digaApiHttpRequest.getEncryptedContent()))
                 .build();
         return new Request.Builder()
