@@ -57,12 +57,13 @@ that the XML mapping file is called `mappings.xml`, and that you put these files
 ```java
 // in Main.java
 var mappingFile = Main.class.getClassLoader().getResourceAsStream("mappings.xml");
-var keyStore = Main.class.getClassLoader().getResourceAsStream("keystore.p12");
+var healthCompaniesKeyStore = Main.class.getClassLoader().getResourceAsStream("keystore.p12");
+var privateKeyStore = Main.class.getClassLoader().getResourceAsStream("keystore.p12"); // you need one inputstream for each
 
 var apiClientSettings = DigaApiClientSettings.builder()
             .healthInsuranceMappingFile(mappingFile)
-            .privateKeyStoreFile(keyStore)
-            .healthInsurancePublicKeyStoreFile(keyStore)
+            .privateKeyStoreFile(privateKeyStore)
+            .healthInsurancePublicKeyStoreFile(healthCompaniesKeyStore)
             .privateKeyStorePassword("my-keystore-password")
             .privateKeyAlias("my-private-key-alias") // you must create this when creating the keystore
             .healthInsurancePublicKeyStorePassword("my-keystore-password")
