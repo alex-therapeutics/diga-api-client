@@ -32,9 +32,8 @@ public class DigaApiHttpRequest {
     /**
      * The Process type.
      */
-    // TODO make enum and change name
-    @Builder.Default
-    private String verfahren = "EDFC0";
+    @NonNull
+    private DigaProcessCode processCode;
     /**
      * The full URL (including https etc) of the DiGA API endpoint to send this to.
      */
