@@ -20,8 +20,8 @@ package com.alextherapeutics.diga.implementation;
 
 import com.alextherapeutics.diga.DigaXmlRequestReader;
 import com.alextherapeutics.diga.model.*;
-import com.alextherapeutics.diga.model.xml.NachrichtentypStp;
-import com.alextherapeutics.diga.model.xml.PruefungFreischaltcode;
+import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
+import com.alextherapeutics.diga.model.generatedxml.codevalidation.PruefungFreischaltcode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 

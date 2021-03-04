@@ -18,7 +18,7 @@
 
 package com.alextherapeutics.diga;
 
-import com.alextherapeutics.diga.model.xml.KrankenkasseninformationCtp;
+import com.alextherapeutics.diga.model.generatedxml.codevalidation.KrankenkasseninformationCtp;
 
 /**
  * Contains the information located in the health insurance data mapping file provided by gkv at

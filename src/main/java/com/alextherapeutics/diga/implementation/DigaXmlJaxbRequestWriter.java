@@ -23,11 +23,11 @@ import com.alextherapeutics.diga.DigaXmlRequestWriter;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
 import com.alextherapeutics.diga.model.DigaSupportedXsdVersion;
 import com.alextherapeutics.diga.model.DigaTradeParty;
-import com.alextherapeutics.diga.model.billingxml.*;
-import com.alextherapeutics.diga.model.xml.NachrichtentypStp;
-import com.alextherapeutics.diga.model.xml.ObjectFactory;
-import com.alextherapeutics.diga.model.xml.PruefungFreischaltcode;
-import com.alextherapeutics.diga.model.xml.VerfahrenskennungStp;
+import com.alextherapeutics.diga.model.generatedxml.billing.*;
+import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
+import com.alextherapeutics.diga.model.generatedxml.codevalidation.ObjectFactory;
+import com.alextherapeutics.diga.model.generatedxml.codevalidation.PruefungFreischaltcode;
+import com.alextherapeutics.diga.model.generatedxml.codevalidation.VerfahrenskennungStp;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +47,7 @@ import java.util.Date;
 
 /**
  * An XML writer using JAXB
+ * Depends on XML Schemas (.xsd) located in main/resources/*-xsd
  */
 @Slf4j
 public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
@@ -60,7 +61,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
     private JAXBContext billingContext;
     private Marshaller billingMarshaller;
-    private com.alextherapeutics.diga.model.billingxml.ObjectFactory billingFactory;
+    private com.alextherapeutics.diga.model.generatedxml.billing.ObjectFactory billingFactory;
 
     @Builder
     public DigaXmlJaxbRequestWriter(@NonNull String senderIk, @NonNull String digaId) throws JAXBException {
@@ -76,7 +77,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         datatypeFactory = DatatypeFactory.newDefaultInstance();
 
-        billingFactory = new com.alextherapeutics.diga.model.billingxml.ObjectFactory();
+        billingFactory = new com.alextherapeutics.diga.model.generatedxml.billing.ObjectFactory();
         billingContext = JAXBContext.newInstance(CrossIndustryInvoiceType.class);
         billingMarshaller = billingContext.createMarshaller();
         billingMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
