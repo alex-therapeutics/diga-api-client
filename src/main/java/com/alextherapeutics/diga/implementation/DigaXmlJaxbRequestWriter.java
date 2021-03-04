@@ -116,8 +116,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         associatedDocLineDoc.setLineID(createIdType("TEST_POSITION_01"));
 
         var tradeProduct = billingFactory.createTradeProductType();
-        tradeProduct.setGlobalID(createIdType("12345678")); // digaveid
-        tradeProduct.setBuyerAssignedID(createIdType("77AAAAAAAAAAAAAX")); // validated code
+        tradeProduct.setGlobalID(createIdType("12345678", "DiGAVEID")); // digaveid
+        tradeProduct.setBuyerAssignedID(createIdType("77AAAAAAAAAAAAAX", "Freischaltcode")); // validated code
         tradeProduct.getName().add(createTextType("Eila")); // diga name
         tradeProduct.setDescription(createTextType("An Eila prescription"));
 
@@ -138,6 +138,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
         var specifiedTradeSettlementLineMonetarySummation = billingFactory.createTradeSettlementLineMonetarySummationType();
         specifiedTradeSettlementLineMonetarySummation.getLineTotalAmount().add(createAmountType(new BigDecimal(100)));
+        specifiedLineTradeSettlement.setSpecifiedTradeSettlementLineMonetarySummation(specifiedTradeSettlementLineMonetarySummation);
 
         includedSupplyChainTradeLineItem.setAssociatedDocumentLineDocument(associatedDocLineDoc);
         includedSupplyChainTradeLineItem.setSpecifiedTradeProduct(tradeProduct);
@@ -212,7 +213,10 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         settlementApplicableTradeTax.setCategoryCode(createTaxCategoryCode("S"));
         settlementApplicableTradeTax.setRateApplicablePercent(createPercentType(new BigDecimal(19)));
 
-        // SpecifiedTradePaymentTerms -- leaving out for now (it is blank in test bill). add if validator complains
+        // bitmarck diga validator fails if this is not empty. we are not allowed a due date or a description, it must have description with emptytext
+        var specifiedTradePaymentTerms = billingFactory.createTradePaymentTermsType();
+        specifiedTradePaymentTerms.getDescription().add(createTextType(""));
+
 
         var specifiedTradeSettlementHeaderMonetarySummation = billingFactory.createTradeSettlementHeaderMonetarySummationType();
         specifiedTradeSettlementHeaderMonetarySummation.getLineTotalAmount().add(createAmountType(new BigDecimal(100)));
@@ -226,6 +230,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         applicableHeaderTradeSettlement.setInvoiceCurrencyCode(createCurrencyCodeType("EUR"));
         applicableHeaderTradeSettlement.getSpecifiedTradeSettlementPaymentMeans().add(specifiedTradeSettlementPaymentMeans);
         applicableHeaderTradeSettlement.getApplicableTradeTax().add(settlementApplicableTradeTax);
+        applicableHeaderTradeSettlement.getSpecifiedTradePaymentTerms().add(specifiedTradePaymentTerms);
         applicableHeaderTradeSettlement.setSpecifiedTradeSettlementHeaderMonetarySummation(specifiedTradeSettlementHeaderMonetarySummation);
 
 
@@ -292,9 +297,9 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         }
 
         if (partyInformation.getTaxRegistration() != null) {
-            var specifiedTaxRegistration = billingFactory.createLegalOrganizationType();
+            var specifiedTaxRegistration = billingFactory.createTaxRegistrationType();
             specifiedTaxRegistration.setID(createIdType(partyInformation.getTaxRegistration(), "VA"));
-            tradeParty.setSpecifiedLegalOrganization(specifiedTaxRegistration);
+            tradeParty.getSpecifiedTaxRegistration().add(specifiedTaxRegistration);
         }
 
         return tradeParty;
