@@ -20,10 +20,7 @@ package com.alextherapeutics.diga.implementation;
 
 import com.alextherapeutics.diga.DigaUtils;
 import com.alextherapeutics.diga.DigaXmlRequestWriter;
-import com.alextherapeutics.diga.model.DigaBillingInformation;
-import com.alextherapeutics.diga.model.DigaCodeInformation;
-import com.alextherapeutics.diga.model.DigaInvoice;
-import com.alextherapeutics.diga.model.DigaSupportedXsdVersion;
+import com.alextherapeutics.diga.model.*;
 import com.alextherapeutics.diga.model.generatedxml.billing.*;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.ObjectFactory;
@@ -52,18 +49,10 @@ import java.util.Date;
 @Slf4j
 public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     /**
-     * The IK of the manufacturing company (sending these requests)
+     * Static (non-changing between invoices) information about the DiGA
+     * being served by this client and the manufacturing company used for creating invoices.
      */
-    private String senderIk;
-    /**
-     * The ID of the DiGA these requests refer to
-     * If your DiGA isn't approved yet, you can put any 5 digits here for now during testing.
-     */
-    private String digaId;
-    /**
-     * The name of the DiGA these requests refer to
-     */
-    private String digaName;
+    private DigaInformation digaInformation;
 
     private DatatypeFactory datatypeFactory;
 
@@ -76,10 +65,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     private com.alextherapeutics.diga.model.generatedxml.billing.ObjectFactory billingObjectFactory;
 
     @Builder
-    public DigaXmlJaxbRequestWriter(@NonNull String senderIk, @NonNull String digaId, @NonNull String digaName) throws JAXBException {
-        this.senderIk = DigaUtils.ikNumberWithoutPrefix(senderIk);
-        this.digaId = digaId;
-        this.digaName = digaName;
+    public DigaXmlJaxbRequestWriter(@NonNull DigaInformation digaInformation) throws JAXBException {
+        this.digaInformation = digaInformation;
         init();
     }
 
@@ -92,16 +79,16 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
         var receiverIkWithoutPrefix = DigaUtils.ikNumberWithoutPrefix(codeInformation.getInsuranceCompanyIKNumber());
         var anfrage = codeObjectFactory.createPruefungFreischaltcodeAnfrage();
-        anfrage.setIKDiGAHersteller(senderIk);
+        anfrage.setIKDiGAHersteller(DigaUtils.ikNumberWithoutPrefix(digaInformation.getManufacturingCompanyIk()));
         anfrage.setIKKrankenkasse(receiverIkWithoutPrefix);
-        anfrage.setDiGAID(digaId);
+        anfrage.setDiGAID(digaInformation.getDigaId());
         anfrage.setFreischaltcode(codeInformation.getFullDigaCode());
 
         var request = codeObjectFactory.createPruefungFreischaltcode();
         request.setAnfrage(anfrage);
         request.setVerfahrenskennung(processIdentifier);
         request.setGueltigab(datatypeFactory.newXMLGregorianCalendar(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_DATE.getValue()));
-        request.setAbsender(senderIk);
+        request.setAbsender(DigaUtils.ikNumberWithoutPrefix(digaInformation.getManufacturingCompanyIk()));
         request.setEmpfaenger(receiverIkWithoutPrefix);
         request.setNachrichtentyp(NachrichtentypStp.ANF);
         request.setVersion(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_VERSION.getValue());
@@ -181,18 +168,18 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         // in this case theres always 1, so put "1"
 
         var tradeProduct = billingObjectFactory.createTradeProductType();
-        tradeProduct.setGlobalID(createIdType(DigaUtils.createDigaveid(digaId, digaInvoice.getPrescriptionType()), "DiGAVEID")); // digaveid - append DigaPrescriptionType to the end of your diga id. not sure if 000 or 001 should be default
+        tradeProduct.setGlobalID(createIdType(DigaUtils.createDigaveid(digaInformation.getDigaId(), digaInvoice.getPrescriptionType()), "DiGAVEID")); // digaveid - append DigaPrescriptionType to the end of your diga id. not sure if 000 or 001 should be default
         tradeProduct.setBuyerAssignedID(createIdType(digaInvoice.getValidatedDigaCode(), "Freischaltcode"));
-        tradeProduct.getName().add(createTextType(digaName));
+        tradeProduct.getName().add(createTextType(digaInformation.getDigaName()));
         tradeProduct.setDescription(createTextType(
-                digaInvoice.getDigaDescription() == null
-                        ? "A " + digaName + " prescription."
-                        : digaInvoice.getDigaDescription()
+                digaInformation.getDigaDescription() == null
+                        ? "A " + digaInformation.getDigaName() + " prescription."
+                        : digaInformation.getDigaDescription()
         ));
 
         var specifiedLineTradeAgreement = billingObjectFactory.createLineTradeAgreementType();
         var netPrice = billingObjectFactory.createTradePriceType();
-        netPrice.getChargeAmount().add(createAmountType(digaInvoice.getNetPrice()));
+        netPrice.getChargeAmount().add(createAmountType(digaInformation.getNetPricePerPrescription()));
         specifiedLineTradeAgreement.setNetPriceProductTradePrice(netPrice);
 
         var specifiedLineTradeDelivery = billingObjectFactory.createLineTradeDeliveryType();
@@ -206,7 +193,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         specifiedLineTradeSettlement.getApplicableTradeTax().add(applicableTradeTax);
 
         var specifiedTradeSettlementLineMonetarySummation = billingObjectFactory.createTradeSettlementLineMonetarySummationType();
-        specifiedTradeSettlementLineMonetarySummation.getLineTotalAmount().add(createAmountType(digaInvoice.getNetPrice())); // TODO - is it correct to set this to same as net price?
+        specifiedTradeSettlementLineMonetarySummation.getLineTotalAmount().add(createAmountType(digaInformation.getNetPricePerPrescription())); // TODO - is it correct to set this to same as net price?
         specifiedLineTradeSettlement.setSpecifiedTradeSettlementLineMonetarySummation(specifiedTradeSettlementLineMonetarySummation);
 
         includedSupplyChainTradeLineItem.setAssociatedDocumentLineDocument(associatedDocLineDoc);
@@ -223,23 +210,23 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         applicableHeaderTradeAgreement.setSellerTradeParty(
                 createTradeParty(
                         DigaTradeParty.builder()
-                                .companyId(digaInvoice.getSellerCompanyId()) // TODO what is difference between company ID and company name?
-                                .companyName(digaInvoice.getSellerCompanyName())
-                                .companyIk(senderIk)
-                                .taxRegistration(digaInvoice.getSellerCompanyVATRegistration())
+                                .companyId(digaInformation.getManufacturingCompanyId()) // TODO what is difference between company ID and company name?
+                                .companyName(digaInformation.getManufacturingCompanyName())
+                                .companyIk(DigaUtils.ikNumberWithoutPrefix(digaInformation.getManufacturingCompanyIk()))
+                                .taxRegistration(digaInformation.getManufacturingCompanyVATRegistration())
                                 .contactPerson(
                                         DigaTradeParty.DigaTradePartyContactPerson.builder()
-                                                .fullName(digaInvoice.getSellerContactPersonFullName())
-                                                .telephoneNumber(digaInvoice.getSellerContactPersonPhoneNumber())
-                                                .emailAddress(digaInvoice.getSellerContactPersonEmailAddress())
+                                                .fullName(digaInformation.getContactPersonForBilling().getFullName())
+                                                .telephoneNumber(digaInformation.getContactPersonForBilling().getPhoneNumber())
+                                                .emailAddress(digaInformation.getContactPersonForBilling().getEmailAddress())
                                                 .build()
                                 )
                                 .postalAddress(
                                         DigaTradeParty.DigaTradePartyPostalAddress.builder()
-                                                .postalCode(digaInvoice.getSellerPostalCode())
-                                                .adressLine(digaInvoice.getSellerAdressLine())
-                                                .city(digaInvoice.getSellerCity())
-                                                .countryCode(digaInvoice.getSellerCountryCode())
+                                                .postalCode(digaInformation.getCompanyTradeAddress().getPostalCode())
+                                                .adressLine(digaInformation.getCompanyTradeAddress().getAdressLine())
+                                                .city(digaInformation.getCompanyTradeAddress().getCity())
+                                                .countryCode(digaInformation.getCompanyTradeAddress().getCountryCode())
                                                 .build()
                                 )
                                 .build()
@@ -277,8 +264,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     // money details like price, taxes, etc
     private HeaderTradeSettlementType createApplicableHeaderTradeSettlement(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
         // we calculate money values here
-        var netPrice = digaInvoice.getNetPrice();
-        var taxPercent = digaInvoice.getApplicableVATpercent();
+        var netPrice = digaInformation.getNetPricePerPrescription();
+        var taxPercent = digaInformation.getApplicableVATpercent();
         var calculatedTax = taxPercent.divide(new BigDecimal(100)).multiply(netPrice);
         var grandTotal = netPrice.add(calculatedTax);
 

@@ -28,23 +28,47 @@ import lombok.NonNull;
 @Builder
 @Getter
 public class DigaBillingInformation {
-    // TODO doc
+    /**
+     * Endpoint to send the bill to
+     */
     @NonNull
     private String endpoint;
+    /**
+     * The ID of the company being billed.
+     */
+    // TODO what is difference with companyname?
     @NonNull
     private String buyerCompanyId;
+    /**
+     * The IK of the company being billed.
+     */
     @NonNull
     private String buyerCompanyIk;
-    @NonNull
-    private String buyerCompanyName;
-    private String buyerCompanyPostalCode;
-    private String buyerCompanyAddressLine;
-    private String buyerCompanyCity;
-    @Builder.Default
-    private String buyerCompanyCountryCode = "DE";
     /**
-     * The IK for billing (creditor). This is sometimes not the same as the company IK.
+     * The IK for billing, to the creditor of the company being billed. This is sometimes not the same as the company IK.
      */
     @NonNull
     private String buyerCompanyCreditorIk;
+    /**
+     * The name of the company being billed.
+     */
+    @NonNull
+    private String buyerCompanyName;
+    /**
+     * The postal code of the company being billed.
+     */
+    private String buyerCompanyPostalCode;
+    /**
+     * The address line of the company being billed. F.e "Teststreet 1"
+     */
+    private String buyerCompanyAddressLine;
+    /**
+     * The name of the company being billed.
+     */
+    private String buyerCompanyCity;
+    /**
+     * The country code of the company being billed.
+     */
+    @Builder.Default
+    private String buyerCompanyCountryCode = "DE";
 }

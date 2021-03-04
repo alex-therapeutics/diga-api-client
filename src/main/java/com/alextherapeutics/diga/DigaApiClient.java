@@ -64,7 +64,7 @@ public final class DigaApiClient {
     @NonNull
     private DigaXmlRequestReader xmlRequestReader;
     @NonNull
-    private String senderIk;
+    private DigaInformation digaInformation;
 
     // temporary
     // temporarily returns decrypted xml bytes. response should be wrapped somehow, mb in a diga api response
@@ -81,7 +81,7 @@ public final class DigaApiClient {
                 .recipientIK(billingInformation.getBuyerCompanyIk())
                 .processCode(DigaProcessCode.BILLING_TEST) // TODO - change to not test and make test method instead
                 .url(DigaUtils.buildPostDigaEndpoint(billingInformation.getEndpoint()))
-                .senderIK(senderIk)
+                .senderIK(digaInformation.getManufacturingCompanyIk())
                 .build();
         var httpResponse = httpClient.post(httpApiRequest);
         var decryptAttempt = encryptionFactory.newDecryption()
@@ -97,9 +97,11 @@ public final class DigaApiClient {
     /**
      * Create a working Diga API client with default class implementations.
      * @param settings - required inputs for creating all default class implementations
+     * @param digaInformation - static information about your diga and your company used to validate codes and create invoices
      * @throws DigaApiException
      */
-    public DigaApiClient(DigaApiClientSettings settings) throws DigaApiException {
+    public DigaApiClient(DigaApiClientSettings settings, DigaInformation digaInformation) throws DigaApiException {
+        this.digaInformation = digaInformation;
         initDefault(settings);
     }
 
@@ -141,7 +143,7 @@ public final class DigaApiClient {
             var encryptedXmlBody = encryptRequestAttempt.encrypt().toByteArray();
             var httpApiRequest = DigaApiHttpRequest.builder()
                     .url(DigaUtils.buildPostDigaEndpoint(codeInformation.getEndpoint()))
-                    .senderIK(senderIk)
+                    .senderIK(digaInformation.getManufacturingCompanyIk())
                     .recipientIK(codeInformation.getInsuranceCompanyIKNumber())
                     .encryptedContent(encryptedXmlBody)
                     .processCode(
@@ -186,12 +188,9 @@ public final class DigaApiClient {
                     .build();
             codeParser = new DigaCodeDefaultParser(healthInsuranceDirectory);
             xmlRequestWriter = DigaXmlJaxbRequestWriter.builder()
-                    .digaId(settings.getSenderDigaId())
-                    .senderIk(settings.getSenderIkNUmber())
-                    .digaName(settings.getSenderDigaName())
+                    .digaInformation(digaInformation)
                     .build();
             xmlRequestReader = new DigaXmlJaxbRequestReader();
-            senderIk = settings.getSenderIkNUmber();
         } catch (SeconException | JAXBException | DigaHttpClientException | IOException e) {
             log.error("DigA API client initialization failed", e);
             throw new DigaApiException(e);
