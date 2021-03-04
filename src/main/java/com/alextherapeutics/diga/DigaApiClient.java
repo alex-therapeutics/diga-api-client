@@ -23,18 +23,16 @@ import com.alextherapeutics.diga.model.*;
 import de.tk.opensource.secon.SeconException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Main entry point to perform code validation against the DiGA API.
+ * Main entry point to perform code validation and billing against the DiGA API.
  *
  * You can create this class in two ways:
  *
@@ -61,7 +59,6 @@ public final class DigaApiClient {
     private DigaCodeParser codeParser;
     @NonNull
     private DigaHealthInsuranceDirectory healthInsuranceDirectory;
-    @Getter
     @NonNull
     private DigaXmlRequestWriter xmlRequestWriter;
     @NonNull
@@ -70,33 +67,32 @@ public final class DigaApiClient {
     private String senderIk;
 
     // temporary
-    public void bill() throws IOException, SeconException, DigaHttpClientException, JAXBException {
-        var recipient = "CH";
-        var billingIk = "109034270"; // IK_des_Rechnungsempfaengers, IK for billing things - I think
-        var companyIk = "660500345"; // IK_Abrechnungsstelle, IK for the company. This is used for code validation - and encryptino(?)
-        var write = (DigaXmlJaxbRequestWriter) xmlRequestWriter;
-        var in = write.createBillingRequest();
+    // temporarily returns decrypted xml bytes. response should be wrapped somehow, mb in a diga api response
+    public DigaApiResponse bill(DigaInvoice invoice) throws IOException, SeconException, DigaHttpClientException, JAXBException, DigaCodeValidationException {
+        var billingInformation = codeParser.parseCodeForBilling(invoice.getValidatedDigaCode());
+        var xmlInvoice = xmlRequestWriter.createBillingRequest(invoice, billingInformation);
         var encryptRequest = encryptionFactory.newEncryption()
-                .encryptionTarget(in)
-                .recipientAlias(DigaUtils.ikNumberWithPrefix(companyIk))
+                .encryptionTarget(xmlInvoice)
+                .recipientAlias(DigaUtils.ikNumberWithPrefix(billingInformation.getBuyerCompanyIk()))
                 .build();
-        var encrypted = encryptRequest.encrypt().toByteArray();
-        var http = DigaApiHttpRequest.builder()
-                .encryptedContent(encrypted)
-                .recipientIK(companyIk)
-                .processCode(DigaProcessCode.BILLING_TEST)
-                .url(DigaUtils.buildPostDigaEndpoint("diga.bitmarck-daten.de"))
+        var encryptedInvoice = encryptRequest.encrypt().toByteArray();
+        var httpApiRequest = DigaApiHttpRequest.builder()
+                .encryptedContent(encryptedInvoice)
+                .recipientIK(billingInformation.getBuyerCompanyIk())
+                .processCode(DigaProcessCode.BILLING_TEST) // TODO - change to not test and make test method instead
+                .url(DigaUtils.buildPostDigaEndpoint(billingInformation.getEndpoint()))
                 .senderIK(senderIk)
                 .build();
-        var httpResponse = httpClient.post(http);
+        var httpResponse = httpClient.post(httpApiRequest);
         var decryptAttempt = encryptionFactory.newDecryption()
                 .decryptionTarget(httpResponse.getEncryptedBody())
                 .build();
-        var decrypted = decryptAttempt.decrypt();
-        var s = IOUtils.toString(decrypted.toByteArray(), "UTF-8");
-        var f = new FileWriter("bill-response.xml");
-        f.write(s);
-        f.close();
+        var decrypted = decryptAttempt.decrypt().toByteArray();
+        return DigaApiResponse.builder()
+                .rawXmlRequestBody(IOUtils.toString(xmlInvoice, "UTF-8"))
+                .rawXmlRequestBodyEncrypted(encryptedInvoice)
+                .rawXmlResponseBody(IOUtils.toString(decrypted, "UTF-8"))
+                .build();
     }
     /**
      * Create a working Diga API client with default class implementations.
@@ -113,8 +109,9 @@ public final class DigaApiClient {
      * @return a {@link DigaApiResponse} object containing information on the response from the API.
      */
     public DigaApiResponse validateDigaCode(String digaCode) throws DigaApiException {
+        // TODO - check if its a test code and throw exception if it is, so people cant "validate" codes in production by entering a test code
         return performCodeValidation(
-                codeParser.parseCode(digaCode)
+                codeParser.parseCodeForValidation(digaCode)
         );
     }
 
@@ -191,6 +188,7 @@ public final class DigaApiClient {
             xmlRequestWriter = DigaXmlJaxbRequestWriter.builder()
                     .digaId(settings.getSenderDigaId())
                     .senderIk(settings.getSenderIkNUmber())
+                    .digaName(settings.getSenderDigaName())
                     .build();
             xmlRequestReader = new DigaXmlJaxbRequestReader();
             senderIk = settings.getSenderIkNUmber();

@@ -74,4 +74,10 @@ public class DigaApiClientSettings {
      */
     @NonNull
     private String senderDigaId;
+    /**
+     * The common name of the DiGA which is using this client. If you are serving more than one DiGA from
+     * this backend, you will need two instances of the client. This is needed for billing.
+     */
+    @NonNull
+    private String senderDigaName;
 }

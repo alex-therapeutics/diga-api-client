@@ -20,25 +20,25 @@ package com.alextherapeutics.diga.implementation;
 
 import com.alextherapeutics.diga.DigaUtils;
 import com.alextherapeutics.diga.DigaXmlRequestWriter;
+import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
+import com.alextherapeutics.diga.model.DigaInvoice;
 import com.alextherapeutics.diga.model.DigaSupportedXsdVersion;
-import com.alextherapeutics.diga.model.DigaTradeParty;
 import com.alextherapeutics.diga.model.generatedxml.billing.*;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.ObjectFactory;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.PruefungFreischaltcode;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.VerfahrenskennungStp;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.ByteArrayOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.ZoneId;
@@ -46,99 +46,167 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
- * An XML writer using JAXB
+ * An XML writer using JAXB.
  * Depends on XML Schemas (.xsd) located in main/resources/*-xsd
  */
 @Slf4j
 public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
+    /**
+     * The IK of the manufacturing company (sending these requests)
+     */
     private String senderIk;
+    /**
+     * The ID of the DiGA these requests refer to
+     * If your DiGA isn't approved yet, you can put any 5 digits here for now during testing.
+     */
     private String digaId;
+    /**
+     * The name of the DiGA these requests refer to
+     */
+    private String digaName;
 
-    private JAXBContext context;
-    private Marshaller marshaller;
-    private ObjectFactory objectFactory;
     private DatatypeFactory datatypeFactory;
+
+    private JAXBContext codeContext;
+    private Marshaller codeMarshaller;
+    private com.alextherapeutics.diga.model.generatedxml.codevalidation.ObjectFactory codeObjectFactory;
 
     private JAXBContext billingContext;
     private Marshaller billingMarshaller;
-    private com.alextherapeutics.diga.model.generatedxml.billing.ObjectFactory billingFactory;
+    private com.alextherapeutics.diga.model.generatedxml.billing.ObjectFactory billingObjectFactory;
 
     @Builder
-    public DigaXmlJaxbRequestWriter(@NonNull String senderIk, @NonNull String digaId) throws JAXBException {
+    public DigaXmlJaxbRequestWriter(@NonNull String senderIk, @NonNull String digaId, @NonNull String digaName) throws JAXBException {
         this.senderIk = DigaUtils.ikNumberWithoutPrefix(senderIk);
         this.digaId = digaId;
+        this.digaName = digaName;
         init();
     }
 
+    @Override
+    public byte[] createCodeValidationRequest(DigaCodeInformation codeInformation) throws JAXBException, IOException {
+        var processIdentifier = DigaUtils.isDigaTestCode(codeInformation.getFullDigaCode())
+                ? VerfahrenskennungStp.TDFC_0
+                : VerfahrenskennungStp.EDFC_0;
+
+
+        var receiverIkWithoutPrefix = DigaUtils.ikNumberWithoutPrefix(codeInformation.getInsuranceCompanyIKNumber());
+        var anfrage = codeObjectFactory.createPruefungFreischaltcodeAnfrage();
+        anfrage.setIKDiGAHersteller(senderIk);
+        anfrage.setIKKrankenkasse(receiverIkWithoutPrefix);
+        anfrage.setDiGAID(digaId);
+        anfrage.setFreischaltcode(codeInformation.getFullDigaCode());
+
+        var request = codeObjectFactory.createPruefungFreischaltcode();
+        request.setAnfrage(anfrage);
+        request.setVerfahrenskennung(processIdentifier);
+        request.setGueltigab(datatypeFactory.newXMLGregorianCalendar(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_DATE.getValue()));
+        request.setAbsender(senderIk);
+        request.setEmpfaenger(receiverIkWithoutPrefix);
+        request.setNachrichtentyp(NachrichtentypStp.ANF);
+        request.setVersion(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_VERSION.getValue());
+
+        try (var res = new ByteArrayOutputStream()) {
+            codeMarshaller.marshal(request, res);
+            return res.toByteArray();
+        }
+    }
+
+    @Override
+    public byte[] createBillingRequest(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) throws IOException, JAXBException {
+        var invoice = billingObjectFactory.createCrossIndustryInvoiceType();
+        invoice.setExchangedDocumentContext(createExchangedDocumentContext());
+        invoice.setExchangedDocument(createExchangedDocument(digaInvoice));
+        invoice.setSupplyChainTradeTransaction(createSupplyChainTradeTransaction(digaInvoice, billingInformation));
+        var root = billingObjectFactory.createCrossIndustryInvoice(invoice);
+        try (var res = new ByteArrayOutputStream()) {
+            billingMarshaller.marshal(root, res);
+            return res.toByteArray();
+        }
+    }
+
     private void init() throws JAXBException {
-        objectFactory = new ObjectFactory();
-        context = JAXBContext.newInstance(PruefungFreischaltcode.class);
-        marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         datatypeFactory = DatatypeFactory.newDefaultInstance();
 
-        billingFactory = new com.alextherapeutics.diga.model.generatedxml.billing.ObjectFactory();
+        codeObjectFactory = new ObjectFactory();
+        codeContext = JAXBContext.newInstance(PruefungFreischaltcode.class);
+        codeMarshaller = codeContext.createMarshaller();
+        codeMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
+        billingObjectFactory = new com.alextherapeutics.diga.model.generatedxml.billing.ObjectFactory();
         billingContext = JAXBContext.newInstance(CrossIndustryInvoiceType.class);
         billingMarshaller = billingContext.createMarshaller();
         billingMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     }
 
-    // todo "DigaBillingInformation" as parameter
-    public byte[] createBillingRequest() throws IOException, JAXBException {
-        // trying to recreate bitmarck's test bill
-
-        // Root
-        var invoice = billingFactory.createCrossIndustryInvoiceType();
-
-        // ExchangedDocumentContext
-        var exchangedDocumentContext = billingFactory.createExchangedDocumentContextType();
-        var guideline = billingFactory.createDocumentContextParameterType();
+    // metadata for the document type (basically this says that it is a Xrechnung)
+    private ExchangedDocumentContextType createExchangedDocumentContext() {
+        var exchangedDocumentContext = billingObjectFactory.createExchangedDocumentContextType();
+        var guideline = billingObjectFactory.createDocumentContextParameterType();
         var guidelineId = createIdType("urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.0");
         guideline.setID(guidelineId);
         exchangedDocumentContext.getGuidelineSpecifiedDocumentContextParameter().add(guideline);
-        invoice.setExchangedDocumentContext(exchangedDocumentContext);
+        return exchangedDocumentContext;
+    }
 
+    // metadata for the document
+    private ExchangedDocumentType createExchangedDocument(DigaInvoice digaInvoice) {
         // ExchangedDocument
-        var exchangedDocument = billingFactory.createExchangedDocumentType();
-        var docId = createIdType("2020-1");
-        exchangedDocument.setID(docId);
-        var typeCode = billingFactory.createDocumentCodeType();
-        typeCode.setValue("380");
+        var exchangedDocument = billingObjectFactory.createExchangedDocumentType();
+        exchangedDocument.setID(createIdType(digaInvoice.getInvoiceId())); // pretty sure this is an invoice id/number, so we set it ourselves but must be unique
+        var typeCode = billingObjectFactory.createDocumentCodeType();
+        typeCode.setValue("380"); // should always be 380 here, means "commercial invoice"
         exchangedDocument.setTypeCode(typeCode);
-        exchangedDocument.setIssueDateTime(createDateTime(new Date()));
-        invoice.setExchangedDocument(exchangedDocument);
+        exchangedDocument.setIssueDateTime(createDateTime(digaInvoice.getIssueDate())); // issuedate, make optional in billing info otherwise today
+        return exchangedDocument;
+    }
+    // the data of the actual transaction being invoiced
+    private SupplyChainTradeTransactionType createSupplyChainTradeTransaction(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
+        var transaction = billingObjectFactory.createSupplyChainTradeTransactionType();
+        transaction.getIncludedSupplyChainTradeLineItem().add(createIncludedSupplyChainTradeItem(digaInvoice));
+        transaction.setApplicableHeaderTradeAgreement(createApplicableHeaderTradeAgreement(digaInvoice, billingInformation));
+        transaction.setApplicableHeaderTradeDelivery(createApplicableHeaderTradeDelivery(digaInvoice));
+        transaction.setApplicableHeaderTradeSettlement(createApplicableHeaderTradeSettlement(digaInvoice, billingInformation));
+        return transaction;
+    }
 
-        // SupplyChainTradeTransaction
-        var transaction = billingFactory.createSupplyChainTradeTransactionType();
-        // ---
-        var includedSupplyChainTradeLineItem = billingFactory.createSupplyChainTradeLineItemType();
+    // what has been sold (the diga id, the patient code etc) and some price/tax info on it
+    private SupplyChainTradeLineItemType createIncludedSupplyChainTradeItem(DigaInvoice digaInvoice) {
+        var includedSupplyChainTradeLineItem = billingObjectFactory.createSupplyChainTradeLineItemType();
 
-        var associatedDocLineDoc = billingFactory.createDocumentLineDocumentType();
-        associatedDocLineDoc.setLineID(createIdType("TEST_POSITION_01"));
+        var associatedDocLineDoc = billingObjectFactory.createDocumentLineDocumentType();
+        associatedDocLineDoc.setLineID(createIdType("1")); // bitmarck test says "TEST_POSITION_1",
+        // CII examples say just "1"
+        // it looks like it just enumerates if there are more items to sell
+        // in this case theres always 1, so put "1"
 
-        var tradeProduct = billingFactory.createTradeProductType();
-        tradeProduct.setGlobalID(createIdType("12345678", "DiGAVEID")); // digaveid
-        tradeProduct.setBuyerAssignedID(createIdType("77AAAAAAAAAAAAAX", "Freischaltcode")); // validated code
-        tradeProduct.getName().add(createTextType("Eila")); // diga name
-        tradeProduct.setDescription(createTextType("An Eila prescription"));
+        var tradeProduct = billingObjectFactory.createTradeProductType();
+        tradeProduct.setGlobalID(createIdType(DigaUtils.createDigaveid(digaId, digaInvoice.getPrescriptionType()), "DiGAVEID")); // digaveid - append DigaPrescriptionType to the end of your diga id. not sure if 000 or 001 should be default
+        tradeProduct.setBuyerAssignedID(createIdType(digaInvoice.getValidatedDigaCode(), "Freischaltcode"));
+        tradeProduct.getName().add(createTextType(digaName));
+        tradeProduct.setDescription(createTextType(
+                digaInvoice.getDigaDescription() == null
+                        ? "A " + digaName + " prescription."
+                        : digaInvoice.getDigaDescription()
+        ));
 
-        var specifiedLineTradeAgreement = billingFactory.createLineTradeAgreementType();
-        var netPrice = billingFactory.createTradePriceType();
-        netPrice.getChargeAmount().add(createAmountType(new BigDecimal(100)));
+        var specifiedLineTradeAgreement = billingObjectFactory.createLineTradeAgreementType();
+        var netPrice = billingObjectFactory.createTradePriceType();
+        netPrice.getChargeAmount().add(createAmountType(digaInvoice.getNetPrice()));
         specifiedLineTradeAgreement.setNetPriceProductTradePrice(netPrice);
 
-        var specifiedLineTradeDelivery = billingFactory.createLineTradeDeliveryType();
-        specifiedLineTradeDelivery.setBilledQuantity(createQuantityType(new BigDecimal(1), "C62"));
+        var specifiedLineTradeDelivery = billingObjectFactory.createLineTradeDeliveryType();
+        specifiedLineTradeDelivery.setBilledQuantity(createQuantityType(new BigDecimal(1), "C62")); // when sending diga bills this is always 1 since we send one bill for each validated code
 
-        var specifiedLineTradeSettlement = billingFactory.createLineTradeSettlementType();
-        var applicableTradeTax = billingFactory.createTradeTaxType();
-        applicableTradeTax.setTypeCode(createTaxTypeCode("VAT"));
+        var specifiedLineTradeSettlement = billingObjectFactory.createLineTradeSettlementType();
+        var applicableTradeTax = billingObjectFactory.createTradeTaxType();
+        applicableTradeTax.setTypeCode(createTaxTypeCode("VAT")); // standard VAT. if anyone needs these values to be different, now is a good time to contribute =)
         applicableTradeTax.setCategoryCode(createTaxCategoryCode("S"));
         applicableTradeTax.setRateApplicablePercent(createPercentType(new BigDecimal(19)));
         specifiedLineTradeSettlement.getApplicableTradeTax().add(applicableTradeTax);
 
-        var specifiedTradeSettlementLineMonetarySummation = billingFactory.createTradeSettlementLineMonetarySummationType();
-        specifiedTradeSettlementLineMonetarySummation.getLineTotalAmount().add(createAmountType(new BigDecimal(100)));
+        var specifiedTradeSettlementLineMonetarySummation = billingObjectFactory.createTradeSettlementLineMonetarySummationType();
+        specifiedTradeSettlementLineMonetarySummation.getLineTotalAmount().add(createAmountType(digaInvoice.getNetPrice())); // TODO - is it correct to set this to same as net price?
         specifiedLineTradeSettlement.setSpecifiedTradeSettlementLineMonetarySummation(specifiedTradeSettlementLineMonetarySummation);
 
         includedSupplyChainTradeLineItem.setAssociatedDocumentLineDocument(associatedDocLineDoc);
@@ -146,31 +214,33 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         includedSupplyChainTradeLineItem.setSpecifiedLineTradeAgreement(specifiedLineTradeAgreement);
         includedSupplyChainTradeLineItem.setSpecifiedLineTradeDelivery(specifiedLineTradeDelivery);
         includedSupplyChainTradeLineItem.setSpecifiedLineTradeSettlement(specifiedLineTradeSettlement);
-        // ---
-        var applicableHeaderTradeAgreement = billingFactory.createHeaderTradeAgreementType();
-        applicableHeaderTradeAgreement.setBuyerReference(createTextType("Leitweg-ID"));
-
+        return includedSupplyChainTradeLineItem;
+    }
+    // information on seller and buyer
+    private HeaderTradeAgreementType createApplicableHeaderTradeAgreement(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
+        var applicableHeaderTradeAgreement = billingObjectFactory.createHeaderTradeAgreementType();
+        applicableHeaderTradeAgreement.setBuyerReference(createTextType("Leitweg-ID")); // TODO what is this and how do we find it out (it is some unique routing identifier for the buyer notpresent in mapping file)
         applicableHeaderTradeAgreement.setSellerTradeParty(
                 createTradeParty(
                         DigaTradeParty.builder()
-                                .companyId("TEST_RECHNUNGSSTELLER")
-                                .companyName("Rechnungssteller")
-                                .companyIk("987654321")
-                                .taxRegistration("DE 123 456 789")
+                                .companyId(digaInvoice.getSellerCompanyId()) // TODO what is difference between company ID and company name?
+                                .companyName(digaInvoice.getSellerCompanyName())
+                                .companyIk(senderIk)
+                                .taxRegistration(digaInvoice.getSellerCompanyVATRegistration())
                                 .contactPerson(
                                         DigaTradeParty.DigaTradePartyContactPerson.builder()
-                                                .fullName("Max Mustermann")
-                                                .telephoneNumber("+49 000 001 0001")
-                                                .emailAddress("max.mustermann@rechnungssteller.de")
+                                                .fullName(digaInvoice.getSellerContactPersonFullName())
+                                                .telephoneNumber(digaInvoice.getSellerContactPersonPhoneNumber())
+                                                .emailAddress(digaInvoice.getSellerContactPersonEmailAddress())
                                                 .build()
                                 )
                                 .postalAddress(
                                         DigaTradeParty.DigaTradePartyPostalAddress.builder()
-                                                .postalCode("01234")
-                                                .adressLine("Musterstraße 1")
-                                                .city("Berlin")
-                                                .countryCode("DE")
-                                        .build()
+                                                .postalCode(digaInvoice.getSellerPostalCode())
+                                                .adressLine(digaInvoice.getSellerAdressLine())
+                                                .city(digaInvoice.getSellerCity())
+                                                .countryCode(digaInvoice.getSellerCountryCode())
+                                                .build()
                                 )
                                 .build()
 
@@ -179,87 +249,80 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         applicableHeaderTradeAgreement.setBuyerTradeParty(
                 createTradeParty(
                         DigaTradeParty.builder()
-                                .companyId("TEST_RECHNUNGSEMPFÄNGER")
-                                .companyIk("123456789")
-                                .companyName("Rechnungsempfänger")
+                                .companyId(billingInformation.getBuyerCompanyId())
+                                .companyIk(billingInformation.getBuyerCompanyIk())
+                                .companyName(billingInformation.getBuyerCompanyName())
                                 .postalAddress(
                                         DigaTradeParty.DigaTradePartyPostalAddress.builder()
-                                                .postalCode("01234")
-                                                .adressLine("Musterstraße 2")
-                                                .city("Berlin")
-                                                .countryCode("DE")
+                                                .postalCode(billingInformation.getBuyerCompanyPostalCode())
+                                                .adressLine(billingInformation.getBuyerCompanyAddressLine())
+                                                .city(billingInformation.getBuyerCompanyCity())
+                                                .countryCode(billingInformation.getBuyerCompanyCountryCode())
                                                 .build()
                                 )
                                 .build()
                 )
         );
-
-        var applicableHeaderTradeDelivery = billingFactory.createHeaderTradeDeliveryType();
-        var supplyChainEvent = billingFactory.createSupplyChainEventType();
-        supplyChainEvent.setOccurrenceDateTime(createDateTime(new Date())); // day of service provision
-
+        return applicableHeaderTradeAgreement;
+    }
+    // time of delivery
+    private HeaderTradeDeliveryType createApplicableHeaderTradeDelivery(DigaInvoice digaInvoice) {
+        var applicableHeaderTradeDelivery = billingObjectFactory.createHeaderTradeDeliveryType();
+        var supplyChainEvent = billingObjectFactory.createSupplyChainEventType();
+        supplyChainEvent.setOccurrenceDateTime(createDateTime(digaInvoice.getDateOfServiceProvision()));
         applicableHeaderTradeDelivery.setActualDeliverySupplyChainEvent(supplyChainEvent);
+        return applicableHeaderTradeDelivery;
+    }
 
-        var applicableHeaderTradeSettlement = billingFactory.createHeaderTradeSettlementType();
+    // money details like price, taxes, etc
+    private HeaderTradeSettlementType createApplicableHeaderTradeSettlement(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
+        // we calculate money values here
+        var netPrice = digaInvoice.getNetPrice();
+        var taxPercent = digaInvoice.getApplicableVATpercent();
+        var calculatedTax = taxPercent.divide(new BigDecimal(100)).multiply(netPrice);
+        var grandTotal = netPrice.add(calculatedTax);
 
-        var specifiedTradeSettlementPaymentMeans = billingFactory.createTradeSettlementPaymentMeansType();
-        var paymentMeansCodeType = billingFactory.createPaymentMeansCodeType();
-        paymentMeansCodeType.setValue("30"); // what is this
+
+        var applicableHeaderTradeSettlement = billingObjectFactory.createHeaderTradeSettlementType();
+
+        var specifiedTradeSettlementPaymentMeans = billingObjectFactory.createTradeSettlementPaymentMeansType();
+        var paymentMeansCodeType = billingObjectFactory.createPaymentMeansCodeType();
+        paymentMeansCodeType.setValue("30"); // a code from https://unece.org/fileadmin/DAM/trade/untdid/d16b/tred/tred4461.htm
+        // 30 means "Credit transfer: payment by credit movement of funds from one account to another
         specifiedTradeSettlementPaymentMeans.setTypeCode(paymentMeansCodeType);
 
-        var settlementApplicableTradeTax = billingFactory.createTradeTaxType();
-        settlementApplicableTradeTax.getCalculatedAmount().add(createAmountType(new BigDecimal(19)));
+
+        var settlementApplicableTradeTax = billingObjectFactory.createTradeTaxType();
+        settlementApplicableTradeTax.getCalculatedAmount().add(createAmountType(calculatedTax));
         settlementApplicableTradeTax.setTypeCode(createTaxTypeCode("VAT"));
-        settlementApplicableTradeTax.getBasisAmount().add(createAmountType(new BigDecimal(100)));
+        settlementApplicableTradeTax.getBasisAmount().add(createAmountType(netPrice));
         settlementApplicableTradeTax.setCategoryCode(createTaxCategoryCode("S"));
-        settlementApplicableTradeTax.setRateApplicablePercent(createPercentType(new BigDecimal(19)));
+        settlementApplicableTradeTax.setRateApplicablePercent(createPercentType(taxPercent));
 
         // bitmarck diga validator fails if this is not empty. we are not allowed a due date or a description, it must have description with emptytext
-        var specifiedTradePaymentTerms = billingFactory.createTradePaymentTermsType();
+        var specifiedTradePaymentTerms = billingObjectFactory.createTradePaymentTermsType();
         specifiedTradePaymentTerms.getDescription().add(createTextType(""));
 
+        var specifiedTradeSettlementHeaderMonetarySummation = billingObjectFactory.createTradeSettlementHeaderMonetarySummationType();
+        specifiedTradeSettlementHeaderMonetarySummation.getLineTotalAmount().add(createAmountType(netPrice));
+        specifiedTradeSettlementHeaderMonetarySummation.getTaxBasisTotalAmount().add(createAmountType(netPrice));
+        specifiedTradeSettlementHeaderMonetarySummation.getTaxTotalAmount().add(createAmountType(taxPercent, digaInvoice.getInvoiceCurrencyCode()));
+        specifiedTradeSettlementHeaderMonetarySummation.getGrandTotalAmount().add(createAmountType(grandTotal));
+        specifiedTradeSettlementHeaderMonetarySummation.getDuePayableAmount().add(createAmountType(grandTotal));
 
-        var specifiedTradeSettlementHeaderMonetarySummation = billingFactory.createTradeSettlementHeaderMonetarySummationType();
-        specifiedTradeSettlementHeaderMonetarySummation.getLineTotalAmount().add(createAmountType(new BigDecimal(100)));
-        specifiedTradeSettlementHeaderMonetarySummation.getTaxBasisTotalAmount().add(createAmountType(new BigDecimal(100)));
-        specifiedTradeSettlementHeaderMonetarySummation.getTaxTotalAmount().add(createAmountType(new BigDecimal(19), "EUR"));
-        specifiedTradeSettlementHeaderMonetarySummation.getGrandTotalAmount().add(createAmountType(new BigDecimal(119)));
-        specifiedTradeSettlementHeaderMonetarySummation.getDuePayableAmount().add(createAmountType(new BigDecimal(119)));
-
-
-        applicableHeaderTradeSettlement.setCreditorReferenceID(createIdType("987654322", "IK")); // creditor - see mapping file not same as "buyer ik"
-        applicableHeaderTradeSettlement.setInvoiceCurrencyCode(createCurrencyCodeType("EUR"));
+        applicableHeaderTradeSettlement.setCreditorReferenceID(createIdType(billingInformation.getBuyerCompanyCreditorIk(), "IK")); // creditor - see mapping file not same as "buyer ik"
+        applicableHeaderTradeSettlement.setInvoiceCurrencyCode(createCurrencyCodeType(digaInvoice.getInvoiceCurrencyCode()));
         applicableHeaderTradeSettlement.getSpecifiedTradeSettlementPaymentMeans().add(specifiedTradeSettlementPaymentMeans);
         applicableHeaderTradeSettlement.getApplicableTradeTax().add(settlementApplicableTradeTax);
         applicableHeaderTradeSettlement.getSpecifiedTradePaymentTerms().add(specifiedTradePaymentTerms);
         applicableHeaderTradeSettlement.setSpecifiedTradeSettlementHeaderMonetarySummation(specifiedTradeSettlementHeaderMonetarySummation);
 
-
-
-        // after done here - try to unmarshal the bitmarck test request with our xsds and see if it validates there
-
-
-        transaction.getIncludedSupplyChainTradeLineItem().add(includedSupplyChainTradeLineItem);
-        transaction.setApplicableHeaderTradeAgreement(applicableHeaderTradeAgreement);
-        transaction.setApplicableHeaderTradeDelivery(applicableHeaderTradeDelivery);
-        transaction.setApplicableHeaderTradeSettlement(applicableHeaderTradeSettlement);
-        invoice.setSupplyChainTradeTransaction(transaction);
-
-        var bill = billingFactory.createCrossIndustryInvoice(invoice);
-
-        try (var res = new ByteArrayOutputStream()) {
-            billingMarshaller.marshal(bill, res);
-            var f = new FileWriter("bill-request.xml");
-            var bytes = res.toByteArray();
-            f.write(IOUtils.toString(bytes, "UTF-8"));
-            f.close();;
-            return bytes;
-        }
+        return applicableHeaderTradeSettlement;
     }
     private DateTimeType createDateTime(Date date) {
         var localdate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        var type = billingFactory.createDateTimeType();
-        var dateTimeString = billingFactory.createDateTimeTypeDateTimeString();
+        var type = billingObjectFactory.createDateTimeType();
+        var dateTimeString = billingObjectFactory.createDateTimeTypeDateTimeString();
         dateTimeString.setFormat("102");
         var dateFormatPattern = "yyyyMMdd";
 
@@ -270,27 +333,29 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         return type;
     }
     private CurrencyCodeType createCurrencyCodeType(String value) {
-        var type = billingFactory.createCurrencyCodeType();
+        var type = billingObjectFactory.createCurrencyCodeType();
         type.setValue(value);
         return type;
     }
     private TradePartyType createTradeParty(DigaTradeParty partyInformation) {
-        var tradeParty = billingFactory.createTradePartyType();
+        var tradeParty = billingObjectFactory.createTradePartyType();
         tradeParty.getID().add(createIdType(partyInformation.getCompanyId()));
         tradeParty.getID().add(createIdType(partyInformation.getCompanyIk(), "IK"));
         tradeParty.setName(createTextType(partyInformation.getCompanyName()));
 
-        tradeParty.setPostalTradeAddress(
-                createTradeAddressType(
-                        partyInformation.getPostalAddress().getPostalCode(),
-                        partyInformation.getPostalAddress().getAdressLine(),
-                        partyInformation.getPostalAddress().getCity(),
-                        partyInformation.getPostalAddress().getCountryCode()
-                )
-        );
+        if (partyInformation.getPostalAddress() != null) {
+            tradeParty.setPostalTradeAddress(
+                    createTradeAddressType(
+                            partyInformation.getPostalAddress().getPostalCode(),
+                            partyInformation.getPostalAddress().getAdressLine(),
+                            partyInformation.getPostalAddress().getCity(),
+                            partyInformation.getPostalAddress().getCountryCode()
+                    )
+            );
+        }
 
         if (partyInformation.getContactPerson() != null) {
-            var tradeContact = billingFactory.createTradeContactType();
+            var tradeContact = billingObjectFactory.createTradeContactType();
             tradeContact.setPersonName(createTextType(partyInformation.getContactPerson().getFullName()));
             tradeContact.setTelephoneUniversalCommunication(createTelephoneCommunicationType(partyInformation.getContactPerson().getTelephoneNumber()));
             tradeContact.setEmailURIUniversalCommunication(createEmailCommunicationType(partyInformation.getContactPerson().getEmailAddress()));
@@ -298,7 +363,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         }
 
         if (partyInformation.getTaxRegistration() != null) {
-            var specifiedTaxRegistration = billingFactory.createTaxRegistrationType();
+            var specifiedTaxRegistration = billingObjectFactory.createTaxRegistrationType();
             specifiedTaxRegistration.setID(createIdType(partyInformation.getTaxRegistration(), "VA"));
             tradeParty.getSpecifiedTaxRegistration().add(specifiedTaxRegistration);
         }
@@ -306,47 +371,47 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         return tradeParty;
     }
     private TradeAddressType createTradeAddressType(String postalCode, String lineOne, String cityName, String countryId) {
-        var type = billingFactory.createTradeAddressType();
+        var type = billingObjectFactory.createTradeAddressType();
         type.setPostcodeCode(createCodeType(postalCode));
         type.setLineOne(createTextType(lineOne));
         type.setCityName(createTextType(cityName));
-        var countryIdType = billingFactory.createCountryIDType();
+        var countryIdType = billingObjectFactory.createCountryIDType();
         countryIdType.setValue(countryId);
         type.setCountryID(countryIdType);
         return type;
     }
     private CodeType createCodeType(String value) {
-        var type = billingFactory.createCodeType();
+        var type = billingObjectFactory.createCodeType();
         type.setValue(value);
         return type;
     }
     private UniversalCommunicationType createTelephoneCommunicationType(String number) {
-        var type = billingFactory.createUniversalCommunicationType();
+        var type = billingObjectFactory.createUniversalCommunicationType();
         type.setCompleteNumber(createTextType(number));
         return type;
     }
     private UniversalCommunicationType createEmailCommunicationType(String email) {
-        var type = billingFactory.createUniversalCommunicationType();
+        var type = billingObjectFactory.createUniversalCommunicationType();
         type.setURIID(createIdType(email));
         return type;
     }
     private PercentType createPercentType(BigDecimal value) {
-        var percent = billingFactory.createPercentType();
+        var percent = billingObjectFactory.createPercentType();
         percent.setValue(value);
         return percent;
     }
     private TaxCategoryCodeType createTaxCategoryCode(String value) {
-        var code = billingFactory.createTaxCategoryCodeType();
+        var code = billingObjectFactory.createTaxCategoryCodeType();
         code.setValue(value);
         return code;
     }
     private TaxTypeCodeType createTaxTypeCode(String value) {
-        var taxTypeCode = billingFactory.createTaxTypeCodeType();
+        var taxTypeCode = billingObjectFactory.createTaxTypeCodeType();
         taxTypeCode.setValue(value);
         return taxTypeCode;
     }
     private QuantityType createQuantityType(BigDecimal value, String unitCode) {
-        var type = billingFactory.createQuantityType();
+        var type = billingObjectFactory.createQuantityType();
         type.setValue(value);
         type.setUnitCode(unitCode);
         return type;
@@ -355,7 +420,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         return createAmountType(value, null);
     }
     private AmountType createAmountType(BigDecimal value, String currencyId) {
-        var type = billingFactory.createAmountType();
+        var type = billingObjectFactory.createAmountType();
         type.setValue(value);
         if (currencyId != null) {
             type.setCurrencyID(currencyId);
@@ -363,7 +428,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         return type;
     }
     private TextType createTextType(String text) {
-        var type = billingFactory.createTextType();
+        var type = billingObjectFactory.createTextType();
         type.setValue(text);
         return type;
     }
@@ -371,39 +436,46 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         return createIdType(value, null);
     }
     private IDType createIdType(String value, String schemeId) {
-        var id = billingFactory.createIDType();
+        var id = billingObjectFactory.createIDType();
         id.setValue(value);
         if (schemeId != null) {
             id.setSchemeID(schemeId);
         }
         return id;
     }
-    @Override
-    public byte[] createCodeValidationRequest(DigaCodeInformation codeInformation) throws JAXBException, IOException {
-        var processIdentifier = DigaUtils.isDigaTestCode(codeInformation.getFullDigaCode())
-                ? VerfahrenskennungStp.TDFC_0
-                : VerfahrenskennungStp.EDFC_0;
+    @Builder
+    @Getter
+    static class DigaTradeParty {
+        @NonNull
+        private String companyId;
+        @NonNull
+        private String companyIk;
+        @NonNull
+        private String companyName;
+        private String taxRegistration;
+        private DigaTradeParty.DigaTradePartyContactPerson contactPerson;
+        private DigaTradeParty.DigaTradePartyPostalAddress postalAddress;
 
+        @Builder
+        @Getter
+        public static class DigaTradePartyContactPerson {
+            @NonNull
+            private String fullName;
+            private String telephoneNumber;
+            private String emailAddress;
+        }
 
-        var receiverIkWithoutPrefix = DigaUtils.ikNumberWithoutPrefix(codeInformation.getInsuranceCompanyIKNumber());
-        var anfrage = objectFactory.createPruefungFreischaltcodeAnfrage();
-        anfrage.setIKDiGAHersteller(senderIk);
-        anfrage.setIKKrankenkasse(receiverIkWithoutPrefix);
-        anfrage.setDiGAID(digaId);
-        anfrage.setFreischaltcode(codeInformation.getFullDigaCode());
-
-        var request = objectFactory.createPruefungFreischaltcode();
-        request.setAnfrage(anfrage);
-        request.setVerfahrenskennung(processIdentifier);
-        request.setGueltigab(datatypeFactory.newXMLGregorianCalendar(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_DATE.getValue()));
-        request.setAbsender(senderIk);
-        request.setEmpfaenger(receiverIkWithoutPrefix);
-        request.setNachrichtentyp(NachrichtentypStp.ANF);
-        request.setVersion(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_VERSION.getValue());
-
-        try (var res = new ByteArrayOutputStream()) {
-            marshaller.marshal(request, res);
-            return res.toByteArray();
+        @Builder
+        @Getter
+        public static class DigaTradePartyPostalAddress {
+            @NonNull
+            private String postalCode;
+            @NonNull
+            private String adressLine;
+            @NonNull
+            private String city;
+            @NonNull
+            private String countryCode;
         }
     }
 }
