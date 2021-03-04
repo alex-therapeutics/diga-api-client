@@ -118,6 +118,10 @@
                                     <xsdDir>${basedir}/src/main/resources/xsd/</xsdDir>
                                     <packagename>com.alextherapeutics.diga.model.xml</packagename>
                                 </xsdOption>
+                                <xsdOption>
+                                    <xsdDir>${basedir}/src/main/resources/newxsd/</xsdDir>
+                                    <packagename>com.alextherapeutics.diga.model.billingxml</packagename>
+                                </xsdOption>
                             </xsdOptions>
                         </configuration>
                     </execution>

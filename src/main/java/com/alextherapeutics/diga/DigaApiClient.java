@@ -23,12 +23,14 @@ import com.alextherapeutics.diga.model.*;
 import de.tk.opensource.secon.SeconException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -59,6 +61,7 @@ public final class DigaApiClient {
     private DigaCodeParser codeParser;
     @NonNull
     private DigaHealthInsuranceDirectory healthInsuranceDirectory;
+    @Getter
     @NonNull
     private DigaXmlRequestWriter xmlRequestWriter;
     @NonNull
@@ -66,6 +69,35 @@ public final class DigaApiClient {
     @NonNull
     private String senderIk;
 
+    // temporary
+    public void bill() throws IOException, SeconException, DigaHttpClientException, JAXBException {
+        var recipient = "CH";
+        var billingIk = "109034270"; // IK_des_Rechnungsempfaengers, IK for billing things - I think
+        var companyIk = "660500345"; // IK_Abrechnungsstelle, IK for the company. This is used for code validation - and encryptino(?)
+        var write = (DigaXmlJaxbRequestWriter) xmlRequestWriter;
+        var in = write.createBillingRequest();
+        var encryptRequest = encryptionFactory.newEncryption()
+                .encryptionTarget(in)
+                .recipientAlias(DigaUtils.ikNumberWithPrefix(companyIk))
+                .build();
+        var encrypted = encryptRequest.encrypt().toByteArray();
+        var http = DigaApiHttpRequest.builder()
+                .encryptedContent(encrypted)
+                .recipientIK(companyIk)
+                .processCode(DigaProcessCode.BILLING_TEST)
+                .url(DigaUtils.buildPostDigaEndpoint("diga.bitmarck-daten.de"))
+                .senderIK(senderIk)
+                .build();
+        var httpResponse = httpClient.post(http);
+        var decryptAttempt = encryptionFactory.newDecryption()
+                .decryptionTarget(httpResponse.getEncryptedBody())
+                .build();
+        var decrypted = decryptAttempt.decrypt();
+        var s = IOUtils.toString(decrypted.toByteArray(), "UTF-8");
+        var f = new FileWriter("bill-response.xml");
+        f.write(s);
+        f.close();
+    }
     /**
      * Create a working Diga API client with default class implementations.
      * @param settings - required inputs for creating all default class implementations
