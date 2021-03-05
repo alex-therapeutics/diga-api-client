@@ -18,7 +18,7 @@ All contributions are welcome, we do not expect you to commit code if you do not
 
 ## Project Status
 The project is pre-first-release. Currently, the DiGA code validation works against 97 out of the 103 health insurance companies - a good first step. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
-Invoicing against the `diga.bitmarck-daten.de` endpoint works (85/103 companies), but there is no built-in solution yet for insurance companies which do not support API invoicing yet.
+Invoicing against the `diga.bitmarck-daten.de` endpoint works (85/103 companies), but there is no built-in solution yet for insurance companies which do not support API invoicing.
 
 ## Get Started
 ### Prerequisites
@@ -101,6 +101,7 @@ var digaInformation = DigaInformation.builder() // information about your DiGA a
 var apiClient = new DigaApiClient(apiClientSettings, digaInformation);
 
 var digaCode = "real-16-character-code";
+
 var codeValidationResponse = apiClient.validateDigaCode(digaCode); // small API for code validation
 
 if (codeValidationResponse.isHasError()) {
@@ -110,7 +111,9 @@ if (codeValidationResponse.isHasError()) {
 var invoice = DigaInvoice.builder()
         .invoiceId("1") // unique invoice IDs
         .validatedDigaCode(digaCode)
+        .dateOfServiceProvision(codeValidationResponse.getDayOfServiceProvision())
         .build();
+
 var invoiceResponse = apiClient.invoiceDiga(invoice); // small API for invoicing
                                                       // if you need to save the invoice for accounting purposes, 
                                                       // it is available in 'invoiceResponse.getRawXmlRequestBody()'
