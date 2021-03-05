@@ -2,9 +2,9 @@
 
 This library provides a client which interacts with the DiGA ([Digital Health Application](https://www.bfarm.de/EN/MedicalDevices/DiGA/_node.html)) API to:
 - Validate DiGA codes against DiGA API endpoints
-- ~~Send bills to DiGA API endpoints using XRechnung~~ (In progress)
+- Send invoices to DiGA API endpoints using the required XRechnung format
 
-The goal is to deliver a simple way for DiGA manufacturers to integrate with the DiGA API provided by health insurance companies (or their service providers).
+The goal is to deliver a simple and easy to use way for DiGA manufacturers to integrate with the DiGA API provided by health insurance companies (or their service providers).
 
 The DiGA API is currently in an early stage and lacks documentation - especially in English - which makes interacting with it a daunting task. 
 We hope that creating an open source project will be a way for DiGA manufacturers to work together and share our experiences to maintain a stable DiGA API integration.
@@ -19,7 +19,7 @@ All contributions are welcome, we do not expect you to commit code if you do not
 ## Project Status
 The project is pre-first-release. Currently, the DiGA code validation works against the `diga.bitmarck-daten.de`, which
 is the endpoint used for many (85/103 currently) of the health insurance companies - a good first step. However, there are issues with other endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
-Integration with the billing process with XRechnung has not been started yet.
+Invoicing against the `diga.bitmarck-daten.de` endpoint works, but there is no built-in solution yet for insurance companies which do not support API invoicing yet.
 
 ## Get Started
 ### Prerequisites
@@ -54,32 +54,87 @@ Then, you can import it in your `pom.xml`:
 This example assumes you put both your private certificate and the insurance companies certificates in `keystore.p12`,
 that the XML mapping file is called `mappings.xml`, and that you put these files in the `resources` folder.
 
+Note that there is quite a lot of information required to _instantiate_ the client, however, it is designed this way to
+enable _each individual request_ afterwards to require as little information as possible - as demonstrated below.
+
 ```java
 // in Main.java
 var mappingFile = Main.class.getClassLoader().getResourceAsStream("mappings.xml");
 var healthCompaniesKeyStore = Main.class.getClassLoader().getResourceAsStream("keystore.p12");
 var privateKeyStore = Main.class.getClassLoader().getResourceAsStream("keystore.p12"); // you need one inputstream for each
 
-var apiClientSettings = DigaApiClientSettings.builder()
-            .healthInsuranceMappingFile(mappingFile)
-            .privateKeyStoreFile(privateKeyStore)
-            .healthInsurancePublicKeyStoreFile(healthCompaniesKeyStore)
-            .privateKeyStorePassword("my-keystore-password")
-            .privateKeyAlias("my-private-key-alias") // you must create this when creating the keystore
-            .healthInsurancePublicKeyStorePassword("my-keystore-password")
-            .senderIkNUmber("my-IK-number")
-            .senderDigaId("my-DiGA-id-or-any-random-5-digits") // if you arent accepted as DiGA yet, just put 12345
-            .build()
-var apiClient = new DigaApiClient(apiClientSettings);
+var apiClientSettings = DigaApiClientSettings.builder() // settings required for the client to operate
+        .healthInsuranceMappingFile(mappingFile)
+        .privateKeyStoreFile(privateKeyStore)
+        .healthInsurancePublicKeyStoreFile(healthCompaniesKeyStore)
+        .privateKeyStorePassword("my-keystore-password")
+        .privateKeyAlias("my-private-key-alias") // you must create this when creating the keystore
+        .healthInsurancePublicKeyStorePassword("my-keystore-password")
+        .build();
+        
+var digaInformation = DigaInformation.builder() // information about your DiGA and your company required to easily
+                                                // create invoices and send requests to the API
+        .digaName("my-DiGA-common-name")
+        .digaId("my-DiGA-id-or-any-random-5-digits") // if you arent accepted as DiGA yet, just put 12345
+        .manufacturingCompanyName("my-company-name")
+        .manufacturingCompanyId("my-company-name (?)") // not sure what the difference is between ID and Name. For billing
+        .manufacturingCompanyIk("my-IK-number")
+        .netPricePerPrescription(new BigDecimal(100)) // net price per diga code validated
+        .applicableVATpercent(new BigDecimal(19)) // how much VAT should be applied to the invoices
+        .manufacturingCompanyVATRegistration("DE 123 456 789")
+        .contactPersonForBilling(
+            DigaInformation.ContactPersonForBilling.builder()
+                .fullName("Sven Svensson")
+                .phoneNumber("+46 70 123 45 67")
+                .emailAddress("svensvensson@awesomedigacompany.com")
+                .build()
+        )
+        .companyTradeAddress(
+            DigaInformation.CompanyTradeAddress.builder()
+                .adressLine("Diga Street 1")
+                .postalCode("123 45")
+                .city("Digatown")
+                .countryCode("DE")
+                .build()
+        )
+        .build();
 
-var response = apiClient.validateDigaCode("real-16-character-code"); // clean API for code validation
+var apiClient = new DigaApiClient(apiClientSettings, digaInformation);
+
+var digaCode = "real-16-character-code";
+var codeValidationResponse = apiClient.validateDigaCode(digaCode); // small API for code validation
+
+if (codeValidationResponse.isHasError()) {
+  // handle error
+}
+
+var invoice = DigaInvoice.builder()
+        .invoiceId("1") // unique invoice IDs
+        .validatedDigaCode(digaCode)
+        .build();
+var invoiceResponse = apiClient.invoiceDiga(invoice); // small API for invoicing
+                                                      // if you need to save the invoice for accounting purposes, 
+                                                      // it is available in 'invoiceResponse.getRawXmlRequestBody()'
+
+if (invoiceResponse.isHasError()) {
+    // handle error
+}
+
+log.info("Successfully validated and invoiced a DiGA code!");
 ```
 
-You can also send a test request like this
+You can also send test requests like this
 
 ```java
 // send a test request to the insurance company with prefix "BY" which should be be processed as valid by the API
-var testResponse = apiClient.sendTestRequest(DigaApiTestCode.VALID, "BY"); 
+var testCodeValidationResponse = apiClient.sendTestRequest(DigaApiTestCode.VALID, "BY"); 
+
+// send a test invoice to the insurance company with prefix "BY". note that test bills never return as completely valid by the APIs 
+// at the moment. you will at best get a response like "code not found" or "wrong check digit"
+var testInvoiceResponse = apiClient.sendTestInvoiceRequest(
+        DigaInvoice.builder().invoiceId("1").validatedDigaCode(DigaApiTestCode.VALID).build(),
+        "BY"
+);
 ```
 
 __Note__: Make sure you do __not__ put your keystore file in a _filtered_ resource location, because it will mess up the file when importing it as a resource. To be clear, if you have something like:
@@ -130,7 +185,7 @@ public DigaApiClient createCustomApiClient() {
         .xmlRequestWriter( ... )
         .xmlRequestReader( ... )
         .encryptionFactory( ... )
-        .senderIk( ... )
+        .digaInformation( .. )
         .build();
 }
 ```
