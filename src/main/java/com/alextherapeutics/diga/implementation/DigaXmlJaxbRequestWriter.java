@@ -44,7 +44,7 @@ import java.util.Date;
 
 /**
  * An XML writer using JAXB.
- * Depends on XML Schemas (.xsd) located in main/resources/*-xsd
+ * Depends on XML Schemas (.xsd) located in main/resources/*-xsd/
  */
 @Slf4j
 public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {

@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 
 /**
  * A XML reader using JAXB.
+ * Depends on XML Schemas (.xsd) located in main/resources/*-xsd/
  */
 @Slf4j
 public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
@@ -94,7 +95,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
         return errors == null
                 ? Collections.emptyList()
                 : errors.stream()
-                .map(fehlerinformation -> new DigaCodeValidationResponseError(DigaErrorCode.fromCode(fehlerinformation.getFehlernummer().intValue()), fehlerinformation.getFehlertext()))
+                .map(fehlerinformation -> new DigaCodeValidationResponseError(DigaCodeValidationErrorCode.fromCode(fehlerinformation.getFehlernummer().intValue()), fehlerinformation.getFehlertext()))
                 .collect(Collectors.toList());
     }
 

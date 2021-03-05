@@ -25,10 +25,8 @@ import lombok.NonNull;
 import java.math.BigDecimal;
 
 /**
- * Information about the DiGA and the manufacturer which doesnt change between
- * requests.
- * Used for sending the correct information when validating codes
- * and creating invoices.
+ * Information about the DiGA and the manufacturer which doesnt change between requests.
+ * Used for sending the correct information when validating codes and creating invoices.
  */
 @Builder
 @Getter

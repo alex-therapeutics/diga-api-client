@@ -18,6 +18,7 @@
 
 package com.alextherapeutics.diga.implementation;
 
+import com.alextherapeutics.diga.DigaCodeParser;
 import com.alextherapeutics.diga.DigaCodeValidationException;
 import com.alextherapeutics.diga.DigaHealthInsuranceDirectory;
 import com.alextherapeutics.diga.model.DigaBillingInformation;
@@ -29,7 +30,7 @@ import lombok.Builder;
  * Parses a DiGA Code
  */
 @AllArgsConstructor
-public class DigaCodeDefaultParser implements com.alextherapeutics.diga.DigaCodeParser {
+public class DigaCodeDefaultParser implements DigaCodeParser {
     private DigaHealthInsuranceDirectory healthInsuranceDirectory;
     @Override
     public DigaCodeInformation parseCodeForValidation(String code) throws DigaCodeValidationException {

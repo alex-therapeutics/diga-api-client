@@ -31,7 +31,7 @@ public class DigaCodeValidationResponseError {
      * An API error code as described in the documentation at
      * https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
      */
-    private DigaErrorCode errorCode;
+    private DigaCodeValidationErrorCode errorCode;
     /**
      * A description of the error
      */

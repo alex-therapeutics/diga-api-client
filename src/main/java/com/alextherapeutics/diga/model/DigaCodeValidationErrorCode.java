@@ -27,7 +27,7 @@ import java.util.Map;
  * Code Validation error codes listed in Annex 5 at
  * https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
  */
-public enum DigaErrorCode {
+public enum DigaCodeValidationErrorCode {
     CODE_TIMED_OUT(100),
     CODE_CANCELLED(101),
     CODE_NOT_FOUND(102),
@@ -37,17 +37,17 @@ public enum DigaErrorCode {
 
     @Getter
     private int code;
-    DigaErrorCode(int code) {
+    DigaCodeValidationErrorCode(int code) {
         this.code = code;
     }
 
-    private static final Map<Integer, DigaErrorCode> BY_CODE = new HashMap<>();
+    private static final Map<Integer, DigaCodeValidationErrorCode> BY_CODE = new HashMap<>();
     static {
-        for (DigaErrorCode code : values()) {
+        for (DigaCodeValidationErrorCode code : values()) {
             BY_CODE.put(code.code, code);
         }
     }
-    public static DigaErrorCode fromCode(int code) {
+    public static DigaCodeValidationErrorCode fromCode(int code) {
         return BY_CODE.get(code);
     }
 }

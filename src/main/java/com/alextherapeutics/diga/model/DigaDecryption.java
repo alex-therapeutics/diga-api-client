@@ -44,6 +44,12 @@ public class DigaDecryption {
     @NonNull
     private byte[] decryptionTarget;
 
+    /**
+     * Decrypt the content
+     * @return
+     * @throws IOException
+     * @throws SeconException
+     */
     public ByteArrayOutputStream decrypt() throws IOException, SeconException {
         try (var outputStream = new ByteArrayOutputStream()) {
             try (var inputStream = new ByteArrayInputStream(decryptionTarget)) {
