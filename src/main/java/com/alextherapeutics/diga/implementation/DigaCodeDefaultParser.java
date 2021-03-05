@@ -82,7 +82,7 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
     private boolean validateDigaCodeStructure(String code) {
         // TODO - make more check, like regex, the different parts, etc.
         // TODO maybe use checksum to check validity?
-        return code.length() == 16;
+        return code != null && code.length() == 16;
     }
     private DigaCodeDefaultParser.ParsedDigaCode parseCode(String code) throws DigaCodeValidationException {
         if (!validateDigaCodeStructure(code)) {

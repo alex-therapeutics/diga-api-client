@@ -28,7 +28,7 @@ Invoicing against the `diga.bitmarck-daten.de` endpoint works (85/103 companies)
   be imported into the keystore with the company's IK number as an alias in the form _IK123456789_. We are working on a tool or better documentation 
   to make this process easier.
 * The XML mapping file for the health insurance companies which contains information on endpoints, IK numbers, code prefixes, etc.
-  [This page](https://kkv.gkv-diga.de/) should provide an up-to-date file.
+  [This page](https://kkv.gkv-diga.de/) should provide an up-to-date file. __Important!__ read [here](https://github.com/alex-therapeutics/diga-api-client/wiki/Modifying-the-insurance-company-mapping-file-(Krankenkassenverzeichnis_DiGA.xml)) for the modifications you have to make to this file.
 * Java 11 or higher. Do you need Java 8? Submit an issue and tell us! There is still room to make such changes.
 
 ### Installation

@@ -18,6 +18,7 @@
 
 package com.alextherapeutics.diga;
 
+import com.alextherapeutics.diga.model.DigaPrescriptionType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,5 +59,12 @@ class DigaUtilsTest {
         var url = "diga.bitmarck-daten.de";
         var expected = "https://diga.bitmarck-daten.de/diga";
         assertEquals(expected, DigaUtils.buildPostDigaEndpoint(url));
+    }
+    @Test
+    void testCreateDigaveid() {
+        var id = "12345";
+        var suffix = "000";
+        var expected = id + suffix;
+        assertEquals(expected, DigaUtils.createDigaveid(id, DigaPrescriptionType.UNSPECIFIED));
     }
 }
