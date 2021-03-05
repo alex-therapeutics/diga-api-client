@@ -17,16 +17,15 @@ Also, if you have information on how to solve existing issues but don't want to 
 All contributions are welcome, we do not expect you to commit code if you do not want to.
 
 ## Project Status
-The project is pre-first-release. Currently, the DiGA code validation works against the `diga.bitmarck-daten.de`, which
-is the endpoint used for many (85/103 currently) of the health insurance companies - a good first step. However, there are issues with other endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
-Invoicing against the `diga.bitmarck-daten.de` endpoint works, but there is no built-in solution yet for insurance companies which do not support API invoicing yet.
+The project is pre-first-release. Currently, the DiGA code validation works against 97 out of the 103 health insurance companies - a good first step. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
+Invoicing against the `diga.bitmarck-daten.de` endpoint works (85/103 companies), but there is no built-in solution yet for insurance companies which do not support API invoicing yet.
 
 ## Get Started
 ### Prerequisites
 * A PKCS12 keystore containing your certificate and private key that you applied for from ITSG. You must give your private key/certificate an alias
   to use it with the library.
 * A PKCS12 keystore containing all the certificates of the health insurance companies. This can be in the same file as the private certificate. All certificates __must__
-  be imported into the keystore with the company's IK number as an alias - either in the form _IK123456789_  or _123456790_. We are working on a tool or better documentation 
+  be imported into the keystore with the company's IK number as an alias in the form _IK123456789_. We are working on a tool or better documentation 
   to make this process easier.
 * The XML mapping file for the health insurance companies which contains information on endpoints, IK numbers, code prefixes, etc.
   [This page](https://kkv.gkv-diga.de/) should provide an up-to-date file.
