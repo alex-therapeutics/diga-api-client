@@ -66,19 +66,35 @@ public final class DigaApiClient {
     @NonNull
     private DigaInformation digaInformation;
 
-    // temporary
-    // temporarily returns decrypted xml bytes. response should be wrapped somehow, mb in a diga api response
-    public DigaApiResponse bill(DigaInvoice invoice) throws IOException, SeconException, DigaHttpClientException, JAXBException, DigaCodeValidationException {
+    /**
+     * Send an Invoice for a DiGA prescription.
+     * @param invoice - individual invoice details
+     * @return An object containing details on the response to the invoice request as well as request details such as
+     * which insurance company was sent to, which endpoint, IK, etc.
+     *
+     * The contents of the Invoice itself is located in DigaInvoiceResponse.getRawXmlRequestBody(), you can fetch
+     * that and use it for accounting needs.
+     *
+     * You can check that the invoice request succeeded by checking if (response.hasError()) {}. If hasError is false,
+     * the invoice was successful.
+     * @throws IOException
+     * @throws SeconException
+     * @throws DigaHttpClientException
+     * @throws JAXBException
+     * @throws DigaCodeValidationException
+     */
+    // TODO exception handling
+    public DigaInvoiceResponse invoiceDiga(DigaInvoice invoice) throws IOException, SeconException, DigaHttpClientException, JAXBException, DigaCodeValidationException {
         var billingInformation = codeParser.parseCodeForBilling(invoice.getValidatedDigaCode());
         var xmlInvoice = xmlRequestWriter.createBillingRequest(invoice, billingInformation);
-        var encryptRequest = encryptionFactory.newEncryption()
+        var encryptionAttempt = encryptionFactory.newEncryption()
                 .encryptionTarget(xmlInvoice)
-                .recipientAlias(DigaUtils.ikNumberWithPrefix(billingInformation.getBuyerCompanyIk()))
+                .recipientAlias(DigaUtils.ikNumberWithPrefix(billingInformation.getInsuranceCompanyIKNumber()))
                 .build();
-        var encryptedInvoice = encryptRequest.encrypt().toByteArray();
+        var encryptedXmlInvoice = encryptionAttempt.encrypt().toByteArray();
         var httpApiRequest = DigaApiHttpRequest.builder()
-                .encryptedContent(encryptedInvoice)
-                .recipientIK(billingInformation.getBuyerCompanyIk())
+                .encryptedContent(encryptedXmlInvoice)
+                .recipientIK(billingInformation.getInsuranceCompanyIKNumber())
                 .processCode(DigaProcessCode.BILLING_TEST) // TODO - change to not test and make test method instead
                 .url(DigaUtils.buildPostDigaEndpoint(billingInformation.getEndpoint()))
                 .senderIK(digaInformation.getManufacturingCompanyIk())
@@ -88,11 +104,17 @@ public final class DigaApiClient {
                 .decryptionTarget(httpResponse.getEncryptedBody())
                 .build();
         var decrypted = decryptAttempt.decrypt().toByteArray();
-        return DigaApiResponse.builder()
-                .rawXmlRequestBody(IOUtils.toString(xmlInvoice, "UTF-8"))
-                .rawXmlRequestBodyEncrypted(encryptedInvoice)
-                .rawXmlResponseBody(IOUtils.toString(decrypted, "UTF-8"))
-                .build();
+        var response = xmlRequestReader.readBillingReport(new ByteArrayInputStream(decrypted));
+        response.setHttpStatusCode(httpResponse.getStatusCode());
+        response.setRawXmlRequestBody(IOUtils.toString(xmlInvoice, "UTF-8"));
+        response.setRawXmlRequestBodyEncrypted(encryptedXmlInvoice);
+        addReceiverDetailsToResponse(response, billingInformation);
+        return response;
+    }
+    private void addReceiverDetailsToResponse(AbstractDigaApiResponse response, AbstractDigaInsuranceInformation insuranceInformation) {
+        response.setReceivingInsuranceCompanyEndpoint(insuranceInformation.getEndpoint());
+        response.setReceivingInsuranceCompanyIk(insuranceInformation.getInsuranceCompanyIKNumber());
+        response.setReceivingInsuranceCompanyName(insuranceInformation.getInsuranceCompanyName());
     }
     /**
      * Create a working Diga API client with default class implementations.
@@ -108,9 +130,9 @@ public final class DigaApiClient {
     /**
      * Attempt to validate a patient's DiGA code against the API.
      * @param digaCode - the full code (16 letters) as a String object.
-     * @return a {@link DigaApiResponse} object containing information on the response from the API.
+     * @return a {@link DigaCodeValidationResponse} object containing information on the response from the API.
      */
-    public DigaApiResponse validateDigaCode(String digaCode) throws DigaApiException {
+    public DigaCodeValidationResponse validateDigaCode(String digaCode) throws DigaApiException {
         // TODO - check if its a test code and throw exception if it is, so people cant "validate" codes in production by entering a test code
         return performCodeValidation(
                 codeParser.parseCodeForValidation(digaCode)
@@ -123,17 +145,18 @@ public final class DigaApiClient {
      * @param insuranceCompanyPrefix
      * @return
      */
-    public DigaApiResponse sendTestRequest(DigaApiTestCode testCode, String insuranceCompanyPrefix) throws DigaApiException {
+    public DigaCodeValidationResponse sendTestRequest(DigaApiTestCode testCode, String insuranceCompanyPrefix) throws DigaApiException {
         var healthInsuranceInformation = healthInsuranceDirectory.getInformation(insuranceCompanyPrefix);
         var testCodeInformation = DigaCodeInformation.builder()
                 .fullDigaCode(testCode.getCode())
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
                 .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
+                .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .build();
         return performCodeValidation(testCodeInformation);
     }
 
-    private DigaApiResponse performCodeValidation(DigaCodeInformation codeInformation) throws DigaApiException {
+    private DigaCodeValidationResponse performCodeValidation(DigaCodeInformation codeInformation) throws DigaApiException {
         try {
             var xmlRequest = xmlRequestWriter.createCodeValidationRequest(codeInformation);
             var encryptRequestAttempt = encryptionFactory.newEncryption()
@@ -160,6 +183,7 @@ public final class DigaApiClient {
             response.setHttpStatusCode(httpResponse.getStatusCode());
             response.setRawXmlRequestBody(IOUtils.toString(xmlRequest, "UTF-8"));
             response.setRawXmlRequestBodyEncrypted(encryptedXmlBody);
+            addReceiverDetailsToResponse(response, codeInformation);
             return response;
         } catch (IOException | JAXBException | DigaHttpClientException | SeconException e) {
             // TODO catch all here is probably bad

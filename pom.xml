@@ -122,6 +122,11 @@
                                     <xsdDir>${basedir}/src/main/resources/billing-xsd/</xsdDir>
                                     <packagename>com.alextherapeutics.diga.model.generatedxml.billing</packagename>
                                 </xsdOption>
+                                <xsdOption>
+                                    <xsdDir>${basedir}/src/main/resources/billing-report-xsd/</xsdDir>
+                                    <packagename>com.alextherapeutics.diga.model.generatedxml.billingreport</packagename>
+                                    <extensionArgs>-XautoNameResolution</extensionArgs>
+                                </xsdOption>
                             </xsdOptions>
                         </configuration>
                     </execution>

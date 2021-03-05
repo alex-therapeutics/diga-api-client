@@ -237,8 +237,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
                 createTradeParty(
                         DigaTradeParty.builder()
                                 .companyId(billingInformation.getBuyerCompanyId())
-                                .companyIk(billingInformation.getBuyerCompanyIk())
-                                .companyName(billingInformation.getBuyerCompanyName())
+                                .companyIk(billingInformation.getInsuranceCompanyIKNumber())
+                                .companyName(billingInformation.getInsuranceCompanyName())
                                 .postalAddress(
                                         DigaTradeParty.DigaTradePartyPostalAddress.builder()
                                                 .postalCode(billingInformation.getBuyerCompanyPostalCode())

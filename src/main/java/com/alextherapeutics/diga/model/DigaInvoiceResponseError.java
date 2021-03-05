@@ -18,21 +18,26 @@
 
 package com.alextherapeutics.diga.model;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.experimental.SuperBuilder;
 
 /**
- * Contains information gained from a (parsed) DiGA code when compared with the insurance company mapping file
+ * An error received from sending a DiGA XML invoice.
  */
-@SuperBuilder
+@Builder
 @Getter
-public class DigaCodeInformation extends AbstractDigaInsuranceInformation {
+public class DigaInvoiceResponseError {
     /**
-     * The full (unparsed) 16 character diga code.
+     * The ID of the validation step that errored
      */
-    private String fullDigaCode;
+    private String validationStepId;
     /**
-     * The individual 12 character part of the diga code (Krankenkassenindividueller Code)
+     * The messages received for the error in the report
      */
-    private String personalDigaCode;
+    private String messages;
+    /**
+     * The "Resource" that was not valid. This will give information on which schema/schematron/xsl was used for
+     * validating this error.
+     */
+    private String resources;
 }

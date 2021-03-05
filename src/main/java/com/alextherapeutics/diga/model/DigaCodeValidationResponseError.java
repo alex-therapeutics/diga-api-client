@@ -26,9 +26,10 @@ import lombok.Data;
  */
 @AllArgsConstructor
 @Data
-public class DigaApiResponseError {
+public class DigaCodeValidationResponseError {
     /**
      * An API error code as described in the documentation at
+     * https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
      */
     private DigaErrorCode errorCode;
     /**

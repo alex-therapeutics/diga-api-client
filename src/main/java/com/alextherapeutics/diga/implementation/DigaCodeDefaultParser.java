@@ -50,10 +50,10 @@ public class DigaCodeDefaultParser implements com.alextherapeutics.diga.DigaCode
         var healthInsuranceInformation = healthInsuranceDirectory.getInformation(parsedCode.healthInsuranceCode);
         return DigaBillingInformation.builder()
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
-                .buyerCompanyIk(healthInsuranceInformation.getIKAbrechnungsstelle())
+                .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
                 .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
                 .buyerCompanyId(healthInsuranceInformation.getNameDesKostentraegers())
-                .buyerCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
+                .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .buyerCompanyPostalCode(healthInsuranceInformation.getPLZ())
                 .buyerCompanyAddressLine(healthInsuranceInformation.getStrassePostfach() + " " + healthInsuranceInformation.getHausnummerPostfachnummer())
                 .buyerCompanyCity(healthInsuranceInformation.getOrt())

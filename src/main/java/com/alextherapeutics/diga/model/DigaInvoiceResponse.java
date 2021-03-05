@@ -18,21 +18,23 @@
 
 package com.alextherapeutics.diga.model;
 
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Contains information gained from a (parsed) DiGA code when compared with the insurance company mapping file
+ * A response to an invoice request to the DiGA API (#RE0)
  */
 @SuperBuilder
-@Getter
-public class DigaCodeInformation extends AbstractDigaInsuranceInformation {
+@Data
+public class DigaInvoiceResponse extends AbstractDigaApiResponse {
     /**
-     * The full (unparsed) 16 character diga code.
+     * Errors received when validating this invoice.
+     * Empty list if no errors were received.
      */
-    private String fullDigaCode;
-    /**
-     * The individual 12 character part of the diga code (Krankenkassenindividueller Code)
-     */
-    private String personalDigaCode;
+    @Builder.Default
+    private List<DigaInvoiceResponseError> errors = new ArrayList<>();
 }

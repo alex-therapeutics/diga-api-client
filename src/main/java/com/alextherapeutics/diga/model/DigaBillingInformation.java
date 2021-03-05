@@ -21,18 +21,14 @@ package com.alextherapeutics.diga.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Information for billing derived from parsing a DiGA code.
  */
-@Builder
+@SuperBuilder
 @Getter
-public class DigaBillingInformation {
-    /**
-     * Endpoint to send the bill to
-     */
-    @NonNull
-    private String endpoint;
+public class DigaBillingInformation extends AbstractDigaInsuranceInformation {
     /**
      * The ID of the company being billed.
      */
@@ -40,20 +36,10 @@ public class DigaBillingInformation {
     @NonNull
     private String buyerCompanyId;
     /**
-     * The IK of the company being billed.
-     */
-    @NonNull
-    private String buyerCompanyIk;
-    /**
      * The IK for billing, to the creditor of the company being billed. This is sometimes not the same as the company IK.
      */
     @NonNull
     private String buyerCompanyCreditorIk;
-    /**
-     * The name of the company being billed.
-     */
-    @NonNull
-    private String buyerCompanyName;
     /**
      * The postal code of the company being billed.
      */
