@@ -89,6 +89,10 @@ public final class DigaApiClient {
      * @return a {@link DigaCodeValidationResponse} object containing information on the response from the API.
      */
     public DigaCodeValidationResponse validateDigaCode(String digaCode) throws DigaApiException {
+        if (DigaUtils.isDigaTestCode(digaCode)){
+            log.error("A test code was entered: {}", digaCode);
+            throw new DigaCodeValidationException("A test code was entered");
+        }
         return performCodeValidation(
                 codeParser.parseCodeForValidation(digaCode)
         );
