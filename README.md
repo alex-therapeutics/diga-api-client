@@ -110,6 +110,7 @@ if (codeValidationResponse.isHasError()) {
 var invoice = DigaInvoice.builder()
         .invoiceId("1") // unique invoice IDs
         .validatedDigaCode(digaCode)
+        .digavEid(codeValidationResponse.getValidatedDigaveid())
         .dateOfServiceProvision(codeValidationResponse.getDayOfServiceProvision())
         .build();
 
