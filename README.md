@@ -76,7 +76,6 @@ var digaInformation = DigaInformation.builder() // information about your DiGA a
         .digaName("my-DiGA-common-name")
         .digaId("my-DiGA-id-or-any-random-5-digits") // if you arent accepted as DiGA yet, just put 12345
         .manufacturingCompanyName("my-company-name")
-        .manufacturingCompanyId("my-company-name (?)") // not sure what the difference is between ID and Name. For billing
         .manufacturingCompanyIk("my-IK-number")
         .netPricePerPrescription(new BigDecimal(100)) // net price per diga code validated
         .applicableVATpercent(new BigDecimal(19)) // how much VAT should be applied to the invoices

@@ -30,8 +30,6 @@ import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class DigaXmlJaxbRequestWriterTest {
     private DigaXmlJaxbRequestWriter writer;
 
@@ -60,7 +58,6 @@ class DigaXmlJaxbRequestWriterTest {
                         .digaName("dum")
                         .digaId("dum")
                         .manufacturingCompanyName("dum")
-                        .manufacturingCompanyId("dum")
                         .digaDescription("dum")
                         .build()
 
@@ -91,7 +88,6 @@ class DigaXmlJaxbRequestWriterTest {
                         .insuranceCompanyIKNumber("dum")
                         .endpoint("dum")
                         .buyerCompanyCity("dum")
-                        .buyerCompanyId("dum")
                         .buyerCompanyPostalCode("dum")
                         .buyerCompanyAddressLine("dum")
                         .buyerCompanyCreditorIk("dum")

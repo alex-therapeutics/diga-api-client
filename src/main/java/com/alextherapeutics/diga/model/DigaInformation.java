@@ -48,13 +48,6 @@ public class DigaInformation {
      * Set this field if you wish to change the default.
      */
     private String digaDescription;
-
-    /**
-     * The ID of the manufacturing company.
-     */
-    // TODO - what is difference between this and name?
-    @NonNull
-    private String manufacturingCompanyId;
     /**
      * The name of the manufacturing company. This is probably your company's name.
      */

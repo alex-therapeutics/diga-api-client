@@ -210,7 +210,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         applicableHeaderTradeAgreement.setSellerTradeParty(
                 createTradeParty(
                         DigaTradeParty.builder()
-                                .companyId(digaInformation.getManufacturingCompanyId()) // TODO what is difference between company ID and company name?
+                                .companyId(DigaUtils.ikNumberWithPrefix(digaInformation.getManufacturingCompanyIk()))
                                 .companyName(digaInformation.getManufacturingCompanyName())
                                 .companyIk(DigaUtils.ikNumberWithoutPrefix(digaInformation.getManufacturingCompanyIk()))
                                 .taxRegistration(digaInformation.getManufacturingCompanyVATRegistration())
@@ -236,7 +236,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         applicableHeaderTradeAgreement.setBuyerTradeParty(
                 createTradeParty(
                         DigaTradeParty.builder()
-                                .companyId(billingInformation.getBuyerCompanyId())
+                                .companyId(DigaUtils.ikNumberWithPrefix(billingInformation.getInsuranceCompanyIKNumber()))
                                 .companyIk(billingInformation.getInsuranceCompanyIKNumber())
                                 .companyName(billingInformation.getInsuranceCompanyName())
                                 .postalAddress(

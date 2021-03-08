@@ -53,7 +53,6 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
                 .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
                 .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
-                .buyerCompanyId(healthInsuranceInformation.getNameDesKostentraegers())
                 .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .buyerCompanyPostalCode(healthInsuranceInformation.getPLZ())
                 .buyerCompanyAddressLine(healthInsuranceInformation.getStrassePostfach() + " " + healthInsuranceInformation.getHausnummerPostfachnummer())

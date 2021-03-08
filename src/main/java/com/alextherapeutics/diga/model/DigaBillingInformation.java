@@ -30,12 +30,6 @@ import lombok.experimental.SuperBuilder;
 @Getter
 public class DigaBillingInformation extends AbstractDigaInsuranceInformation {
     /**
-     * The ID of the company being billed.
-     */
-    // TODO what is difference with companyname?
-    @NonNull
-    private String buyerCompanyId;
-    /**
      * The IK for billing, to the creditor of the company being billed. This is sometimes not the same as the company IK.
      */
     @NonNull
