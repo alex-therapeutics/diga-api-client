@@ -83,11 +83,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
                 .errors(getCodeValidationErrors(response))
                 .validatedDigaCode(response.getAntwort() == null ? null : response.getAntwort().getFreischaltcode())
                 .dayOfServiceProvision(response.getAntwort() == null ? null : response.getAntwort().getTagDerLeistungserbringung().toGregorianCalendar().getTime())
-                .prescriptionType(
-                        response.getAntwort() == null
-                                ? null
-                                : DigaPrescriptionType.fromIdentifier(response.getAntwort().getDiGAVEID().substring(5))
-                )
+                .validatedDigaveid(response.getAntwort() == null ? null : response.getAntwort().getDiGAVEID())
                 .build();
     }
     private List<DigaCodeValidationResponseError> getCodeValidationErrors(PruefungFreischaltcode request) {

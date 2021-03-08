@@ -18,8 +18,6 @@
 
 package com.alextherapeutics.diga;
 
-import com.alextherapeutics.diga.model.DigaPrescriptionType;
-
 /**
  * Utility methods
  */
@@ -69,9 +67,5 @@ public final class DigaUtils {
      */
     public static boolean isDigaTestCode(String code) {
         return code.startsWith("77");
-    }
-
-    public static String createDigaveid(String digaId, DigaPrescriptionType prescriptionType) {
-        return digaId + prescriptionType.getIdentifier();
     }
 }

@@ -55,12 +55,10 @@ public class DigaInvoice {
     private Date dateOfServiceProvision = new Date();
 
     /**
-     * The prescription type. This is in practice 3 digits appended to your diga ID
-     * to form a "digaveid". We still don't know quite what this means, see {@link DigaPrescriptionType}
-     * We start by always appending 000. Might want to change to 001 if 000 doesnt work.
+     * The DiGAVEid that was validated by this code. You will find this in the response to the code validation request
+     * at {@link DigaCodeValidationResponse#getValidatedDigaveid()}
      */
-    @Builder.Default
-    private DigaPrescriptionType prescriptionType = DigaPrescriptionType.UNSPECIFIED;
+    private String digavEid;
 
     @Builder.Default
     private String invoiceCurrencyCode = "EUR";

@@ -37,11 +37,11 @@ public class DigaCodeValidationResponse extends AbstractDigaApiResponse {
      */
     private String validatedDigaCode;
     /**
-     * Which type of prescription was granted (renewal, initial)
-     * @experimental - the specification on this field in the API has not been validated, see further documentation
-     * at {@link DigaPrescriptionType}
+     * The full DiGAVEid which was validated.
+     * It consists of your DiGAID + 3 numbers. It is unclear what the last 3 digits mean so far, but you need to put this
+     * DiGAVEid in the invoice you send to get paid for this code validation, see {@link DigaInvoice#digavEid}.
      */
-    private DigaPrescriptionType prescriptionType;
+    private String validatedDigaveid;
 
     // TODO figure out what this translation means ("tag der leistungserbringung" from "antwort")
     private Date dayOfServiceProvision;

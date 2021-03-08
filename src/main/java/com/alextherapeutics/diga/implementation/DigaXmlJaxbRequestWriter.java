@@ -168,7 +168,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         // in this case theres always 1, so put "1"
 
         var tradeProduct = billingObjectFactory.createTradeProductType();
-        tradeProduct.setGlobalID(createIdType(DigaUtils.createDigaveid(digaInformation.getDigaId(), digaInvoice.getPrescriptionType()), "DiGAVEID")); // digaveid - append DigaPrescriptionType to the end of your diga id. not sure if 000 or 001 should be default
+        tradeProduct.setGlobalID(createIdType(digaInvoice.getDigavEid()));
         tradeProduct.setBuyerAssignedID(createIdType(digaInvoice.getValidatedDigaCode(), "Freischaltcode"));
         tradeProduct.getName().add(createTextType(digaInformation.getDigaName()));
         tradeProduct.setDescription(createTextType(
