@@ -134,17 +134,18 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>Github Packages</name>
+            <!--                    <url>https://maven.pkg.github.com/alex-therapeutics/diga-api-client</url>-->
+            <url>https://maven.pkg.github.com/fongie/diga-api-client</url>
+        </repository>
+    </distributionManagement>
+
     <profiles>
         <profile>
-            <id>github</id>
-            <distributionManagement>
-                <repository>
-                    <id>github</id>
-                    <name>Github Packages</name>
-<!--                    <url>https://maven.pkg.github.com/alex-therapeutics/diga-api-client</url>-->
-                    <url>https://maven.pkg.github.com/fongie/diga-api-client</url>
-                </repository>
-            </distributionManagement>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
