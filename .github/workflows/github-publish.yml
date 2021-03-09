@@ -44,6 +44,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - run: mvn org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${GITHUB_REF##*/}
       - run: mvn -Prelease deploy
         env:
           GITHUB_TOKEN: ${{ github.token }}
