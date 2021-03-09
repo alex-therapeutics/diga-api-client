@@ -38,25 +38,20 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-#          server-id: github
-#          settings-path: ${{ github.workspace }}
-      - run: mvn -Prelease deploy
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-#      - uses: actions/cache@v2
-#        with:
-#          path: ~/.m2/repository
-#          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-#          restore-keys: |
-#            ${{ runner.os }}-maven-
-#      - uses: s4u/maven-settings-action@v2.4.0
-#      - run: |
-#          export VERSION=${GITHUB_REF##*/}
-#          mvn -B org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${VERSION}
-#          echo "Publishing new version: ${VERSION}"
-#          cat $GITHUB_WORKSPACE/settings.xml
-#          mvn -B -Prelease deploy
-#          mvn -Prelease deploy -s $GITHUB_WORKSPACE/settings.xml
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+#      - run: mvn -Prelease deploy
 #        env:
-#          GITHUB_TOKEN: $ {{ github.token }}
-#          GITHUB_TOKEN: $ {{ secrets.GITHUB_TOKEN }}
+#          GITHUB_TOKEN: ${{ github.token }}
+#      - uses: s4u/maven-settings-action@v2.4.0
+      - run: |
+          export VERSION=${GITHUB_REF##*/}
+          mvn -B org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${VERSION}
+          echo "Publishing new version: ${VERSION}"
+          mvn -B -Prelease deploy
+        env:
+          GITHUB_TOKEN: $ {{ github.token }}
