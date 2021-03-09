@@ -40,6 +40,12 @@ jobs:
           java-version: 11
           server-id: github
           settings-path: ${{ github.workspace }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - run: mvn -B -Prelease package --file pom.xml
       - run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
         env:
