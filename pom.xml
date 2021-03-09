@@ -7,7 +7,7 @@
 <!--    <groupId>com.alextherapeutics</groupId>-->
     <groupId>com.github.fongie</groupId>
     <artifactId>diga-api-client</artifactId>
-    <version>0.2.7</version>
+    <version>0.3.9</version>
     <packaging>jar</packaging>
 
     <name>DiGA API Client</name>

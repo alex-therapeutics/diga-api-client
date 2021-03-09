@@ -49,9 +49,8 @@ jobs:
 #          GITHUB_TOKEN: ${{ github.token }}
 #      - uses: s4u/maven-settings-action@v2.4.0
       - run: |
-          export VERSION=${GITHUB_REF##*/}
-          mvn -B org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${VERSION}
-          echo "Publishing new version: ${VERSION}"
+#          export VERSION=${GITHUB_REF##*/}
+#          mvn -B org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${VERSION}
           mvn -B -Prelease deploy
         env:
           GITHUB_TOKEN: $ {{ github.token }}
