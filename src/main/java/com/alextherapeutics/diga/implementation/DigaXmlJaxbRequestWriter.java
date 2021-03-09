@@ -147,6 +147,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         exchangedDocument.setIssueDateTime(createDateTime(digaInvoice.getIssueDate())); // issuedate, make optional in billing info otherwise today
         return exchangedDocument;
     }
+
     // the data of the actual transaction being invoiced
     private SupplyChainTradeTransactionType createSupplyChainTradeTransaction(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
         var transaction = billingObjectFactory.createSupplyChainTradeTransactionType();
@@ -203,6 +204,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         includedSupplyChainTradeLineItem.setSpecifiedLineTradeSettlement(specifiedLineTradeSettlement);
         return includedSupplyChainTradeLineItem;
     }
+
     // information on seller and buyer
     private HeaderTradeAgreementType createApplicableHeaderTradeAgreement(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
         var applicableHeaderTradeAgreement = billingObjectFactory.createHeaderTradeAgreementType();
@@ -252,6 +254,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         );
         return applicableHeaderTradeAgreement;
     }
+
     // time of delivery
     private HeaderTradeDeliveryType createApplicableHeaderTradeDelivery(DigaInvoice digaInvoice) {
         var applicableHeaderTradeDelivery = billingObjectFactory.createHeaderTradeDeliveryType();
@@ -306,6 +309,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
         return applicableHeaderTradeSettlement;
     }
+
     private DateTimeType createDateTime(Date date) {
         var localdate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         var type = billingObjectFactory.createDateTimeType();
@@ -319,11 +323,13 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         type.setDateTimeString(dateTimeString);
         return type;
     }
+
     private CurrencyCodeType createCurrencyCodeType(String value) {
         var type = billingObjectFactory.createCurrencyCodeType();
         type.setValue(value);
         return type;
     }
+
     private TradePartyType createTradeParty(DigaTradeParty partyInformation) {
         var tradeParty = billingObjectFactory.createTradePartyType();
         tradeParty.getID().add(createIdType(partyInformation.getCompanyId()));
@@ -357,6 +363,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
         return tradeParty;
     }
+
     private TradeAddressType createTradeAddressType(String postalCode, String lineOne, String cityName, String countryId) {
         var type = billingObjectFactory.createTradeAddressType();
         type.setPostcodeCode(createCodeType(postalCode));
@@ -367,45 +374,54 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         type.setCountryID(countryIdType);
         return type;
     }
+
     private CodeType createCodeType(String value) {
         var type = billingObjectFactory.createCodeType();
         type.setValue(value);
         return type;
     }
+
     private UniversalCommunicationType createTelephoneCommunicationType(String number) {
         var type = billingObjectFactory.createUniversalCommunicationType();
         type.setCompleteNumber(createTextType(number));
         return type;
     }
+
     private UniversalCommunicationType createEmailCommunicationType(String email) {
         var type = billingObjectFactory.createUniversalCommunicationType();
         type.setURIID(createIdType(email));
         return type;
     }
+
     private PercentType createPercentType(BigDecimal value) {
         var percent = billingObjectFactory.createPercentType();
         percent.setValue(value);
         return percent;
     }
+
     private TaxCategoryCodeType createTaxCategoryCode(String value) {
         var code = billingObjectFactory.createTaxCategoryCodeType();
         code.setValue(value);
         return code;
     }
+
     private TaxTypeCodeType createTaxTypeCode(String value) {
         var taxTypeCode = billingObjectFactory.createTaxTypeCodeType();
         taxTypeCode.setValue(value);
         return taxTypeCode;
     }
+
     private QuantityType createQuantityType(BigDecimal value, String unitCode) {
         var type = billingObjectFactory.createQuantityType();
         type.setValue(value);
         type.setUnitCode(unitCode);
         return type;
     }
+
     private AmountType createAmountType(BigDecimal value) {
         return createAmountType(value, null);
     }
+
     private AmountType createAmountType(BigDecimal value, String currencyId) {
         var type = billingObjectFactory.createAmountType();
         type.setValue(value);
@@ -414,14 +430,17 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         }
         return type;
     }
+
     private TextType createTextType(String text) {
         var type = billingObjectFactory.createTextType();
         type.setValue(text);
         return type;
     }
+
     private IDType createIdType(String value) {
         return createIdType(value, null);
     }
+
     private IDType createIdType(String value, String schemeId) {
         var id = billingObjectFactory.createIDType();
         id.setValue(value);
@@ -430,6 +449,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         }
         return id;
     }
+
     @Builder
     @Getter
     static class DigaTradeParty {

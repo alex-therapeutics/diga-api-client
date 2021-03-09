@@ -51,6 +51,7 @@ public class DigaHealthInsuranceDirectoryFromXml implements DigaHealthInsuranceD
                         )
                 );
     }
+
     public static DigaHealthInsuranceDirectoryFromXml getInstance(InputStream xmlMappingFileContent) throws JAXBException {
         return new DigaHealthInsuranceDirectoryFromXml(xmlMappingFileContent);
     }

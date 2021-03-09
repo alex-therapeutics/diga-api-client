@@ -53,6 +53,7 @@ public class DigaEncryption {
 
     /**
      * Encrypt the contents as a byte array output stream
+     *
      * @return
      */
     public ByteArrayOutputStream encrypt() throws IOException, SeconException {

@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class DigaHealthInsuranceDirectoryFromXmlTest {
     private static String sampleInsuranceCompanyMappingXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -48,6 +48,7 @@ class DigaHealthInsuranceDirectoryFromXmlTest {
             "\t\t\t\t<bas:Kontaktdaten_Technisch_Telefon>0800-24862725</bas:Kontaktdaten_Technisch_Telefon>\n" +
             "\t\t\t\t<bas:Kontaktdaten_Technisch_EMail>servicedesk@bitmarck.de</bas:Kontaktdaten_Technisch_EMail>\n" +
             "\t\t</n1:Krankenkasseninformation></n1:Kostentraeger_Mappingverzeichnis>";
+
     @Test
     void createsWithoutError() {
         assertDoesNotThrow(

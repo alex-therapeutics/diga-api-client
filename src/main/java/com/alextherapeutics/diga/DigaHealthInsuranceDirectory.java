@@ -28,6 +28,7 @@ public interface DigaHealthInsuranceDirectory {
     /**
      * Get information from the insurance directory based on the company code prefix,
      * or "Kostentraegerkuerzel"
+     *
      * @param prefix
      * @return
      */

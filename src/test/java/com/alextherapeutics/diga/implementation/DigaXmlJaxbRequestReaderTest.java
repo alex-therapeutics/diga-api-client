@@ -23,29 +23,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.bind.JAXBException;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class DigaXmlJaxbRequestReaderTest {
-    private DigaXmlJaxbRequestReader reader;
-    @BeforeEach
-    void init() throws JAXBException {
-        reader = new DigaXmlJaxbRequestReader();
-    }
-    @Test
-    void testReadBillingReportCompletesWithoutErrors() throws JAXBException, IOException {
-        var response = reader.readBillingReport(new ByteArrayInputStream(sampleBillingValidationReport.getBytes(StandardCharsets.UTF_8)));
-        Assertions.assertNotNull(response);
-    }
-    @Test
-    void testReadCodeValidationResponseCompletesWithoutErrors() throws JAXBException, IOException {
-        var response = reader.readCodeValidationResponse(new ByteArrayInputStream(sampleCodeValidationAnswer.getBytes(StandardCharsets.UTF_8)));
-        Assertions.assertNotNull(response);
-    }
     private static String sampleCodeValidationAnswer =
             "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
                     "<Pruefung_Freischaltcode xmlns=\"http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/2.0.0\"\n" +
@@ -297,5 +279,23 @@ class DigaXmlJaxbRequestReaderTest {
                     "                </div><div class=\"val\">\n" +
                     "                </div><div class=\"val\">\n" +
                     "            </div></td></tr><tr class=\"row\" id=\"0077\"><td class=\"pos\">0077</td><td class=\"element level5\" title=\"LineTotalAmount\"><div class=\"val\">100</div></td></tr><tr class=\"row\" id=\"0078\"><td class=\"pos\">0078</td><td class=\"element level5\" title=\"TaxBasisTotalAmount\"><div class=\"val\">100</div></td></tr><tr class=\"row\" id=\"0079\"><td class=\"pos\">0079</td><td class=\"element level5\" title=\"TaxTotalAmount\"><div class=\"val\">19</div><div class=\"attribute\" title=\"currencyID\">EUR</div></td></tr><tr class=\"row\" id=\"0080\"><td class=\"pos\">0080</td><td class=\"element level5\" title=\"GrandTotalAmount\"><div class=\"val\">119.00</div></td></tr><tr class=\"row\" id=\"0081\"><td class=\"pos\">0081</td><td class=\"element level5\" title=\"DuePayableAmount\"><div class=\"val\">119.00</div></td></tr></table><p class=\"info\">Dieser Prüfbericht wurde erstellt mit KoSIT Validator 1.4.1.</p></body></html></rep:explanation></rep:reject></rep:assessment></rep:report>";
+    private DigaXmlJaxbRequestReader reader;
+
+    @BeforeEach
+    void init() throws JAXBException {
+        reader = new DigaXmlJaxbRequestReader();
+    }
+
+    @Test
+    void testReadBillingReportCompletesWithoutErrors() throws JAXBException, IOException {
+        var response = reader.readBillingReport(new ByteArrayInputStream(sampleBillingValidationReport.getBytes(StandardCharsets.UTF_8)));
+        Assertions.assertNotNull(response);
+    }
+
+    @Test
+    void testReadCodeValidationResponseCompletesWithoutErrors() throws JAXBException, IOException {
+        var response = reader.readCodeValidationResponse(new ByteArrayInputStream(sampleCodeValidationAnswer.getBytes(StandardCharsets.UTF_8)));
+        Assertions.assertNotNull(response);
+    }
 
 }

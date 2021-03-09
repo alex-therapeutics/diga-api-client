@@ -111,6 +111,7 @@ public class DigaInformation {
         @NonNull
         private String countryCode;
     }
+
     @Builder
     @Getter
     public static class ContactPersonForBilling {

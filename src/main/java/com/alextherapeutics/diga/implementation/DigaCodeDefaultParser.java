@@ -32,6 +32,7 @@ import lombok.Builder;
 @AllArgsConstructor
 public class DigaCodeDefaultParser implements DigaCodeParser {
     private DigaHealthInsuranceDirectory healthInsuranceDirectory;
+
     @Override
     public DigaCodeInformation parseCodeForValidation(String code) throws DigaCodeValidationException {
         var parsedCode = parseCode(code);
@@ -45,6 +46,7 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
                 .personalDigaCode(parsedCode.healthInsuranceIndividualCode)
                 .build();
     }
+
     @Override
     public DigaBillingInformation parseCodeForBilling(String code) throws DigaCodeValidationException {
         var parsedCode = parseCode(code);
@@ -65,24 +67,26 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
     private ParsedDigaCode parseCodeString(String codeString) {
         return ParsedDigaCode.builder()
                 .healthInsuranceCode(
-                        codeString.substring(0,2)
+                        codeString.substring(0, 2)
                 )
                 .version(
                         Character.toString(codeString.charAt(2))
                 )
                 .healthInsuranceIndividualCode(
-                        codeString.substring(3,15)
+                        codeString.substring(3, 15)
                 )
                 .checksum(
                         Character.toString(codeString.charAt(15))
                 )
                 .build();
     }
+
     private boolean validateDigaCodeStructure(String code) {
         // TODO - make more check, like regex, the different parts, etc.
         // TODO maybe use checksum to check validity?
         return code != null && code.length() == 16;
     }
+
     private DigaCodeDefaultParser.ParsedDigaCode parseCode(String code) throws DigaCodeValidationException {
         if (!validateDigaCodeStructure(code)) {
             throw new DigaCodeValidationException("Invalid DiGA code");

@@ -28,6 +28,7 @@ import com.alextherapeutics.diga.model.DigaCodeInformation;
 public interface DigaCodeParser {
     /**
      * Parse a full DiGA code which was input into the DiGA by a patient.
+     *
      * @param code
      * @return A {@link DigaCodeInformation} object containing information derived from the parsing.
      * @throws DigaCodeValidationException
@@ -36,6 +37,7 @@ public interface DigaCodeParser {
 
     /**
      * Parse a full DiGA code for billing information.
+     *
      * @param code
      * @return Billing information for the company that generated the code.
      * @throws DigaCodeValidationException

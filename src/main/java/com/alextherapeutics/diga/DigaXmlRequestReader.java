@@ -31,6 +31,7 @@ import java.io.InputStream;
 public interface DigaXmlRequestReader {
     /**
      * Read an inputstream with XML contents containing the validation of a DiGA code validation request and parse it.
+     *
      * @param decryptedResponse
      * @return Relevant information in a new {@link DigaCodeValidationResponse} object. Note that the DigaApiResponse object contains fields which are not set by XML readers, like the HTTP status code.
      * @throws JAXBException
@@ -40,6 +41,7 @@ public interface DigaXmlRequestReader {
 
     /**
      * Read an inputstream with XML contents containing the validation report from a DiGA invoice and parse it.
+     *
      * @param decryptedReport
      * @return Relevant information in a new {@link DigaInvoiceResponse} object.
      * @throws JAXBException

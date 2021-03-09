@@ -27,6 +27,7 @@ import com.alextherapeutics.diga.model.DigaApiHttpResponse;
 public interface DigaHttpClient {
     /**
      * POST a DigaApiRequest
+     *
      * @param request
      * @return A {@link DigaApiHttpResponse} containing response information including the encrpyted data body (if received)
      * @throws DigaHttpClientException

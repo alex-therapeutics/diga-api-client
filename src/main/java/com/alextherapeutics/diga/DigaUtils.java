@@ -24,6 +24,7 @@ package com.alextherapeutics.diga;
 public final class DigaUtils {
     /**
      * Remove IK from an IK number (IK#######) if it exists.
+     *
      * @param IK
      * @return
      */
@@ -33,6 +34,7 @@ public final class DigaUtils {
 
     /**
      * Add IK to an IK number if it doesnt exist
+     *
      * @param IK
      * @return
      */
@@ -49,6 +51,7 @@ public final class DigaUtils {
     /**
      * Given an endpoint as contanied in the health insurance company mapping file (f.e diga.bitmarck-daten.de),
      * return the full https endpoint to POST codes to (f.e https://diga.bitmarck-daten.de/diga)
+     *
      * @param endpoint
      * @return
      */
@@ -62,6 +65,7 @@ public final class DigaUtils {
 
     /**
      * Return whether a given DiGA code is a test code or not.
+     *
      * @param code
      * @return
      */

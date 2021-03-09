@@ -25,16 +25,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DigaCodeDefaultParserTest {
     private DigaHealthInsuranceDirectory healthInsuranceDirectory;
     private DigaCodeDefaultParser parser;
+
     @BeforeEach
     void init() {
         healthInsuranceDirectory = Mockito.mock(DigaHealthInsuranceDirectory.class);
         parser = new DigaCodeDefaultParser(healthInsuranceDirectory);
     }
+
     @Test
     void testParseCodeForvalidationThrowsOnInvalidCodeLength() {
         assertThrows(
@@ -54,6 +56,7 @@ class DigaCodeDefaultParserTest {
                 () -> parser.parseCodeForValidation("AAAAAAAAAAAAAAAAAX")
         );
     }
+
     @Test
     void testParseCodeForValidation() throws DigaCodeValidationException {
         var krank = createKrankenKasseInfo();
@@ -62,6 +65,7 @@ class DigaCodeDefaultParserTest {
         parser.parseCodeForValidation(code);
         Mockito.verify(healthInsuranceDirectory, Mockito.times(1)).getInformation("BH");
     }
+
     @Test
     void testParseCodeForBilling() throws DigaCodeValidationException {
         var krank = createKrankenKasseInfo();
@@ -71,6 +75,7 @@ class DigaCodeDefaultParserTest {
         Mockito.verify(healthInsuranceDirectory, Mockito.times(1)).getInformation("BH");
 
     }
+
     private KrankenkasseninformationCtp createKrankenKasseInfo() {
         var krank = new KrankenkasseninformationCtp();
         krank.setEndpunktKommunikationsstelle("dum");

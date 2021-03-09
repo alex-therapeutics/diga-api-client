@@ -63,9 +63,10 @@ class DigaXmlJaxbRequestWriterTest {
 
         );
     }
+
     @Test
     void testCreateCodeValidationRequestCompletesWithoutExceptions() throws JAXBException, IOException {
-        var res =writer.createCodeValidationRequest(
+        var res = writer.createCodeValidationRequest(
                 DigaCodeInformation.builder()
                         .fullDigaCode("dum")
                         .insuranceCompanyName("dum")
@@ -76,9 +77,10 @@ class DigaXmlJaxbRequestWriterTest {
         );
         Assertions.assertNotNull(res);
     }
+
     @Test
     void testCreateBillingRequestCompletesWithoutExceptions() throws JAXBException, IOException {
-        var res =writer.createBillingRequest(
+        var res = writer.createBillingRequest(
                 DigaInvoice.builder()
                         .validatedDigaCode("dum")
                         .invoiceId("ID1")

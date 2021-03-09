@@ -38,7 +38,9 @@ class DigaOkHttpClientTest {
         // setup so you can check the okhttpclient mock for interactions
         try (var keystore = Mockito.mockStatic(KeyStore.class)) {
             var mockStore = Mockito.mock(KeyStore.class);
-            keystore.when(() -> { KeyStore.getInstance(Mockito.anyString()); })
+            keystore.when(() -> {
+                KeyStore.getInstance(Mockito.anyString());
+            })
                     .thenReturn(mockStore);
             try (var sslFactory = Mockito.mockStatic(SSLFactory.class)) {
                 var mockSslBuilder = Mockito.mock(SSLFactory.Builder.class);
@@ -69,6 +71,7 @@ class DigaOkHttpClientTest {
             }
         }
     }
+
     // not sure what to test here.. but the class is set up for later
     @Test
     void test() {

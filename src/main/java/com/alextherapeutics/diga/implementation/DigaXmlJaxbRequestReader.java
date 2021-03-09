@@ -69,6 +69,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
                 .build();
 
     }
+
     @Override
     public DigaCodeValidationResponse readCodeValidationResponse(InputStream decryptedResponse) throws JAXBException, IOException {
         var bytes = decryptedResponse.readAllBytes();
@@ -86,6 +87,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
                 .validatedDigaveid(response.getAntwort() == null ? null : response.getAntwort().getDiGAVEID())
                 .build();
     }
+
     private List<DigaCodeValidationResponseError> getCodeValidationErrors(PruefungFreischaltcode request) {
         var errors = request.getFehlerinformation();
         return errors == null
@@ -109,6 +111,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
             );
         }
     }
+
     private List<DigaInvoiceResponseError> getInvoiceErrors(Report report) {
         return report.isValid()
                 ? Collections.emptyList()
@@ -123,6 +126,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
                 )
                 .collect(Collectors.toList());
     }
+
     private String createMessagesFromError(List<MessageType> messages) {
         var sb = new StringBuilder();
         sb.append("Messages:\n");
@@ -139,6 +143,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
         return sb.toString();
 
     }
+
     private String createResourceInfoFromError(List<ResourceType> resources) {
         var sb = new StringBuilder();
         sb.append("Resources:\n");
