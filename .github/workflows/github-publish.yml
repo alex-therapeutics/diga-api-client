@@ -46,11 +46,14 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - uses: s4u/maven-settings-action@v2.4.0
       - run: |
           export VERSION=${GITHUB_REF##*/}
-          echo "Publishing new version: ${VERSION}"
           mvn -B org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${VERSION}
-          mvn -Prelease deploy -s $GITHUB_WORKSPACE/settings.xml
+          echo "Publishing new version: ${VERSION}"
+          cat $GITHUB_WORKSPACE/settings.xml
+          mvn -B -Prelease deploy
+#          mvn -Prelease deploy -s $GITHUB_WORKSPACE/settings.xml
         env:
           GITHUB_TOKEN: $ {{ github.token }}
 #          GITHUB_TOKEN: $ {{ secrets.GITHUB_TOKEN }}
