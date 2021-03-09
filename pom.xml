@@ -34,6 +34,8 @@
         <source-plugin.version>3.2.1</source-plugin.version>
         <javadoc-plugin.version>3.2.0</javadoc-plugin.version>
         <gpg-plugin.version>1.6</gpg-plugin.version>
+        <delombok.output>${project.build.directory}/javadoc-delombok</delombok.output>
+        <javadoc.generated-sources-path>${project.build.directory}/generated/src/main/java</javadoc.generated-sources-path>
     </properties>
 
     <dependencies>
@@ -149,6 +151,25 @@
             <build>
                 <plugins>
                     <plugin>
+                        <!-- for lombok to work with javadoc plugin it has to be.. delomboked -->
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <version>1.18.18.0</version>
+                        <configuration>
+                            <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                            <outputDirectory>${delombok.output}</outputDirectory>
+                            <addOutputDirectory>false</addOutputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>delombok</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
                         <version>${source-plugin.version}</version>
@@ -156,7 +177,8 @@
                             <execution>
                                 <id>attach-sources</id>
                                 <goals>
-                                    <goal>jar-no-fork</goal>
+<!--                                    <goal>jar-no-fork</goal>-->
+                                    <goal>jar</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -165,6 +187,10 @@
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>${javadoc-plugin.version}</version>
+                        <configuration>
+                            <sourcepath>${delombok.output}</sourcepath>
+                            <sourcepath>${javadoc.generated-sources-path}</sourcepath>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
