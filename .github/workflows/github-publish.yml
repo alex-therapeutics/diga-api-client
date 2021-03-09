@@ -49,4 +49,5 @@ jobs:
       - run: mvn -B -Prelease package --file pom.xml
       - run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
         env:
-          GITHUB_TOKEN: $ {{ github.token }}
+#          GITHUB_TOKEN: $ {{ github.token }}
+          GITHUB_TOKEN: $ {{ secrets.GITHUB_TOKEN }}
