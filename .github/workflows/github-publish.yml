@@ -38,13 +38,13 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 11
-      - uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-#      - run: mvn -Prelease deploy
+#      - uses: actions/cache@v2
+#        with:
+#          path: ~/.m2/repository
+#          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-maven-
+#      - run: mvn -Prelease deploy <-- this works
 #        env:
 #          GITHUB_TOKEN: ${{ github.token }}
 #      - uses: s4u/maven-settings-action@v2.4.0
