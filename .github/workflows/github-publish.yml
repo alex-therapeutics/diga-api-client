@@ -46,9 +46,11 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - run: mvn -B -Prelease package --file pom.xml
-#      - run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-      - run: mvn -B -Prelease deploy
+      - run: |
+          export VERSION=${GITHUB_REF##*/}
+          echo "Publishing new version: ${VERSION}"
+          mvn -B org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${VERSION}
+          mvn -Prelease deploy -s $GITHUB_WORKSPACE/settings.xml
         env:
           GITHUB_TOKEN: $ {{ github.token }}
 #          GITHUB_TOKEN: $ {{ secrets.GITHUB_TOKEN }}
