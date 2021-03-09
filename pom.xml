@@ -7,7 +7,8 @@
 <!--    <groupId>com.alextherapeutics</groupId>-->
     <groupId>com.github.fongie</groupId>
     <artifactId>diga-api-client</artifactId>
-    <version>0.4.0</version>
+<!--    the version is replaced in a github action on creating a release with the github release number-->
+    <version>SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>DiGA API Client</name>
@@ -178,7 +179,6 @@
                             <execution>
                                 <id>attach-sources</id>
                                 <goals>
-<!--                                    <goal>jar-no-fork</goal>-->
                                     <goal>jar</goal>
                                 </goals>
                             </execution>
