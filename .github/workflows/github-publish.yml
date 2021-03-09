@@ -47,7 +47,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: mvn -B -Prelease package --file pom.xml
-      - run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+#      - run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+      - run: mvn -B -Prelease deploy
         env:
-#          GITHUB_TOKEN: $ {{ github.token }}
-          GITHUB_TOKEN: $ {{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: $ {{ github.token }}
+#          GITHUB_TOKEN: $ {{ secrets.GITHUB_TOKEN }}
