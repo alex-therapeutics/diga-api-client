@@ -1,12 +1,6 @@
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'What to set pom version to'
-        required: true
-
-#  release:
-#    types: [ created ]
+  release:
+    types: [ created ]
 
 jobs:
   deploy:
@@ -27,8 +21,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-#      - run: mvn org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${GITHUB_REF##*/}
-      - run: mvn org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${{ github.event.inputs.version }}
+      - run: mvn org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${GITHUB_REF##*/}
       - run: mvn -Prelease,maven deploy
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_USER }}
