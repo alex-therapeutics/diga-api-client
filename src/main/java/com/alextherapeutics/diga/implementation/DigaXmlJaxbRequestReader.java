@@ -18,6 +18,7 @@
 
 package com.alextherapeutics.diga.implementation;
 
+import com.alextherapeutics.diga.DigaXmlReaderException;
 import com.alextherapeutics.diga.DigaXmlRequestReader;
 import com.alextherapeutics.diga.model.*;
 import com.alextherapeutics.diga.model.generatedxml.billingreport.MessageType;
@@ -27,7 +28,6 @@ import com.alextherapeutics.diga.model.generatedxml.billingreport.ValidationStep
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.PruefungFreischaltcode;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -59,36 +59,45 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
     }
 
     @Override
-    public DigaInvoiceResponse readBillingReport(InputStream decryptedReport) throws JAXBException, IOException {
-        var bytes = decryptedReport.readAllBytes();
-        var report = (Report) billingReportUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
-        return DigaInvoiceResponse.builder()
-                .hasError(!report.isValid())
-                .errors(getInvoiceErrors(report))
-                .rawXmlResponseBody(IOUtils.toString(bytes, "UTF-8"))
-                .build();
+    public DigaInvoiceResponse readBillingReport(InputStream decryptedReport) throws DigaXmlReaderException {
+        try {
+            var bytes = decryptedReport.readAllBytes();
+            var report = (Report) billingReportUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+            return DigaInvoiceResponse.builder()
+                    .hasError(!report.isValid())
+                    .errors(getInvoiceErrors(report))
+                    .rawXmlResponseBody(bytes)
+                    .build();
+        } catch (JAXBException | IOException e) {
+            throw new DigaXmlReaderException(e);
+        }
 
     }
 
     @Override
-    public DigaCodeValidationResponse readCodeValidationResponse(InputStream decryptedResponse) throws JAXBException, IOException {
-        var bytes = decryptedResponse.readAllBytes();
-        var response = (PruefungFreischaltcode) codeValidationUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
-        validateCodeValidationResponse(response);
+    public DigaCodeValidationResponse readCodeValidationResponse(InputStream decryptedResponse) throws DigaXmlReaderException {
+        try {
 
-        // appendix 4 at https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
-        // seems to differ from the current xsd schema definition. watch for changes here
-        return DigaCodeValidationResponse.builder()
-                .rawXmlResponseBody(IOUtils.toString(bytes, "UTF-8"))
-                .hasError(response.getNachrichtentyp().equals(NachrichtentypStp.FEH))
-                .errors(getCodeValidationErrors(response))
-                .validatedDigaCode(response.getAntwort() == null ? null : response.getAntwort().getFreischaltcode())
-                .dayOfServiceProvision(response.getAntwort() == null ? null : response.getAntwort().getTagDerLeistungserbringung().toGregorianCalendar().getTime())
-                .validatedDigaveid(response.getAntwort() == null ? null : response.getAntwort().getDiGAVEID())
-                .build();
+            var bytes = decryptedResponse.readAllBytes();
+            var response = (PruefungFreischaltcode) codeValidationUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+            validateCodeValidationResponse(response);
+
+            // appendix 4 at https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
+            // seems to differ from the current xsd schema definition. watch for changes here
+            return DigaCodeValidationResponse.builder()
+                    .rawXmlResponseBody(bytes)
+                    .hasError(response.getNachrichtentyp().equals(NachrichtentypStp.FEH))
+                    .errors(getCodeValidationErrors(response))
+                    .validatedDigaCode(response.getAntwort() == null ? null : response.getAntwort().getFreischaltcode())
+                    .dayOfServiceProvision(response.getAntwort() == null ? null : response.getAntwort().getTagDerLeistungserbringung().toGregorianCalendar().getTime())
+                    .validatedDigaveid(response.getAntwort() == null ? null : response.getAntwort().getDiGAVEID())
+                    .build();
+        } catch (JAXBException | IOException e) {
+            throw new DigaXmlReaderException(e);
+        }
     }
 
-    private List<DigaCodeValidationResponseError> getCodeValidationErrors(PruefungFreischaltcode request) {
+    private List<DigaApiResponseError> getCodeValidationErrors(PruefungFreischaltcode request) {
         var errors = request.getFehlerinformation();
         return errors == null
                 ? Collections.emptyList()
@@ -112,7 +121,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
         }
     }
 
-    private List<DigaInvoiceResponseError> getInvoiceErrors(Report report) {
+    private List<DigaApiResponseError> getInvoiceErrors(Report report) {
         return report.isValid()
                 ? Collections.emptyList()
                 : report.getScenarioMatched().getValidationStepResult().stream()

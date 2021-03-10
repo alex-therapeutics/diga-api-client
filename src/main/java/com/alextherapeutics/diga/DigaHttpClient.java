@@ -30,7 +30,7 @@ public interface DigaHttpClient {
      *
      * @param request
      * @return A {@link DigaApiHttpResponse} containing response information including the encrpyted data body (if received)
-     * @throws DigaHttpClientException
+     * @throws DigaHttpClientException if the request failed
      */
     DigaApiHttpResponse post(DigaApiHttpRequest request) throws DigaHttpClientException;
 }

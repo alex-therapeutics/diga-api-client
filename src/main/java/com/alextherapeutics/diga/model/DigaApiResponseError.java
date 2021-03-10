@@ -18,28 +18,25 @@
 
 package com.alextherapeutics.diga.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
-
 /**
- * An error received from sending a DiGA XML invoice.
+ * An error returned while communicating with the DiGA API
+ * This can both be an error returned from the API endpoints, or an error which occured within the library
+ * while interacting with the API endpoint - such as exceptions when decrypting data or sending the http request etc.
  */
-@Builder
-@Getter
-@ToString
-public class DigaInvoiceResponseError implements DigaApiResponseError {
+public interface DigaApiResponseError {
     /**
-     * The ID of the validation step that errored
+     * Get information on this error as a String.
+     * This method should be implemented so as to not lose any information contained in the error object itself, so
+     * the returned string may be extensive.
+     * @return - the error as a string
      */
-    private String validationStepId;
+    String toString();
+
     /**
-     * The messages received for the error in the report
+     * Synonymous with {@link #toString()}
+     * @return
      */
-    private String messages;
-    /**
-     * The "Resource" that was not valid. This will give information on which schema/schematron/xsl was used for
-     * validating this error.
-     */
-    private String resources;
+    default String getError() {
+        return toString();
+    }
 }
