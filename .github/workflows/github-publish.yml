@@ -1,0 +1,29 @@
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'What to set pom version to'
+        required: true
+#on:
+#  release:
+#    types: [ created ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+#      - run: mvn org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${GITHUB_REF##*/}
+      - run: mvn org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${{ github.event.inputs.version }}
+      - run: mvn -Prelease deploy
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
