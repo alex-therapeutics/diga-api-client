@@ -97,6 +97,12 @@
             <version>5.7.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.8.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -115,8 +121,17 @@
                         <configuration>
                             <xsdOptions>
                                 <xsdOption>
-                                    <xsdDir>${basedir}/src/main/resources/xsd/</xsdDir>
-                                    <packagename>com.alextherapeutics.diga.model.xml</packagename>
+                                    <xsdDir>${basedir}/src/main/resources/code-xsd/</xsdDir>
+                                    <packagename>com.alextherapeutics.diga.model.generatedxml.codevalidation</packagename>
+                                </xsdOption>
+                                <xsdOption>
+                                    <xsdDir>${basedir}/src/main/resources/billing-xsd/</xsdDir>
+                                    <packagename>com.alextherapeutics.diga.model.generatedxml.billing</packagename>
+                                </xsdOption>
+                                <xsdOption>
+                                    <xsdDir>${basedir}/src/main/resources/billing-report-xsd/</xsdDir>
+                                    <packagename>com.alextherapeutics.diga.model.generatedxml.billingreport</packagename>
+                                    <extensionArgs>-XautoNameResolution</extensionArgs>
                                 </xsdOption>
                             </xsdOptions>
                         </configuration>

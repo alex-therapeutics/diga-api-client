@@ -63,15 +63,4 @@ public class DigaApiClientSettings {
      */
     @NonNull
     private String healthInsurancePublicKeyStorePassword;
-    /**
-     * The IK number of your company sending requests from this API client.
-     */
-    @NonNull
-    private String senderIkNUmber;
-    /**
-     * The DiGA ID of the DiGA which is using this client. If you are serving more than one DiGA from
-     * this backend, you will need two instances of the client.
-     */
-    @NonNull
-    private String senderDigaId;
 }

@@ -16,22 +16,24 @@
  *
  */
 
-package com.alextherapeutics.diga;
+package com.alextherapeutics.diga.model;
 
-import com.alextherapeutics.diga.model.generatedxml.codevalidation.KrankenkasseninformationCtp;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 /**
- * Contains the information located in the health insurance data mapping file provided by gkv at
- * https://kkv.gkv-diga.de/ and provides methods for accessing the information.
+ * Error information received from an XML response
  */
-public interface DigaHealthInsuranceDirectory {
+@AllArgsConstructor
+@Data
+public class DigaCodeValidationResponseError {
     /**
-     * Get information from the insurance directory based on the company code prefix,
-     * or "Kostentraegerkuerzel"
-     *
-     * @param prefix
-     * @return
+     * An API error code as described in the documentation at
+     * https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
      */
-    // TODO provide english mapping of this model
-    KrankenkasseninformationCtp getInformation(String prefix);
+    private DigaCodeValidationErrorCode errorCode;
+    /**
+     * A description of the error
+     */
+    private String errorText;
 }

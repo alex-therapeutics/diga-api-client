@@ -16,22 +16,28 @@
  *
  */
 
-package com.alextherapeutics.diga;
+package com.alextherapeutics.diga.model;
 
-import com.alextherapeutics.diga.model.generatedxml.codevalidation.KrankenkasseninformationCtp;
+import lombok.Builder;
+import lombok.Getter;
 
 /**
- * Contains the information located in the health insurance data mapping file provided by gkv at
- * https://kkv.gkv-diga.de/ and provides methods for accessing the information.
+ * An error received from sending a DiGA XML invoice.
  */
-public interface DigaHealthInsuranceDirectory {
+@Builder
+@Getter
+public class DigaInvoiceResponseError {
     /**
-     * Get information from the insurance directory based on the company code prefix,
-     * or "Kostentraegerkuerzel"
-     *
-     * @param prefix
-     * @return
+     * The ID of the validation step that errored
      */
-    // TODO provide english mapping of this model
-    KrankenkasseninformationCtp getInformation(String prefix);
+    private String validationStepId;
+    /**
+     * The messages received for the error in the report
+     */
+    private String messages;
+    /**
+     * The "Resource" that was not valid. This will give information on which schema/schematron/xsl was used for
+     * validating this error.
+     */
+    private String resources;
 }

@@ -33,25 +33,46 @@ in this project, so the easiest thing is to create such a file (`Main.java`) in 
     ````java
     public class Main {
         public static void main(String[] args) {
-            var senderIK = "my-company-IK";
-            var digaId = "12345"; // or your real ID if you have one
-            var mappingFile = Main.class.getClassLoader().getResourceAsStream("Krankenkassenverzeichnis_DiGA.xml");
-            var keystore = Main.class.getClassLoader().getResourceAsStream("keystore.p12");
-            var keystorePass = "my-keystore-password";
-            var privateKeyAlias = "my-private-key-alias-in-keystore";
+            var mappingFile = Main.class.getClassLoader().getResourceAsStream("mappings.xml");
+            var healthCompaniesKeyStore = Main.class.getClassLoader().getResourceAsStream("keystore.p12");
+            var privateKeyStore = Main.class.getClassLoader().getResourceAsStream("keystore.p12"); // you need one inputstream for each
 
-            var apiClient = new DigaApiClient(
-                    DigaApiClientSettings.builder()
-                            .healthInsuranceMappingFile(mappingFile)
-                            .privateKeyStoreFile(keystore)
-                            .healthInsurancePublicKeyStoreFile(keystore)
-                            .privateKeyStorePassword(keystorePass)
-                            .privateKeyAlias(privateKeyAlias)
-                            .healthInsurancePublicKeyStorePassword(keystorePass)
-                            .senderIkNUmber(senderIK)
-                            .senderDigaId(digaId)
+            var apiClientSettings = DigaApiClientSettings.builder() // settings required for the client to operate
+                    .healthInsuranceMappingFile(mappingFile)
+                    .privateKeyStoreFile(privateKeyStore)
+                    .healthInsurancePublicKeyStoreFile(healthCompaniesKeyStore)
+                    .privateKeyStorePassword("my-keystore-password")
+                    .privateKeyAlias("my-private-key-alias") // you must create this when creating the keystore
+                    .healthInsurancePublicKeyStorePassword("my-keystore-password")
+                    .build();
+
+            var digaInformation = DigaInformation.builder() // information about your DiGA and your company required to easily
+                    // create invoices and send requests to the API
+                    .digaName("my-DiGA-common-name")
+                    .digaId("my-DiGA-id-or-any-random-5-digits") // if you arent accepted as DiGA yet, just put 12345
+                    .manufacturingCompanyName("my-company-name")
+                    .manufacturingCompanyIk("my-IK-number")
+                    .netPricePerPrescription(new BigDecimal(100)) // net price per diga code validated
+                    .applicableVATpercent(new BigDecimal(19)) // how much VAT should be applied to the invoices
+                    .manufacturingCompanyVATRegistration("DE 123 456 789")
+                    .contactPersonForBilling(
+                        DigaInformation.ContactPersonForBilling.builder()
+                            .fullName("Sven Svensson")
+                            .phoneNumber("+46 70 123 45 67")
+                            .emailAddress("svensvensson@awesomedigacompany.com")
                             .build()
-            );
+                            )
+                    .companyTradeAddress(
+                        DigaInformation.CompanyTradeAddress.builder()
+                            .adressLine("Diga Street 1")
+                            .postalCode("123 45")
+                            .city("Digatown")
+                            .countryCode("DE")
+                            .build()
+                    )
+                    .build();
+
+            var apiClient = new DigaApiClient(apiClientSettings, digaInformation);
 
             var response = apiClient.sendTestRequest(DigaApiTestCode.VALID, "BY"); // this sends a test request to the company with prefix "BY"
             System.out.println(response.toString());

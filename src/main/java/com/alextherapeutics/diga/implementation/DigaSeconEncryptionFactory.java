@@ -58,16 +58,19 @@ public class DigaSeconEncryptionFactory implements DigaEncryptionFactory {
         this.publicKeyDirectoryPassword = publicKeyDirectoryPassword;
         init();
     }
+
     @Override
     public DigaEncryption.DigaEncryptionBuilder newEncryption() {
         return DigaEncryption.builder()
                 .subscriber(subscriber);
     }
+
     @Override
     public DigaDecryption.DigaDecryptionBuilder newDecryption() {
         return DigaDecryption.builder()
                 .subscriber(subscriber);
     }
+
     private void init() throws SeconException {
         this.identity = SECON.identity(
                 SECON.keyStore(

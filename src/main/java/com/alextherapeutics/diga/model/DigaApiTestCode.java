@@ -32,11 +32,11 @@ public enum DigaApiTestCode {
     ERROR_CODE_NOT_FOUND("77AAAAAAAAAAADGE"),
     ERROR_REQUEST_OR_DATA_INVALID("77AAAAAAAAAAAGIS"),
     ERROR_SERVER_FAILURE("77AAAAAAAAAAAGJC"),
-    ERROR_SERVER_MEMORY_FAILURE("77AAAAAAAAAAAGKD")
-    ;
+    ERROR_SERVER_MEMORY_FAILURE("77AAAAAAAAAAAGKD");
 
     @Getter
     private String code;
+
     DigaApiTestCode(String code) {
         this.code = code;
     }

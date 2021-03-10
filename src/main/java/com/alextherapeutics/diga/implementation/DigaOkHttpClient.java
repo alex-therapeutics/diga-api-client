@@ -128,6 +128,7 @@ public class DigaOkHttpClient implements DigaHttpClient {
             throw new DigaHttpClientException(e.getMessage());
         }
     }
+
     private boolean headerContainsFormDataName(Headers headers, String name) {
         var it = headers.iterator();
         var result = false;
@@ -142,8 +143,8 @@ public class DigaOkHttpClient implements DigaHttpClient {
     }
 
     private DigaApiHttpResponse.DigaApiHttpResponseBuilder parsePart(
-                    MultipartReader.Part part,
-                    DigaApiHttpResponse.DigaApiHttpResponseBuilder builder) throws IOException {
+            MultipartReader.Part part,
+            DigaApiHttpResponse.DigaApiHttpResponseBuilder builder) throws IOException {
         if (part == null) {
             return builder;
         }

@@ -18,27 +18,15 @@
 
 package com.alextherapeutics.diga.model;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 /**
  * Contains information gained from a (parsed) DiGA code when compared with the insurance company mapping file
  */
-@Builder
+@SuperBuilder
 @Getter
-public class DigaCodeInformation {
-    /**
-     * The IK number of the insurance company that generated this code.
-     */
-    private String insuranceCompanyIKNumber;
-    /**
-     * The name of the insurance company that generated this code.
-     */
-    private String insuranceCompanyName;
-    /**
-     * The API endpoint of the insurance company that generated this code.
-     */
-    private String endpoint;
+public class DigaCodeInformation extends AbstractDigaInsuranceInformation {
     /**
      * The full (unparsed) 16 character diga code.
      */

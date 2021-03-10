@@ -18,7 +18,8 @@
 
 package com.alextherapeutics.diga;
 
-import com.alextherapeutics.diga.model.DigaApiResponse;
+import com.alextherapeutics.diga.model.DigaCodeValidationResponse;
+import com.alextherapeutics.diga.model.DigaInvoiceResponse;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -29,11 +30,22 @@ import java.io.InputStream;
  */
 public interface DigaXmlRequestReader {
     /**
-     * Read an inputstream with XML contents and parse it.
+     * Read an inputstream with XML contents containing the validation of a DiGA code validation request and parse it.
+     *
      * @param decryptedResponse
-     * @return Relevant information in a new {@link DigaApiResponse} object. Note that the DigaApiResponse object contains fields which are not set by XML readers, like the HTTP status code.
+     * @return Relevant information in a new {@link DigaCodeValidationResponse} object. Note that the DigaApiResponse object contains fields which are not set by XML readers, like the HTTP status code.
      * @throws JAXBException
      * @throws IOException
      */
-    DigaApiResponse readCodeValidationResponse(InputStream decryptedResponse) throws JAXBException, IOException;
+    DigaCodeValidationResponse readCodeValidationResponse(InputStream decryptedResponse) throws JAXBException, IOException;
+
+    /**
+     * Read an inputstream with XML contents containing the validation report from a DiGA invoice and parse it.
+     *
+     * @param decryptedReport
+     * @return Relevant information in a new {@link DigaInvoiceResponse} object.
+     * @throws JAXBException
+     * @throws IOException
+     */
+    DigaInvoiceResponse readBillingReport(InputStream decryptedReport) throws JAXBException, IOException;
 }

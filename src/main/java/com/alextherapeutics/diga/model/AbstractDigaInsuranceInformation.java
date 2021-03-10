@@ -18,21 +18,29 @@
 
 package com.alextherapeutics.diga.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
 /**
- * Error information received from an XML response
+ * Information about an insurance company gathered from parsing a DiGA code.
  */
-@AllArgsConstructor
-@Data
-public class DigaApiResponseError {
+@SuperBuilder
+@Getter
+public abstract class AbstractDigaInsuranceInformation {
     /**
-     * An API error code as described in the documentation at
+     * The IK number of the insurance company that generated this code.
      */
-    private DigaErrorCode errorCode;
+    @NonNull
+    private String insuranceCompanyIKNumber;
     /**
-     * A description of the error
+     * The name of the insurance company that generated this code.
      */
-    private String errorText;
+    @NonNull
+    private String insuranceCompanyName;
+    /**
+     * The API endpoint of the insurance company that generated this code.
+     */
+    @NonNull
+    private String endpoint;
 }
