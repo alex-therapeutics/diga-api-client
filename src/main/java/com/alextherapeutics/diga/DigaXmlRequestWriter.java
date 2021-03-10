@@ -22,9 +22,6 @@ import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
 import com.alextherapeutics.diga.model.DigaInvoice;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
-
 /**
  * Creates raw XML data bodies containing code validation requests or DiGA invoices.
  */

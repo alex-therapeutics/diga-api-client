@@ -28,12 +28,14 @@ public interface DigaApiResponseError {
      * Get information on this error as a String.
      * This method should be implemented so as to not lose any information contained in the error object itself, so
      * the returned string may be extensive.
+     *
      * @return - the error as a string
      */
     String toString();
 
     /**
      * Synonymous with {@link #toString()}
+     *
      * @return
      */
     default String getError() {

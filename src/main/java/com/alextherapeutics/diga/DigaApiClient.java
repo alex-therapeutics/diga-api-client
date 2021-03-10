@@ -91,7 +91,7 @@ public final class DigaApiClient {
      * @param digaCode - the full code (16 letters) as a String object.
      * @return a {@link DigaCodeValidationResponse} object containing information on the response from the API. This response may contain errors, in which case there are error messages in the response as well as the raw XML request that was sent which you can access for debugging purposes or to save failed requests for retrying later.
      * @throws DigaCodeValidationException if given an invalid DiGA code
-     * @throws DigaXmlWriterException if we fail to create the XML request body to send to the API
+     * @throws DigaXmlWriterException      if we fail to create the XML request body to send to the API
      */
     public DigaCodeValidationResponse validateDigaCode(String digaCode) throws DigaXmlWriterException, DigaCodeValidationException {
         if (DigaUtils.isDigaTestCode(digaCode)) {
@@ -116,7 +116,7 @@ public final class DigaApiClient {
      * You can check that the invoice request succeeded by checking if (response.hasError()) {}. If hasError is false,
      * the invoice was successful.
      * @throws DigaCodeValidationException if given an invalid DiGA code
-     * @throws DigaXmlWriterException if we fail to create the XML request body (the XRechnung invoice)
+     * @throws DigaXmlWriterException      if we fail to create the XML request body (the XRechnung invoice)
      */
     public DigaInvoiceResponse invoiceDiga(DigaInvoice invoice) throws DigaCodeValidationException, DigaXmlWriterException {
         var billingInformation = codeParser.parseCodeForBilling(invoice.getValidatedDigaCode());
@@ -268,6 +268,7 @@ public final class DigaApiClient {
             throw new DigaApiException(e);
         }
     }
+
     private DigaCodeValidationResponse buildCodeValidationResponseFromException(byte[] xmlRequest, Throwable error, DigaCodeInformation information) {
         var response = DigaCodeValidationResponse.builder()
                 .hasError(true)
@@ -279,6 +280,7 @@ public final class DigaApiClient {
         addReceiverDetailsToResponse(response, information);
         return response;
     }
+
     private DigaInvoiceResponse buildInvoiceResponseFromException(byte[] xmlRequest, Throwable error, DigaBillingInformation information) {
         var response = DigaInvoiceResponse.builder()
                 .hasError(true)
