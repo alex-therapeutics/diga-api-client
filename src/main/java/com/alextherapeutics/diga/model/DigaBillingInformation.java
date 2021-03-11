@@ -35,6 +35,11 @@ public class DigaBillingInformation extends AbstractDigaInsuranceInformation {
     @NonNull
     private String buyerCompanyCreditorIk;
     /**
+     * How the company accepts invoices
+     */
+    @NonNull
+    private DigaInvoiceMethod buyerInvoicingMethod;
+    /**
      * The postal code of the company being billed.
      */
     private String buyerCompanyPostalCode;
@@ -51,11 +56,6 @@ public class DigaBillingInformation extends AbstractDigaInsuranceInformation {
      */
     @Builder.Default
     private String buyerCompanyCountryCode = "DE";
-    /**
-     * How the company accepts invoices
-     */
-    @NonNull
-    private DigaInvoiceMethod buyerInvoicingMethod;
     /**
      * The company's invoice email
      * This can be null as it only affects companies which have {@link DigaInvoiceMethod#EMAIL}
