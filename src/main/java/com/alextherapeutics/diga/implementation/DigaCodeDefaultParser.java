@@ -23,6 +23,7 @@ import com.alextherapeutics.diga.DigaCodeValidationException;
 import com.alextherapeutics.diga.DigaHealthInsuranceDirectory;
 import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
+import com.alextherapeutics.diga.model.DigaInvoiceMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
@@ -59,6 +60,8 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
                 .buyerCompanyPostalCode(healthInsuranceInformation.getPLZ())
                 .buyerCompanyAddressLine(healthInsuranceInformation.getStrassePostfach() + " " + healthInsuranceInformation.getHausnummerPostfachnummer())
                 .buyerCompanyCity(healthInsuranceInformation.getOrt())
+                .buyerInvoicingMethod(DigaInvoiceMethod.fromIdentifier(healthInsuranceInformation.getVersandart().intValue()))
+                .buyerInvoicingEmail(healthInsuranceInformation.getEMailKostentraeger())
                 .build();
     }
 
