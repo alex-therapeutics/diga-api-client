@@ -25,6 +25,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.math.BigInteger;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DigaCodeDefaultParserTest {
@@ -86,6 +88,7 @@ class DigaCodeDefaultParserTest {
         krank.setStrassePostfach("dum");
         krank.setHausnummerPostfachnummer("dum");
         krank.setOrt("dum");
+        krank.setVersandart(BigInteger.ONE);
         return krank;
     }
 
