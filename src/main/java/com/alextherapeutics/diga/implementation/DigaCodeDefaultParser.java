@@ -56,9 +56,21 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
                 .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
                 .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
                 .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
-                .buyerCompanyPostalCode(healthInsuranceInformation.getPLZ())
-                .buyerCompanyAddressLine(healthInsuranceInformation.getStrassePostfach() + " " + healthInsuranceInformation.getHausnummerPostfachnummer())
-                .buyerCompanyCity(healthInsuranceInformation.getOrt())
+                .buyerCompanyPostalCode(
+                        healthInsuranceInformation.getPLZ() != null
+                                ? healthInsuranceInformation.getPLZ()
+                                : DigaBillingInformation.INFORMATION_MISSIONG
+                )
+                .buyerCompanyAddressLine(
+                        healthInsuranceInformation.getStrassePostfach() != null
+                                ? healthInsuranceInformation.getStrassePostfach() + " " + healthInsuranceInformation.getHausnummerPostfachnummer()
+                                : DigaBillingInformation.INFORMATION_MISSIONG
+                )
+                .buyerCompanyCity(
+                        healthInsuranceInformation.getOrt() != null
+                                ? healthInsuranceInformation.getOrt()
+                                : DigaBillingInformation.INFORMATION_MISSIONG
+                )
                 .build();
     }
 
