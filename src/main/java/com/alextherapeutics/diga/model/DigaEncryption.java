@@ -18,6 +18,7 @@
 
 package com.alextherapeutics.diga.model;
 
+import com.alextherapeutics.diga.DigaEncryptionException;
 import de.tk.opensource.secon.SECON;
 import de.tk.opensource.secon.SeconException;
 import de.tk.opensource.secon.Subscriber;
@@ -56,17 +57,21 @@ public class DigaEncryption {
      *
      * @return
      */
-    public ByteArrayOutputStream encrypt() throws IOException, SeconException {
-        try (var input = new ByteArrayInputStream(encryptionTarget)) {
-            try (var output = new ByteArrayOutputStream()) {
-                SECON.copy(
-                        () -> new ByteArrayInputStream(input.readAllBytes()),
-                        subscriber.signAndEncryptTo(
-                                () -> output, recipientAlias
-                        )
-                );
-                return output;
+    public ByteArrayOutputStream encrypt() throws DigaEncryptionException {
+        try {
+            try (var input = new ByteArrayInputStream(encryptionTarget)) {
+                try (var output = new ByteArrayOutputStream()) {
+                    SECON.copy(
+                            () -> new ByteArrayInputStream(input.readAllBytes()),
+                            subscriber.signAndEncryptTo(
+                                    () -> output, recipientAlias
+                            )
+                    );
+                    return output;
+                }
             }
+        } catch (IOException | SeconException e) {
+            throw new DigaEncryptionException(e);
         }
     }
 }

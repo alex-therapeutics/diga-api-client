@@ -16,15 +16,13 @@
  *
  */
 
-package com.alextherapeutics.diga.model;
-
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+package com.alextherapeutics.diga;
 
 /**
- * A response to an invoice request to the DiGA API (#RE0)
+ * Decrypting an encrypted XML body response failed
  */
-@SuperBuilder
-@Data
-public class DigaInvoiceResponse extends AbstractDigaApiResponse {
+public class DigaDecryptionException extends Exception {
+    public DigaDecryptionException(Throwable e) {
+        super("Diga decryption failed due to exception", e);
+    }
 }

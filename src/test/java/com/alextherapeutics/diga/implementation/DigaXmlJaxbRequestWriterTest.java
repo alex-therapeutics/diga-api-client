@@ -18,6 +18,7 @@
 
 package com.alextherapeutics.diga.implementation;
 
+import com.alextherapeutics.diga.DigaXmlWriterException;
 import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
 import com.alextherapeutics.diga.model.DigaInformation;
@@ -65,7 +66,7 @@ class DigaXmlJaxbRequestWriterTest {
     }
 
     @Test
-    void testCreateCodeValidationRequestCompletesWithoutExceptions() throws JAXBException, IOException {
+    void testCreateCodeValidationRequestCompletesWithoutExceptions() throws JAXBException, IOException, DigaXmlWriterException {
         var res = writer.createCodeValidationRequest(
                 DigaCodeInformation.builder()
                         .fullDigaCode("dum")
@@ -79,7 +80,7 @@ class DigaXmlJaxbRequestWriterTest {
     }
 
     @Test
-    void testCreateBillingRequestCompletesWithoutExceptions() throws JAXBException, IOException {
+    void testCreateBillingRequestCompletesWithoutExceptions() throws JAXBException, IOException, DigaXmlWriterException {
         var res = writer.createBillingRequest(
                 DigaInvoice.builder()
                         .validatedDigaCode("dum")

@@ -18,6 +18,7 @@
 
 package com.alextherapeutics.diga.implementation;
 
+import com.alextherapeutics.diga.DigaXmlReaderException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -287,13 +288,13 @@ class DigaXmlJaxbRequestReaderTest {
     }
 
     @Test
-    void testReadBillingReportCompletesWithoutErrors() throws JAXBException, IOException {
+    void testReadBillingReportCompletesWithoutErrors() throws JAXBException, IOException, DigaXmlReaderException {
         var response = reader.readBillingReport(new ByteArrayInputStream(sampleBillingValidationReport.getBytes(StandardCharsets.UTF_8)));
         Assertions.assertNotNull(response);
     }
 
     @Test
-    void testReadCodeValidationResponseCompletesWithoutErrors() throws JAXBException, IOException {
+    void testReadCodeValidationResponseCompletesWithoutErrors() throws JAXBException, IOException, DigaXmlReaderException {
         var response = reader.readCodeValidationResponse(new ByteArrayInputStream(sampleCodeValidationAnswer.getBytes(StandardCharsets.UTF_8)));
         Assertions.assertNotNull(response);
     }

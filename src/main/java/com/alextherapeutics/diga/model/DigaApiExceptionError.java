@@ -18,13 +18,16 @@
 
 package com.alextherapeutics.diga.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.experimental.SuperBuilder;
+import lombok.ToString;
 
 /**
- * A response to an invoice request to the DiGA API (#RE0)
+ * An error which occured by an exception being thrown inside the library.
  */
-@SuperBuilder
+@AllArgsConstructor
 @Data
-public class DigaInvoiceResponse extends AbstractDigaApiResponse {
+@ToString
+public class DigaApiExceptionError implements DigaApiResponseError {
+    private Throwable exception;
 }

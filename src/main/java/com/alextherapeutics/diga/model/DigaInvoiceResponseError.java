@@ -20,13 +20,15 @@ package com.alextherapeutics.diga.model;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * An error received from sending a DiGA XML invoice.
  */
 @Builder
 @Getter
-public class DigaInvoiceResponseError {
+@ToString
+public class DigaInvoiceResponseError implements DigaApiResponseError {
     /**
      * The ID of the validation step that errored
      */

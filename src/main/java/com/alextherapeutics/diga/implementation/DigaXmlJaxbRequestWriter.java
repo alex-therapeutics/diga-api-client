@@ -20,6 +20,7 @@ package com.alextherapeutics.diga.implementation;
 
 import com.alextherapeutics.diga.DigaUtils;
 import com.alextherapeutics.diga.DigaXmlRequestWriter;
+import com.alextherapeutics.diga.DigaXmlWriterException;
 import com.alextherapeutics.diga.model.*;
 import com.alextherapeutics.diga.model.generatedxml.billing.*;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
@@ -71,44 +72,53 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     }
 
     @Override
-    public byte[] createCodeValidationRequest(DigaCodeInformation codeInformation) throws JAXBException, IOException {
-        var processIdentifier = DigaUtils.isDigaTestCode(codeInformation.getFullDigaCode())
-                ? VerfahrenskennungStp.TDFC_0
-                : VerfahrenskennungStp.EDFC_0;
+    public byte[] createCodeValidationRequest(DigaCodeInformation codeInformation) throws DigaXmlWriterException {
+        try {
+            var processIdentifier = DigaUtils.isDigaTestCode(codeInformation.getFullDigaCode())
+                    ? VerfahrenskennungStp.TDFC_0
+                    : VerfahrenskennungStp.EDFC_0;
 
 
-        var receiverIkWithoutPrefix = DigaUtils.ikNumberWithoutPrefix(codeInformation.getInsuranceCompanyIKNumber());
-        var anfrage = codeObjectFactory.createPruefungFreischaltcodeAnfrage();
-        anfrage.setIKDiGAHersteller(DigaUtils.ikNumberWithoutPrefix(digaInformation.getManufacturingCompanyIk()));
-        anfrage.setIKKrankenkasse(receiverIkWithoutPrefix);
-        anfrage.setDiGAID(digaInformation.getDigaId());
-        anfrage.setFreischaltcode(codeInformation.getFullDigaCode());
+            var receiverIkWithoutPrefix = DigaUtils.ikNumberWithoutPrefix(codeInformation.getInsuranceCompanyIKNumber());
+            var anfrage = codeObjectFactory.createPruefungFreischaltcodeAnfrage();
+            anfrage.setIKDiGAHersteller(DigaUtils.ikNumberWithoutPrefix(digaInformation.getManufacturingCompanyIk()));
+            anfrage.setIKKrankenkasse(receiverIkWithoutPrefix);
+            anfrage.setDiGAID(digaInformation.getDigaId());
+            anfrage.setFreischaltcode(codeInformation.getFullDigaCode());
 
-        var request = codeObjectFactory.createPruefungFreischaltcode();
-        request.setAnfrage(anfrage);
-        request.setVerfahrenskennung(processIdentifier);
-        request.setGueltigab(datatypeFactory.newXMLGregorianCalendar(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_DATE.getValue()));
-        request.setAbsender(DigaUtils.ikNumberWithoutPrefix(digaInformation.getManufacturingCompanyIk()));
-        request.setEmpfaenger(receiverIkWithoutPrefix);
-        request.setNachrichtentyp(NachrichtentypStp.ANF);
-        request.setVersion(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_VERSION.getValue());
+            var request = codeObjectFactory.createPruefungFreischaltcode();
+            request.setAnfrage(anfrage);
+            request.setVerfahrenskennung(processIdentifier);
+            request.setGueltigab(datatypeFactory.newXMLGregorianCalendar(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_DATE.getValue()));
+            request.setAbsender(DigaUtils.ikNumberWithoutPrefix(digaInformation.getManufacturingCompanyIk()));
+            request.setEmpfaenger(receiverIkWithoutPrefix);
+            request.setNachrichtentyp(NachrichtentypStp.ANF);
+            request.setVersion(DigaSupportedXsdVersion.DIGA_CODE_VALIDATION_VERSION.getValue());
 
-        try (var res = new ByteArrayOutputStream()) {
-            codeMarshaller.marshal(request, res);
-            return res.toByteArray();
+            try (var res = new ByteArrayOutputStream()) {
+                codeMarshaller.marshal(request, res);
+                return res.toByteArray();
+            }
+        } catch (JAXBException | IOException e) {
+            throw new DigaXmlWriterException(e);
         }
     }
 
     @Override
-    public byte[] createBillingRequest(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) throws IOException, JAXBException {
-        var invoice = billingObjectFactory.createCrossIndustryInvoiceType();
-        invoice.setExchangedDocumentContext(createExchangedDocumentContext());
-        invoice.setExchangedDocument(createExchangedDocument(digaInvoice));
-        invoice.setSupplyChainTradeTransaction(createSupplyChainTradeTransaction(digaInvoice, billingInformation));
-        var root = billingObjectFactory.createCrossIndustryInvoice(invoice);
-        try (var res = new ByteArrayOutputStream()) {
-            billingMarshaller.marshal(root, res);
-            return res.toByteArray();
+    public byte[] createBillingRequest(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) throws DigaXmlWriterException {
+        try {
+
+            var invoice = billingObjectFactory.createCrossIndustryInvoiceType();
+            invoice.setExchangedDocumentContext(createExchangedDocumentContext());
+            invoice.setExchangedDocument(createExchangedDocument(digaInvoice));
+            invoice.setSupplyChainTradeTransaction(createSupplyChainTradeTransaction(digaInvoice, billingInformation));
+            var root = billingObjectFactory.createCrossIndustryInvoice(invoice);
+            try (var res = new ByteArrayOutputStream()) {
+                billingMarshaller.marshal(root, res);
+                return res.toByteArray();
+            }
+        } catch (JAXBException | IOException e) {
+            throw new DigaXmlWriterException(e);
         }
     }
 
