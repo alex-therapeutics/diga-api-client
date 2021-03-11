@@ -132,7 +132,7 @@ public final class DigaApiClient {
      *
      * @param testCode               - one of the specified test codes
      * @param insuranceCompanyPrefix - the prefix of the company to send the request to (according to the mapping file at https://kkv.gkv-diga.de/)
-     * @return An object containing details on the response from the API, including errors if such occured.
+     * @return An object containing details on the response from the API, including errors of such occured.
      * @throws DigaXmlWriterException if we fail to create the XML request body to send to the API
      */
     public DigaCodeValidationResponse sendTestCodeValidationRequest(DigaApiTestCode testCode, String insuranceCompanyPrefix) throws DigaXmlWriterException {
