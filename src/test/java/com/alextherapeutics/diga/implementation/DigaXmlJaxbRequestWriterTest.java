@@ -19,10 +19,7 @@
 package com.alextherapeutics.diga.implementation;
 
 import com.alextherapeutics.diga.DigaXmlWriterException;
-import com.alextherapeutics.diga.model.DigaBillingInformation;
-import com.alextherapeutics.diga.model.DigaCodeInformation;
-import com.alextherapeutics.diga.model.DigaInformation;
-import com.alextherapeutics.diga.model.DigaInvoice;
+import com.alextherapeutics.diga.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,6 +91,7 @@ class DigaXmlJaxbRequestWriterTest {
                         .buyerCompanyPostalCode("dum")
                         .buyerCompanyAddressLine("dum")
                         .buyerCompanyCreditorIk("dum")
+                        .buyerInvoicingMethod(DigaInvoiceMethod.API)
                         .build()
         );
         Assertions.assertNotNull(res);

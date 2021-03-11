@@ -218,7 +218,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     // information on seller and buyer
     private HeaderTradeAgreementType createApplicableHeaderTradeAgreement(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
         var applicableHeaderTradeAgreement = billingObjectFactory.createHeaderTradeAgreementType();
-        applicableHeaderTradeAgreement.setBuyerReference(createTextType("Leitweg-ID")); // TODO what is this and how do we find it out (it is some unique routing identifier for the buyer notpresent in mapping file)
+        applicableHeaderTradeAgreement.setBuyerReference(createTextType("Leitweg-ID"));
         applicableHeaderTradeAgreement.setSellerTradeParty(
                 createTradeParty(
                         DigaTradeParty.builder()

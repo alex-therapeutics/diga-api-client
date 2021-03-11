@@ -24,6 +24,7 @@ import de.tk.opensource.secon.SeconException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -59,6 +60,8 @@ import java.util.Collections;
 @AllArgsConstructor
 public final class DigaApiClient {
     @NonNull
+    private DigaInformation digaInformation;
+    @NonNull
     private DigaEncryptionFactory encryptionFactory;
     @NonNull
     private DigaHttpClient httpClient;
@@ -70,8 +73,6 @@ public final class DigaApiClient {
     private DigaXmlRequestWriter xmlRequestWriter;
     @NonNull
     private DigaXmlRequestReader xmlRequestReader;
-    @NonNull
-    private DigaInformation digaInformation;
 
     /**
      * Create a working Diga API client with default class implementations.
@@ -107,14 +108,17 @@ public final class DigaApiClient {
      * Send an Invoice for a DiGA prescription.
      *
      * @param invoice - individual invoice details
-     * @return An object containing details on the response to the invoice request as well as request details such as
+     * @return An object containing details on the response to the invoice request, the generated invoice itself,  as well as request details such as
      * which insurance company was sent to, which endpoint, IK, etc. This response may contain errors, in which case there are error messages in the object.
-     * <p>
-     * The contents of the Invoice itself is located in DigaInvoiceResponse.getRawXmlRequestBody(), you can fetch
-     * that and use it for accounting needs.
      * <p>
      * You can check that the invoice request succeeded by checking if (response.hasError()) {}. If hasError is false,
      * the invoice was successful.
+     * <p>
+     * You should check {@link DigaInvoiceResponse#isRequiresManualAction()} to see whether the invoice needs to be handled manually, in the
+     * cases when the target insurance company does not support sending invoices via the API.
+     * <p>
+     * The contents of the Invoice itself is located in {@link DigaInvoiceResponse#getGeneratedInvoice()}, you can fetch
+     * that and use it for accounting needs both when invoicing was successful and when it was not.
      * @throws DigaCodeValidationException if given an invalid DiGA code
      * @throws DigaXmlWriterException      if we fail to create the XML request body (the XRechnung invoice)
      */
@@ -175,6 +179,8 @@ public final class DigaApiClient {
                                 ? healthInsuranceInformation.getOrt()
                                 : DigaBillingInformation.INFORMATION_MISSING
                 )
+                .buyerInvoicingMethod(DigaInvoiceMethod.fromIdentifier(healthInsuranceInformation.getVersandart().intValue()))
+                .buyerInvoicingEmail(healthInsuranceInformation.getEMailKostentraeger())
                 .build();
         return performDigaInvoicing(invoice, billingInformation, DigaProcessCode.BILLING_TEST);
     }
@@ -216,34 +222,57 @@ public final class DigaApiClient {
 
     private DigaInvoiceResponse performDigaInvoicing(DigaInvoice invoice, DigaBillingInformation billingInformation, DigaProcessCode processCode) throws DigaXmlWriterException {
         var xmlInvoice = xmlRequestWriter.createBillingRequest(invoice, billingInformation);
+        if (!billingInformation.getBuyerInvoicingMethod().equals(DigaInvoiceMethod.API)) {
+            return buildManualInvoicingResponse(billingInformation, xmlInvoice);
+        }
+        try {
+            return performDigaInvoicingAgainstApi(billingInformation, xmlInvoice, processCode);
+        } catch (DigaHttpClientException | DigaDecryptionException | DigaEncryptionException | DigaXmlReaderException e) {
+            log.error("Failed to invoice DiGA API for invoice id {}, code {}", invoice.getInvoiceId(), invoice.getValidatedDigaCode(), e);
+            return buildInvoiceResponseFromException(xmlInvoice, e, billingInformation);
+        }
+    }
+
+    @SneakyThrows(IOException.class) // IOUtils specify this exception as "never occurs" so..
+    private DigaInvoiceResponse performDigaInvoicingAgainstApi(DigaBillingInformation billingInformation, byte[] xmlInvoice, DigaProcessCode processCode) throws DigaEncryptionException, DigaHttpClientException, DigaDecryptionException, DigaXmlReaderException {
         var encryptionAttempt = encryptionFactory.newEncryption()
                 .encryptionTarget(xmlInvoice)
                 .recipientAlias(DigaUtils.ikNumberWithPrefix(billingInformation.getInsuranceCompanyIKNumber()))
                 .build();
-        try {
-            var encryptedXmlInvoice = encryptionAttempt.encrypt().toByteArray();
-            var httpApiRequest = DigaApiHttpRequest.builder()
-                    .encryptedContent(encryptedXmlInvoice)
-                    .recipientIK(billingInformation.getInsuranceCompanyIKNumber())
-                    .processCode(processCode)
-                    .url(DigaUtils.buildPostDigaEndpoint(billingInformation.getEndpoint()))
-                    .senderIK(digaInformation.getManufacturingCompanyIk())
-                    .build();
-            var httpResponse = httpClient.post(httpApiRequest);
-            var decryptAttempt = encryptionFactory.newDecryption()
-                    .decryptionTarget(httpResponse.getEncryptedBody())
-                    .build();
-            var decrypted = decryptAttempt.decrypt().toByteArray();
-            var response = xmlRequestReader.readBillingReport(new ByteArrayInputStream(decrypted));
-            response.setHttpStatusCode(httpResponse.getStatusCode());
-            response.setRawXmlRequestBody(xmlInvoice);
-            response.setRawXmlRequestBodyEncrypted(encryptedXmlInvoice);
-            addReceiverDetailsToResponse(response, billingInformation);
-            return response;
-        } catch (DigaHttpClientException | DigaDecryptionException | DigaEncryptionException | DigaXmlReaderException e) {
-            log.error("Failed to invoice DiGA for invoice id {}, code {}", invoice.getInvoiceId(), invoice.getValidatedDigaCode(), e);
-            return buildInvoiceResponseFromException(xmlInvoice, e, billingInformation);
-        }
+        var encryptedXmlInvoice = encryptionAttempt.encrypt().toByteArray();
+        var httpApiRequest = DigaApiHttpRequest.builder()
+                .encryptedContent(encryptedXmlInvoice)
+                .recipientIK(billingInformation.getInsuranceCompanyIKNumber())
+                .processCode(processCode)
+                .url(DigaUtils.buildPostDigaEndpoint(billingInformation.getEndpoint()))
+                .senderIK(digaInformation.getManufacturingCompanyIk())
+                .build();
+        var httpResponse = httpClient.post(httpApiRequest);
+        var decryptAttempt = encryptionFactory.newDecryption()
+                .decryptionTarget(httpResponse.getEncryptedBody())
+                .build();
+        var decrypted = decryptAttempt.decrypt().toByteArray();
+        var response = xmlRequestReader.readBillingReport(new ByteArrayInputStream(decrypted));
+        response.setHttpStatusCode(httpResponse.getStatusCode());
+        response.setRawXmlRequestBody(xmlInvoice);
+        response.setGeneratedInvoice(IOUtils.toString(xmlInvoice, "UTF-8"));
+        response.setRawXmlRequestBodyEncrypted(encryptedXmlInvoice);
+        addReceiverDetailsToResponse(response, billingInformation);
+        return response;
+    }
+
+    @SneakyThrows(IOException.class)
+    private DigaInvoiceResponse buildManualInvoicingResponse(DigaBillingInformation billingInformation, byte[] xmlInvoice) {
+        return DigaInvoiceResponse.builder()
+                .requiresManualAction(true)
+                .invoiceMethod(billingInformation.getBuyerInvoicingMethod())
+                .rawXmlRequestBody(xmlInvoice)
+                .generatedInvoice(IOUtils.toString(xmlInvoice, "UTF-8"))
+                .insuranceCompanyInvoiceEmail(billingInformation.getBuyerInvoicingEmail())
+                .receivingInsuranceCompanyEndpoint(billingInformation.getEndpoint())
+                .receivingInsuranceCompanyIk(billingInformation.getInsuranceCompanyIKNumber())
+                .receivingInsuranceCompanyName(billingInformation.getInsuranceCompanyName())
+                .build();
     }
 
     private void addReceiverDetailsToResponse(AbstractDigaApiResponse response, AbstractDigaInsuranceInformation insuranceInformation) {
@@ -293,6 +322,7 @@ public final class DigaApiClient {
         return response;
     }
 
+    @SneakyThrows(IOException.class)
     private DigaInvoiceResponse buildInvoiceResponseFromException(byte[] xmlRequest, Throwable error, DigaBillingInformation information) {
         var response = DigaInvoiceResponse.builder()
                 .hasError(true)
@@ -300,6 +330,7 @@ public final class DigaApiClient {
                         new DigaApiExceptionError(error)
                 ))
                 .rawXmlRequestBody(xmlRequest)
+                .generatedInvoice(IOUtils.toString(xmlRequest, "UTF-8"))
                 .build();
         addReceiverDetailsToResponse(response, information);
         return response;
