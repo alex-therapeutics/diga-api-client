@@ -21,6 +21,10 @@ package com.alextherapeutics.diga.model;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
+import org.apache.commons.io.IOUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Common fields for all responses from the DiGA API
@@ -40,13 +44,19 @@ public abstract class AbstractDigaApiResponse {
     @Builder.Default
     private boolean hasError = false;
     /**
-     * The raw decrypted XML response body encoded as an UTF-8 string.
+     * Information on errors returned by the API endpoints or exceptions thrown when handling the data from the API.
+     * If there are no errors present, this is an empty list.
      */
-    private String rawXmlResponseBody;
+    @Builder.Default
+    private List<DigaApiResponseError> errors = new ArrayList<>();
     /**
-     * The raw XML request body pre-encryption encoded as an UTF-8 string.
+     * The raw decrypted XML response body. To read it, convert to a String with for example {@link IOUtils#toString()}
      */
-    private String rawXmlRequestBody;
+    private byte[] rawXmlResponseBody;
+    /**
+     * The raw XML request body pre-encryption. To read it, convert to a String with for example {@link IOUtils#toString()}
+     */
+    private byte[] rawXmlRequestBody;
     /**
      * The raw **encrypted** XML body.
      */

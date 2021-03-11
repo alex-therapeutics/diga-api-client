@@ -22,9 +22,6 @@ import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
 import com.alextherapeutics.diga.model.DigaInvoice;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
-
 /**
  * Creates raw XML data bodies containing code validation requests or DiGA invoices.
  */
@@ -34,10 +31,9 @@ public interface DigaXmlRequestWriter {
      *
      * @param codeInformation - information required to create the request
      * @return A byte array containing a (non-encrypted) PruefungFreischaltcode - Anfrage XML request
-     * @throws JAXBException
-     * @throws IOException
+     * @throws DigaXmlWriterException - if the request body couldn't be created
      */
-    byte[] createCodeValidationRequest(DigaCodeInformation codeInformation) throws JAXBException, IOException;
+    byte[] createCodeValidationRequest(DigaCodeInformation codeInformation) throws DigaXmlWriterException;
 
     /**
      * Create a XML request body containing a DiGA invoice (an "XRechnung" invoice conforming to UN/CEFACT standard)
@@ -45,8 +41,7 @@ public interface DigaXmlRequestWriter {
      * @param invoice            - information required to create the invoice
      * @param billingInformation - information on the buyer
      * @return A byte array containing a (non-encrypted) XRechnung XML invoice
-     * @throws JAXBException
-     * @throws IOException
+     * @throws DigaXmlWriterException - if the request body couldn't be created
      */
-    byte[] createBillingRequest(DigaInvoice invoice, DigaBillingInformation billingInformation) throws JAXBException, IOException;
+    byte[] createBillingRequest(DigaInvoice invoice, DigaBillingInformation billingInformation) throws DigaXmlWriterException;
 }

@@ -16,15 +16,14 @@
  *
  */
 
-package com.alextherapeutics.diga.model;
-
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+package com.alextherapeutics.diga;
 
 /**
- * A response to an invoice request to the DiGA API (#RE0)
+ * Thrown when the library fails to read the XML response from the 'nutzdaten' data part of a DiGA API response
+ * Inspect the underlying exception for details
  */
-@SuperBuilder
-@Data
-public class DigaInvoiceResponse extends AbstractDigaApiResponse {
+public class DigaXmlReaderException extends Exception {
+    public DigaXmlReaderException(Throwable e) {
+        super("Exception thrown when trying to read XML request body: ", e);
+    }
 }

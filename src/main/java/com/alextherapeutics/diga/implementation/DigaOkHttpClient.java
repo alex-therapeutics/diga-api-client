@@ -73,7 +73,7 @@ public class DigaOkHttpClient implements DigaHttpClient {
             return parseResponse(httpResponse);
         } catch (IOException e) {
             log.error("Http request failed", e);
-            throw new DigaHttpClientException(e.getMessage());
+            throw new DigaHttpClientException(e);
         }
     }
 
@@ -125,7 +125,7 @@ public class DigaOkHttpClient implements DigaHttpClient {
                     .build();
         } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException e) {
             log.error("Failed to instantiate OkHttpClient", e);
-            throw new DigaHttpClientException(e.getMessage());
+            throw new DigaHttpClientException(e);
         }
     }
 

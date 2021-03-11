@@ -20,13 +20,15 @@ package com.alextherapeutics.diga.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Error information received from an XML response
  */
 @AllArgsConstructor
 @Data
-public class DigaCodeValidationResponseError {
+@ToString
+public class DigaCodeValidationResponseError implements DigaApiResponseError {
     /**
      * An API error code as described in the documentation at
      * https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp

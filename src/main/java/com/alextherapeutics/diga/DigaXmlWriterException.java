@@ -16,15 +16,14 @@
  *
  */
 
-package com.alextherapeutics.diga.model;
-
-import lombok.Data;
-import lombok.experimental.SuperBuilder;
+package com.alextherapeutics.diga;
 
 /**
- * A response to an invoice request to the DiGA API (#RE0)
+ * Thrown when the library fails to write the XML request for an invoice or code validation request.
+ * This is a critical error which occurs early when creating a new request.
  */
-@SuperBuilder
-@Data
-public class DigaInvoiceResponse extends AbstractDigaApiResponse {
+public class DigaXmlWriterException extends Exception {
+    public DigaXmlWriterException(Throwable e) {
+        super("Exception thrown when trying to create XML request body: ", e);
+    }
 }

@@ -22,7 +22,6 @@ import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * Collects the information received from an API response for a code validation request.
@@ -39,14 +38,10 @@ public class DigaCodeValidationResponse extends AbstractDigaApiResponse {
     /**
      * The full DiGAVEid which was validated.
      * It consists of your DiGAID + 3 numbers. It is unclear what the last 3 digits mean so far, but you need to put this
-     * DiGAVEid in the invoice you send to get paid for this code validation, see {@link DigaInvoice#digavEid}.
+     * DiGAVEid in the invoice you send to get paid for this code validation, see {@link DigaInvoice#getDigavEid()}.
      */
     private String validatedDigaveid;
 
     // TODO figure out what this translation means ("tag der leistungserbringung" from "antwort")
     private Date dayOfServiceProvision;
-    /**
-     * Information on the errors contained in the XML response, if errors were present (otherwise empty list or null).
-     */
-    private List<DigaCodeValidationResponseError> errors;
 }
