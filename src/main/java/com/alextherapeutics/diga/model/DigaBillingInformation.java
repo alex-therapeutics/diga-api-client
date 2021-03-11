@@ -30,6 +30,12 @@ import lombok.experimental.SuperBuilder;
 @Getter
 public class DigaBillingInformation extends AbstractDigaInsuranceInformation {
     /**
+     * This string is input to fields which are required by the invoice validators but do not
+     * need to contain valid information for a DiGA invoice when they are null in the mapping file.
+     * see https://github.com/alex-therapeutics/diga-api-client/issues/12#issuecomment-796721204
+     */
+    public static final String INFORMATION_MISSING = "Information Missing";
+    /**
      * The IK for billing, to the creditor of the company being billed. This is sometimes not the same as the company IK.
      */
     @NonNull

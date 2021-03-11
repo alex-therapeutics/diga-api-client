@@ -28,7 +28,7 @@ import java.util.Map;
  * An invoice method specified for an insurance company
  * For a transitional period, insurance companies are allowed to not accept invoices through the API but
  * via email or post.
- *
+ * <p>
  * In these cases, the DiGA manufacturer have to send the invoices manually. For email, you are supposed to send
  * the invoice in XRechnung format to the email specified in the mapping file. For post, it is unclear which format,
  * but you are supposed to send the invoice via the post details in the mapping file.
@@ -48,9 +48,6 @@ public enum DigaInvoiceMethod {
      */
     POST(3);
 
-    @Getter
-    private int identifier;
-
     private static final Map<Integer, DigaInvoiceMethod> BY_IDENTIFIER = new HashMap<>();
 
     static {
@@ -58,6 +55,9 @@ public enum DigaInvoiceMethod {
             BY_IDENTIFIER.put(invoiceMethod.identifier, invoiceMethod);
         }
     }
+
+    @Getter
+    private int identifier;
 
     public static DigaInvoiceMethod fromIdentifier(int identifier) {
         return BY_IDENTIFIER.get(identifier);

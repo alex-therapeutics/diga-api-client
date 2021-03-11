@@ -20,11 +20,13 @@ package com.alextherapeutics.diga.implementation;
 
 import com.alextherapeutics.diga.DigaCodeValidationException;
 import com.alextherapeutics.diga.DigaHealthInsuranceDirectory;
+import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.KrankenkasseninformationCtp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -76,6 +78,19 @@ class DigaCodeDefaultParserTest {
         parser.parseCodeForBilling(code);
         Mockito.verify(healthInsuranceDirectory, Mockito.times(1)).getInformation("BH");
 
+    }
+    @Test
+    void testParseCodeForBillingForCompanyWithoutPostalInfo() throws DigaCodeValidationException {
+        var krank = createKrankenKasseInfo();
+        krank.setOrt(null);
+        krank.setPLZ(null);
+        krank.setStrassePostfach(null);
+        krank.setHausnummerPostfachnummer(null);
+        Mockito.when(healthInsuranceDirectory.getInformation(Mockito.anyString())).thenReturn(krank);
+        var resp = parser.parseCodeForBilling("BH1234567890000X");
+        assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyAddressLine());
+        assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyPostalCode());
+        assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyCity());
     }
 
     private KrankenkasseninformationCtp createKrankenKasseInfo() {
