@@ -48,13 +48,15 @@ Then, you can import it in your `pom.xml`:
 </dependency>
 ```
 
-### Usage
+## Usage
+
+### Initializing the client
 
 This example assumes you put both your private certificate and the insurance companies certificates in `keystore.p12`,
 that the XML mapping file is called `mappings.xml`, and that you put these files in the `resources` folder.
 
 Note that there is quite a lot of information required to _instantiate_ the client, however, it is designed this way to
-enable _each individual request_ afterwards to require as little information as possible - as demonstrated below.
+enable _each individual request_ afterwards to require as little information as possible - as demonstrated later.
 
 ```java
 // in Main.java
@@ -98,7 +100,10 @@ var digaInformation = DigaInformation.builder() // information about your DiGA a
         .build();
 
 var apiClient = new DigaApiClient(apiClientSettings, digaInformation);
+```
 
+### Using the client
+```java
 var digaCode = "real-16-character-code";
 
 var codeValidationResponse = apiClient.validateDigaCode(digaCode); // small API for code validation
@@ -115,14 +120,25 @@ var invoice = DigaInvoice.builder()
         .build();
 
 var invoiceResponse = apiClient.invoiceDiga(invoice); // small API for invoicing
-                                                      // if you need to save the invoice for accounting purposes, 
-                                                      // it is available in 'invoiceResponse.getRawXmlRequestBody()'
 
 if (invoiceResponse.isHasError()) {
     // handle error
+} else if (invoiceResponse.isRequiresManualAction()) {
+    switch (invoiceResponse.getInvoiceMethod()) {
+        case EMAIL:
+            var targetEmail = invoiceResponse.getInsuranceCompanyInvoiceEmail();
+            var generatedInvoice = invoiceResponse.getGeneratedInvoice();
+            // handle emailing the invoice to the insurance company
+            break;
+        case POST:
+            // handle having to post the invoice
+            break;
+    }
 }
 
 log.info("Successfully validated and invoiced a DiGA code!");
+
+sendInvoiceToAccounting(invoiceResponse.getGeneratedInvoice()); // for accounting or troubleshooting purposes, you can access the generated invoice in the response
 ```
 
 You can also send test requests like this
@@ -139,6 +155,7 @@ var testInvoiceResponse = apiClient.sendTestInvoiceRequest(
 );
 ```
 
+### Gotchas
 __Note__: Make sure you do __not__ put your keystore file in a _filtered_ resource location, because it will mess up the file when importing it as a resource. To be clear, if you have something like:
 ```xml
 <resources>
@@ -192,7 +209,7 @@ public DigaApiClient createCustomApiClient() {
 }
 ```
 
-When using the builder you are required to provide an implementation for all of the interfaces. For the ones you don't want to custom write,
+When using the builder you are required to provide an implementation for all the interfaces. For the ones you don't want to custom write,
 you can just instantiate the default implementations. See the code documentation for further details on what each interface does and how to instantiate the default implementations.
 When writing custom implementations it can be a good idea to look at the default implementation first to see what it needs to do to work properly.
 
@@ -200,9 +217,9 @@ When writing custom implementations it can be a good idea to look at the default
 
 These goals have to be completed before V1 release
 
-- [ ] Sending test codes to a majority of endpoints has to work
-- [ ] Sending real code validation requests to a majority of endpoints has to return decryptable respones, even with faulty codes (because some evidence suggest that test requests are sometimes processed differently from real requests by some endpoints, we cannot test with only test codes unfortunately)
-- [ ] Sending XRechnung bills to Bitmarck's API, which as of the time of writing is the only API accepting them, works.
+- [x] Sending test codes to a majority of endpoints has to work
+- [x] Sending real code validation requests to a majority of endpoints has to return decryptable respones, even with faulty codes (because some evidence suggest that test requests are sometimes processed differently from real requests by some endpoints, we cannot test with only test codes unfortunately)
+- [x] Sending XRechnung bills to Bitmarck's API, which as of the time of writing is the only API accepting them, works.
 
 More specific issues on these topics can be found in the [version 1 release project](https://github.com/alex-therapeutics/diga-api-client/projects/1)
 
