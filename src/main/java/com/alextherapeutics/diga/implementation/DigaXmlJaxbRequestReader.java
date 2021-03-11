@@ -28,6 +28,7 @@ import com.alextherapeutics.diga.model.generatedxml.billingreport.ValidationStep
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.PruefungFreischaltcode;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -67,6 +68,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
                     .hasError(!report.isValid())
                     .errors(getInvoiceErrors(report))
                     .rawXmlResponseBody(bytes)
+                    .generatedInvoice(IOUtils.toString(bytes, "UTF-8"))
                     .build();
         } catch (JAXBException | IOException e) {
             throw new DigaXmlReaderException(e);

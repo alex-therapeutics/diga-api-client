@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 
 class DigaApiClientTest {
     private DigaApiClient client;
@@ -129,6 +130,7 @@ class DigaApiClientTest {
         var info = Mockito.mock(DigaBillingInformation.class);
         Mockito.when(codeParser.parseCodeForBilling(Mockito.anyString())).thenReturn(info);
         Mockito.when(info.getInsuranceCompanyIKNumber()).thenReturn("IK123456789");
+        Mockito.when(info.getBuyerInvoicingMethod()).thenReturn(DigaInvoiceMethod.API);
         var xmlRequest = new byte[]{5,6};
         Mockito.when(xmlRequestWriter.createBillingRequest(invoice, info)).thenReturn(xmlRequest);
         var encrBuild = Mockito.mock(DigaEncryption.DigaEncryptionBuilder.class, Mockito.RETURNS_SELF);
@@ -142,5 +144,25 @@ class DigaApiClientTest {
         Assertions.assertTrue(resp.getErrors().size() > 0);
         Assertions.assertNotNull(resp.getErrors().get(0).getError());
         Assertions.assertArrayEquals(xmlRequest, resp.getRawXmlRequestBody());
+    }
+    @Test
+    void testNonApiEndpointsReturnManualActionResponse() throws DigaXmlWriterException, DigaCodeValidationException {
+        var invoice = DigaInvoice.builder().invoiceId("1").validatedDigaCode("code").digavEid("12345000").build();
+        var email = "non-api-accepting-company@email.com";
+        var info = Mockito.mock(DigaBillingInformation.class);
+        var generatedInvoice = "<invoice></invoice>";
+        Mockito.when(codeParser.parseCodeForBilling(Mockito.anyString())).thenReturn(info);
+        Mockito.when(xmlRequestWriter.createBillingRequest(invoice, info)).thenReturn(generatedInvoice.getBytes(StandardCharsets.UTF_8));
+        Mockito.when(info.getBuyerInvoicingMethod()).thenReturn(DigaInvoiceMethod.EMAIL);
+        Mockito.when(info.getBuyerInvoicingEmail()).thenReturn(email);
+
+        var resp = client.invoiceDiga(invoice);
+        Assertions.assertTrue(resp.isRequiresManualAction());
+        Assertions.assertFalse(resp.isHasError());
+        Assertions.assertNotNull(resp.getGeneratedInvoice());
+        Assertions.assertEquals(DigaInvoiceMethod.EMAIL, resp.getInvoiceMethod());
+        Assertions.assertEquals(email, resp.getInsuranceCompanyInvoiceEmail());
+        Assertions.assertEquals(generatedInvoice, resp.getGeneratedInvoice());
+        Mockito.verifyNoInteractions(httpClient, encryptionFactory, xmlRequestReader);
     }
 }
