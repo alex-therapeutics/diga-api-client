@@ -86,9 +86,9 @@ class DigaCodeDefaultParserTest {
         krank.setHausnummerPostfachnummer(null);
         Mockito.when(healthInsuranceDirectory.getInformation(Mockito.anyString())).thenReturn(krank);
         var resp = parser.parseCodeForBilling("BH1234567890000X");
-        assertEquals(DigaBillingInformation.INFORMATION_MISSIONG, resp.getBuyerCompanyAddressLine());
-        assertEquals(DigaBillingInformation.INFORMATION_MISSIONG, resp.getBuyerCompanyPostalCode());
-        assertEquals(DigaBillingInformation.INFORMATION_MISSIONG, resp.getBuyerCompanyCity());
+        assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyAddressLine());
+        assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyPostalCode());
+        assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyCity());
     }
 
     private KrankenkasseninformationCtp createKrankenKasseInfo() {

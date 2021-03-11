@@ -59,17 +59,17 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
                 .buyerCompanyPostalCode(
                         healthInsuranceInformation.getPLZ() != null
                                 ? healthInsuranceInformation.getPLZ()
-                                : DigaBillingInformation.INFORMATION_MISSIONG
+                                : DigaBillingInformation.INFORMATION_MISSING
                 )
                 .buyerCompanyAddressLine(
                         healthInsuranceInformation.getStrassePostfach() != null
                                 ? healthInsuranceInformation.getStrassePostfach() + " " + healthInsuranceInformation.getHausnummerPostfachnummer()
-                                : DigaBillingInformation.INFORMATION_MISSIONG
+                                : DigaBillingInformation.INFORMATION_MISSING
                 )
                 .buyerCompanyCity(
                         healthInsuranceInformation.getOrt() != null
                                 ? healthInsuranceInformation.getOrt()
-                                : DigaBillingInformation.INFORMATION_MISSIONG
+                                : DigaBillingInformation.INFORMATION_MISSING
                 )
                 .build();
     }
