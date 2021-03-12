@@ -17,8 +17,8 @@ Also, if you have information on how to solve existing issues but don't want to 
 All contributions are welcome, we do not expect you to commit code if you do not want to.
 
 ## Project Status
-The project is pre-first-release. Currently, the DiGA code validation works against 97 out of the 103 health insurance companies - a good first step. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
-Invoicing against the `diga.bitmarck-daten.de` endpoint works (85/103 companies), but there is no built-in solution yet for insurance companies which do not support API invoicing.
+The first version of the project has been released. Currently, the DiGA code validation works against 97/103 health insurance companies. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
+Invoicing against the `diga.bitmarck-daten.de` endpoint works (85/103 companies). For insurance companies which do not support API invoicing (18/103) the library will return a response which indicates what to do next (invoice via email or post).
 
 ## Get Started
 ### Prerequisites
@@ -32,21 +32,15 @@ Invoicing against the `diga.bitmarck-daten.de` endpoint works (85/103 companies)
 * Java 11 or higher. Do you need Java 8? Submit an issue and tell us! There is still room to make such changes.
 
 ### Installation
-The plan is to release version `1.0.0` of this library to maven central when it is stable enough (see [roadmap](#roadmap-to-v1-release)). 
-Until then you need to build it to your local maven repository before importing it into your project.
-```shell
-git clone https://github.com/alex-therapeutics/diga-api-client
-cd diga-api-client
-mvn clean install
-```
-Then, you can import it in your `pom.xml`:
+Import it using Maven in your `pom.xml`:
 ```xml
 <dependency>
     <groupId>com.alextherapeutics</groupId>
     <artifactId>diga-api-client</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
+It is also uploaded to Github packages if you wish to use that
 
 ## Usage
 
@@ -165,7 +159,7 @@ __Note__: Make sure you do __not__ put your keystore file in a _filtered_ resour
   </resource>
 </resources>
 ```
-and your `.p12` file is located in src/main/resources, then you will get a `SECONException`. Solve this by putting your file somewhere else or [exclude it from filtering](https://stackoverflow.com/a/34750851/6428035).
+and your `.p12` file is located in `src/main/resources`, then you will get a `SECONException`. Solve this by putting your file somewhere else or [exclude it from filtering](https://stackoverflow.com/a/34750851/6428035).
 
 
 ### Advanced Usage
@@ -212,16 +206,6 @@ public DigaApiClient createCustomApiClient() {
 When using the builder you are required to provide an implementation for all the interfaces. For the ones you don't want to custom write,
 you can just instantiate the default implementations. See the code documentation for further details on what each interface does and how to instantiate the default implementations.
 When writing custom implementations it can be a good idea to look at the default implementation first to see what it needs to do to work properly.
-
-## Roadmap to V1 release
-
-These goals have to be completed before V1 release
-
-- [x] Sending test codes to a majority of endpoints has to work
-- [x] Sending real code validation requests to a majority of endpoints has to return decryptable respones, even with faulty codes (because some evidence suggest that test requests are sometimes processed differently from real requests by some endpoints, we cannot test with only test codes unfortunately)
-- [x] Sending XRechnung bills to Bitmarck's API, which as of the time of writing is the only API accepting them, works.
-
-More specific issues on these topics can be found in the [version 1 release project](https://github.com/alex-therapeutics/diga-api-client/projects/1)
 
 ## Versioning
 
