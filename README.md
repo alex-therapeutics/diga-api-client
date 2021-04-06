@@ -18,7 +18,7 @@ All contributions are welcome, we do not expect you to commit code if you do not
 
 ## Project Status
 The first version of the project has been released. Currently, the DiGA code validation works against 97/103 health insurance companies. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
-Invoicing against the `diga.bitmarck-daten.de` endpoint works (85/103 companies). For insurance companies which do not support API invoicing (18/103) the library will return a response which indicates what to do next (invoice via email or post).
+Invoicing against the `diga.bitmarck-daten.de`  and `da-api.gkvi.de` endpoints work (90/103 companies). For insurance companies which do not support API invoicing (13/103) the library will return a response which indicates what to do next (invoice via email or post).
 
 ## Get Started
 ### Prerequisites
