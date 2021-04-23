@@ -306,7 +306,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         var specifiedTradeSettlementHeaderMonetarySummation = billingObjectFactory.createTradeSettlementHeaderMonetarySummationType();
         specifiedTradeSettlementHeaderMonetarySummation.getLineTotalAmount().add(createAmountType(netPrice));
         specifiedTradeSettlementHeaderMonetarySummation.getTaxBasisTotalAmount().add(createAmountType(netPrice));
-        specifiedTradeSettlementHeaderMonetarySummation.getTaxTotalAmount().add(createAmountType(taxPercent, digaInvoice.getInvoiceCurrencyCode()));
+        specifiedTradeSettlementHeaderMonetarySummation.getTaxTotalAmount().add(createAmountType(calculatedTax, digaInvoice.getInvoiceCurrencyCode()));
         specifiedTradeSettlementHeaderMonetarySummation.getGrandTotalAmount().add(createAmountType(grandTotal));
         specifiedTradeSettlementHeaderMonetarySummation.getDuePayableAmount().add(createAmountType(grandTotal));
 
