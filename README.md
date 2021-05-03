@@ -22,11 +22,11 @@ Invoicing against the `diga.bitmarck-daten.de`  and `da-api.gkvi.de` endpoints w
 
 ## Get Started
 ### Prerequisites
-* A PKCS12 keystore containing your certificate and private key that you applied for from ITSG. You must give your private key/certificate an alias
-  to use it with the library.
-* A PKCS12 keystore containing all the certificates of the health insurance companies. This can be in the same file as the private certificate. All certificates __must__
-  be imported into the keystore with the company's IK number as an alias in the form _IK123456789_. We are working on a tool or better documentation 
-  to make this process easier.
+* PKCS12 keystores for the certificates of all the health insurance companies as well as your private key and certificate that you applied for from ITSG.
+  You must give your private key/certificate an alias to use it with the library, and all health insurance certificates must have the company's IK number as an alias
+  in the form _IK123456789_. You can create the keystore with a single command using the [secon-keystore-generator](https://github.com/mawendo-gmbh/secon-keystore-generator) tool.
+  Use the command mentioned [here](https://github.com/mawendo-gmbh/secon-keystore-generator#public-certificates-and-your-private-certificate-keystore) and you will
+  get a single keystore which you can use as both the private key store file and public health insurance public key store file (see Usage).
 * The XML mapping file for the health insurance companies which contains information on endpoints, IK numbers, code prefixes, etc.
   [This page](https://kkv.gkv-diga.de/) should provide an up-to-date file. __Important!__ read [here](https://github.com/alex-therapeutics/diga-api-client/wiki/Modifying-the-insurance-company-mapping-file-(Krankenkassenverzeichnis_DiGA.xml)) for the modifications you have to make to this file.
 * Java 11 or higher. Do you need Java 8? Submit an issue and tell us! There is still room to make such changes.
@@ -37,7 +37,7 @@ Import it using Maven in your `pom.xml`:
 <dependency>
     <groupId>com.alextherapeutics</groupId>
     <artifactId>diga-api-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 It is also uploaded to Github packages if you wish to use that
