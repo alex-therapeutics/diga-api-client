@@ -218,6 +218,15 @@ These are some interesting ideas for futher development, if there is interest am
 - Create a Spring extension for dependency injection
 - Create a standalone docker container which can run separately and handle DiGA API integrations for non-Java users.
 
+## FAQ
+Q: I´m running a test invoice request (Verfahrenskennung `TDRE0`) targetting a insurance company that uses the services of Bitmarck (e.g. 'CM', which is DAK). In the response I receive an error:
+
+> Anfrage oder Datei ungültig: NonEmptyList(de.bitmarck.bms.diga.activation.core.model.ModelError$InvalidCreditorCorpId: Creditor corp id must match regex \".*\" and not match regex \"10.*|660500345\", but is: 123456789), with code: INVER-1, at xPathLocation: rsm:CrossIndustryInvoice
+
+What can I do to resolve this?
+
+A: According to a Bitmarck service employee this is normal (state of 30.04.2021). A test invoicing is currently not supported by Bitmarck. The only valid test is to use the https://github.com/itplr-kosit/validator with DiGA configuration and to run the invoicing process with a real DiGA code and Verfahrenskennung `EDRE0`.
+
 ## Maintainers
 
 This project is currently maintained by the developer team at [Alex Therapeutics](https://www.alextherapeutics.com/), a Swedish company that develops software medical devices. Contact [max@alextherapeutics.se](mailto:max@alextherapeutics.com) for inquiries which do not belong on Github. If you or your company wishes to help maintain this project, please let us know.
