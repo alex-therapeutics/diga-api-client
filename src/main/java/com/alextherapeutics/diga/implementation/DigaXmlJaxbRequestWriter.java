@@ -200,7 +200,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         var applicableTradeTax = billingObjectFactory.createTradeTaxType();
         applicableTradeTax.setTypeCode(createTaxTypeCode("VAT")); // standard VAT. if anyone needs these values to be different, now is a good time to contribute =)
         applicableTradeTax.setCategoryCode(createTaxCategoryCode("S"));
-        applicableTradeTax.setRateApplicablePercent(createPercentType(new BigDecimal(19)));
+        applicableTradeTax.setRateApplicablePercent(createPercentType(digaInformation.getApplicableVATpercent()));
         specifiedLineTradeSettlement.getApplicableTradeTax().add(applicableTradeTax);
 
         var specifiedTradeSettlementLineMonetarySummation = billingObjectFactory.createTradeSettlementLineMonetarySummationType();
