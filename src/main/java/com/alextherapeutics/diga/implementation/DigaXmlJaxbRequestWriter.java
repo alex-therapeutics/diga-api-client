@@ -53,7 +53,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
      * Static (non-changing between invoices) information about the DiGA
      * being served by this client and the manufacturing company used for creating invoices.
      */
-    private DigaInformation digaInformation;
+    private final DigaInformation digaInformation;
 
     private DatatypeFactory datatypeFactory;
 
@@ -199,8 +199,13 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         var specifiedLineTradeSettlement = billingObjectFactory.createLineTradeSettlementType();
         var applicableTradeTax = billingObjectFactory.createTradeTaxType();
         applicableTradeTax.setTypeCode(createTaxTypeCode("VAT")); // standard VAT. if anyone needs these values to be different, now is a good time to contribute =)
-        applicableTradeTax.setCategoryCode(createTaxCategoryCode("S"));
-        applicableTradeTax.setRateApplicablePercent(createPercentType(digaInformation.getApplicableVATpercent()));
+        if (digaInformation.isReverseChargeVAT()) {
+            applicableTradeTax.setCategoryCode(createTaxCategoryCode("AE"));
+            applicableTradeTax.setRateApplicablePercent(createPercentType(BigDecimal.ZERO));
+        } else {
+            applicableTradeTax.setCategoryCode(createTaxCategoryCode("S"));
+            applicableTradeTax.setRateApplicablePercent(createPercentType(digaInformation.getApplicableVATpercent()));
+        }
         specifiedLineTradeSettlement.getApplicableTradeTax().add(applicableTradeTax);
 
         var specifiedTradeSettlementLineMonetarySummation = billingObjectFactory.createTradeSettlementLineMonetarySummationType();
@@ -245,23 +250,27 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
                 )
         );
-        applicableHeaderTradeAgreement.setBuyerTradeParty(
-                createTradeParty(
-                        DigaTradeParty.builder()
-                                .companyId(DigaUtils.ikNumberWithPrefix(billingInformation.getInsuranceCompanyIKNumber()))
-                                .companyIk(billingInformation.getInsuranceCompanyIKNumber())
-                                .companyName(billingInformation.getInsuranceCompanyName())
-                                .postalAddress(
-                                        DigaTradeParty.DigaTradePartyPostalAddress.builder()
-                                                .postalCode(billingInformation.getBuyerCompanyPostalCode())
-                                                .adressLine(billingInformation.getBuyerCompanyAddressLine())
-                                                .city(billingInformation.getBuyerCompanyCity())
-                                                .countryCode(billingInformation.getBuyerCompanyCountryCode())
-                                                .build()
-                                )
-                                .build()
-                )
-        );
+        var buyer = createTradeParty(
+                DigaTradeParty.builder()
+                        .companyId(DigaUtils.ikNumberWithPrefix(billingInformation.getInsuranceCompanyIKNumber()))
+                        .companyIk(billingInformation.getInsuranceCompanyIKNumber())
+                        .companyName(billingInformation.getInsuranceCompanyName())
+                        .postalAddress(
+                                DigaTradeParty.DigaTradePartyPostalAddress.builder()
+                                        .postalCode(billingInformation.getBuyerCompanyPostalCode())
+                                        .adressLine(billingInformation.getBuyerCompanyAddressLine())
+                                        .city(billingInformation.getBuyerCompanyCity())
+                                        .countryCode(billingInformation.getBuyerCompanyCountryCode())
+                                        .build()
+                        )
+                        .build());
+        if (digaInformation.isReverseChargeVAT()) {
+            var legal = billingObjectFactory.createLegalOrganizationType();
+            legal.setID(createIdType(DigaUtils.ikNumberWithoutPrefix(billingInformation.getInsuranceCompanyIKNumber()), "IK"));
+            legal.setTradingBusinessName(createTextType(billingInformation.getInsuranceCompanyName().trim()));
+            buyer.setSpecifiedLegalOrganization(legal);
+        }
+        applicableHeaderTradeAgreement.setBuyerTradeParty(buyer);
         return applicableHeaderTradeAgreement;
     }
 
@@ -278,7 +287,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     private HeaderTradeSettlementType createApplicableHeaderTradeSettlement(DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
         // we calculate money values here
         var netPrice = digaInformation.getNetPricePerPrescription();
-        var taxPercent = digaInformation.getApplicableVATpercent();
+        var taxPercent = digaInformation.isReverseChargeVAT() ? BigDecimal.ZERO : digaInformation.getApplicableVATpercent();
         var calculatedTax = taxPercent.divide(new BigDecimal(100)).multiply(netPrice);
         var grandTotal = netPrice.add(calculatedTax);
 
@@ -296,7 +305,11 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         settlementApplicableTradeTax.getCalculatedAmount().add(createAmountType(calculatedTax));
         settlementApplicableTradeTax.setTypeCode(createTaxTypeCode("VAT"));
         settlementApplicableTradeTax.getBasisAmount().add(createAmountType(netPrice));
-        settlementApplicableTradeTax.setCategoryCode(createTaxCategoryCode("S"));
+        if (digaInformation.isReverseChargeVAT()) {
+            settlementApplicableTradeTax.setCategoryCode(createTaxCategoryCode("AE"));
+        } else {
+            settlementApplicableTradeTax.setCategoryCode(createTaxCategoryCode("S"));
+        }
         settlementApplicableTradeTax.setRateApplicablePercent(createPercentType(taxPercent));
 
         // bitmarck diga validator fails if this is not empty. we are not allowed a due date or a description, it must have description with emptytext
@@ -464,35 +477,35 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     @Getter
     static class DigaTradeParty {
         @NonNull
-        private String companyId;
+        private final String companyId;
         @NonNull
-        private String companyIk;
+        private final String companyIk;
         @NonNull
-        private String companyName;
-        private String taxRegistration;
-        private DigaTradeParty.DigaTradePartyContactPerson contactPerson;
-        private DigaTradeParty.DigaTradePartyPostalAddress postalAddress;
+        private final String companyName;
+        private final String taxRegistration;
+        private final DigaTradeParty.DigaTradePartyContactPerson contactPerson;
+        private final DigaTradeParty.DigaTradePartyPostalAddress postalAddress;
 
         @Builder
         @Getter
         public static class DigaTradePartyContactPerson {
             @NonNull
-            private String fullName;
-            private String telephoneNumber;
-            private String emailAddress;
+            private final String fullName;
+            private final String telephoneNumber;
+            private final String emailAddress;
         }
 
         @Builder
         @Getter
         public static class DigaTradePartyPostalAddress {
             @NonNull
-            private String postalCode;
+            private final String postalCode;
             @NonNull
-            private String adressLine;
+            private final String adressLine;
             @NonNull
-            private String city;
+            private final String city;
             @NonNull
-            private String countryCode;
+            private final String countryCode;
         }
     }
 }

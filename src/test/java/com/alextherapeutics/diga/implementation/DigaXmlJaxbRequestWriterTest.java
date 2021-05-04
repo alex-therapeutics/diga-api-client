@@ -20,11 +20,16 @@ package com.alextherapeutics.diga.implementation;
 
 import com.alextherapeutics.diga.DigaXmlWriterException;
 import com.alextherapeutics.diga.model.*;
+import com.alextherapeutics.diga.model.generatedxml.billing.CrossIndustryInvoiceType;
+import com.alextherapeutics.diga.model.generatedxml.billing.ObjectFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -95,5 +100,163 @@ class DigaXmlJaxbRequestWriterTest {
                         .build()
         );
         Assertions.assertNotNull(res);
+    }
+
+    @Test
+    void testStandardVat() throws DigaXmlWriterException, JAXBException {
+        var ctxt = JAXBContext.newInstance(ObjectFactory.class);
+        var marsh = ctxt.createUnmarshaller();
+        var res = writer.createBillingRequest(
+                DigaInvoice.builder()
+                        .validatedDigaCode("dum")
+                        .invoiceId("ID1")
+                        .build(),
+                DigaBillingInformation.builder()
+                        .insuranceCompanyName("dum")
+                        .insuranceCompanyIKNumber("dum")
+                        .endpoint("dum")
+                        .buyerCompanyCity("dum")
+                        .buyerCompanyPostalCode("dum")
+                        .buyerCompanyAddressLine("dum")
+                        .buyerCompanyCreditorIk("dum")
+                        .buyerInvoicingMethod(DigaInvoiceMethod.API)
+                        .build()
+        );
+        var obj = (JAXBElement<CrossIndustryInvoiceType>) marsh.unmarshal(new ByteArrayInputStream(res));
+        var invoice = obj.getValue();
+        Assertions.assertEquals("VAT",
+                invoice.getSupplyChainTradeTransaction()
+                        .getIncludedSupplyChainTradeLineItem().get(0)
+                        .getSpecifiedLineTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getTypeCode()
+                        .getValue()
+        );
+        Assertions.assertEquals("S",
+                invoice.getSupplyChainTradeTransaction()
+                        .getIncludedSupplyChainTradeLineItem().get(0)
+                        .getSpecifiedLineTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getCategoryCode()
+                        .getValue()
+        );
+        Assertions.assertEquals(new BigDecimal(10),
+                invoice.getSupplyChainTradeTransaction()
+                        .getIncludedSupplyChainTradeLineItem().get(0)
+                        .getSpecifiedLineTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getRateApplicablePercent().getValue()
+        );
+        Assertions.assertNull(
+                invoice.getSupplyChainTradeTransaction()
+                        .getApplicableHeaderTradeAgreement()
+                        .getBuyerTradeParty()
+                        .getSpecifiedLegalOrganization()
+        );
+        Assertions.assertEquals("S",
+                invoice.getSupplyChainTradeTransaction()
+                        .getApplicableHeaderTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getCategoryCode().getValue()
+        );
+        Assertions.assertEquals(new BigDecimal(10),
+                invoice.getSupplyChainTradeTransaction()
+                        .getApplicableHeaderTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getRateApplicablePercent().getValue()
+        );
+
+    }
+
+    @Test
+    void testReverseChargeVat() throws JAXBException, DigaXmlWriterException {
+        writer = new DigaXmlJaxbRequestWriter(
+                DigaInformation.builder()
+                        .companyTradeAddress(
+                                DigaInformation.CompanyTradeAddress.builder()
+                                        .countryCode("DE")
+                                        .city("dum")
+                                        .postalCode("dum")
+                                        .adressLine("dum")
+                                        .build()
+                        )
+                        .contactPersonForBilling(
+                                DigaInformation.ContactPersonForBilling.builder()
+                                        .emailAddress("dum")
+                                        .phoneNumber("dum")
+                                        .fullName("dum")
+                                        .build())
+                        .manufacturingCompanyVATRegistration("dum")
+                        .reverseChargeVAT(true)
+                        .netPricePerPrescription(new BigDecimal(5000))
+                        .manufacturingCompanyIk("dum")
+                        .digaName("dum")
+                        .digaId("dum")
+                        .manufacturingCompanyName("dum")
+                        .digaDescription("dum")
+                        .build()
+        );
+        var ctxt = JAXBContext.newInstance(ObjectFactory.class);
+        var marsh = ctxt.createUnmarshaller();
+        var res = writer.createBillingRequest(
+                DigaInvoice.builder()
+                        .validatedDigaCode("dum")
+                        .invoiceId("ID1")
+                        .build(),
+                DigaBillingInformation.builder()
+                        .insuranceCompanyName("dum")
+                        .insuranceCompanyIKNumber("dum")
+                        .endpoint("dum")
+                        .buyerCompanyCity("dum")
+                        .buyerCompanyPostalCode("dum")
+                        .buyerCompanyAddressLine("dum")
+                        .buyerCompanyCreditorIk("dum")
+                        .buyerInvoicingMethod(DigaInvoiceMethod.API)
+                        .build()
+        );
+        var obj = (JAXBElement<CrossIndustryInvoiceType>) marsh.unmarshal(new ByteArrayInputStream(res));
+        var invoice = obj.getValue();
+        Assertions.assertEquals("VAT",
+                invoice.getSupplyChainTradeTransaction()
+                        .getIncludedSupplyChainTradeLineItem().get(0)
+                        .getSpecifiedLineTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getTypeCode()
+                        .getValue()
+        );
+        Assertions.assertEquals("AE",
+                invoice.getSupplyChainTradeTransaction()
+                        .getIncludedSupplyChainTradeLineItem().get(0)
+                        .getSpecifiedLineTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getCategoryCode()
+                        .getValue()
+        );
+        Assertions.assertEquals(BigDecimal.ZERO,
+                invoice.getSupplyChainTradeTransaction()
+                        .getIncludedSupplyChainTradeLineItem().get(0)
+                        .getSpecifiedLineTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getRateApplicablePercent().getValue()
+        );
+        Assertions.assertNotNull(
+                invoice.getSupplyChainTradeTransaction()
+                        .getApplicableHeaderTradeAgreement()
+                        .getBuyerTradeParty()
+                        .getSpecifiedLegalOrganization()
+        );
+        Assertions.assertEquals("AE",
+                invoice.getSupplyChainTradeTransaction()
+                        .getApplicableHeaderTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getCategoryCode().getValue()
+        );
+        Assertions.assertEquals(BigDecimal.ZERO,
+                invoice.getSupplyChainTradeTransaction()
+                        .getApplicableHeaderTradeSettlement()
+                        .getApplicableTradeTax().get(0)
+                        .getRateApplicablePercent().getValue()
+        );
+
     }
 }
