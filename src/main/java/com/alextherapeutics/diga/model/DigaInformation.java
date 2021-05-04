@@ -66,10 +66,11 @@ public class DigaInformation {
     private BigDecimal netPricePerPrescription;
     /**
      * The VAT percent applicable to a sale as a number between 0 and 100 (if it is 50% then put 50 here, not 0.5).
+     * Defaults to 19%.
      * If {@link #reverseChargeVAT} is true, then this value doesn't matter as the applicable percentage will be set to 0 in the invoice.
      */
-    @NonNull
-    private BigDecimal applicableVATpercent;
+    @Builder.Default
+    private BigDecimal applicableVATpercent = new BigDecimal(19);
 
     /**
      * If the VAT should be reverse charge (for example for international companies operating outside of Germany).

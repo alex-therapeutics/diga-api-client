@@ -53,7 +53,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
      * Static (non-changing between invoices) information about the DiGA
      * being served by this client and the manufacturing company used for creating invoices.
      */
-    private DigaInformation digaInformation;
+    private final DigaInformation digaInformation;
 
     private DatatypeFactory datatypeFactory;
 
@@ -477,35 +477,35 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     @Getter
     static class DigaTradeParty {
         @NonNull
-        private String companyId;
+        private final String companyId;
         @NonNull
-        private String companyIk;
+        private final String companyIk;
         @NonNull
-        private String companyName;
-        private String taxRegistration;
-        private DigaTradeParty.DigaTradePartyContactPerson contactPerson;
-        private DigaTradeParty.DigaTradePartyPostalAddress postalAddress;
+        private final String companyName;
+        private final String taxRegistration;
+        private final DigaTradeParty.DigaTradePartyContactPerson contactPerson;
+        private final DigaTradeParty.DigaTradePartyPostalAddress postalAddress;
 
         @Builder
         @Getter
         public static class DigaTradePartyContactPerson {
             @NonNull
-            private String fullName;
-            private String telephoneNumber;
-            private String emailAddress;
+            private final String fullName;
+            private final String telephoneNumber;
+            private final String emailAddress;
         }
 
         @Builder
         @Getter
         public static class DigaTradePartyPostalAddress {
             @NonNull
-            private String postalCode;
+            private final String postalCode;
             @NonNull
-            private String adressLine;
+            private final String adressLine;
             @NonNull
-            private String city;
+            private final String city;
             @NonNull
-            private String countryCode;
+            private final String countryCode;
         }
     }
 }
