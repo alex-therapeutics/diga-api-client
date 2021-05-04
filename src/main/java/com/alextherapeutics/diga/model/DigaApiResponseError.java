@@ -41,4 +41,41 @@ public interface DigaApiResponseError {
     default String getError() {
         return toString();
     }
+
+    /**
+     * Return this error cast as a {@link DigaCodeValidationErrorCode} object.
+     *
+     * @return - this error casted, or null if this error is not a code validation error.
+     */
+    default DigaCodeValidationResponseError asCodeValidationError() {
+        try {
+            return (DigaCodeValidationResponseError) this;
+        } catch (ClassCastException e) {
+            return null;
+        }
+    }
+    /**
+     * Return this error cast as a {@link DigaInvoiceResponseError} object.
+     *
+     * @return - this error casted, or null if this error is not a invoice response error.
+     */
+    default DigaInvoiceResponseError asInvoiceResponseError() {
+        try {
+            return (DigaInvoiceResponseError) this;
+        } catch (ClassCastException e) {
+            return null;
+        }
+    }
+    /**
+     * Return this error cast as a {@link DigaApiExceptionError} object.
+     *
+     * @return - this error casted, or null if this error is not a diga api exception error.
+     */
+    default DigaApiExceptionError asApiExceptionError() {
+        try {
+            return (DigaApiExceptionError) this;
+        } catch (ClassCastException e) {
+            return null;
+        }
+    }
 }

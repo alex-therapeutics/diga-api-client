@@ -3,6 +3,7 @@
 ### Snapshot
 
 - fix bug with a hardcoded VAT percentage
+- add methods to cast response errors to more informative objects
 
 ### 1.0.1
 
