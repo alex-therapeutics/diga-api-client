@@ -2,6 +2,8 @@
 
 ### Snapshot
 
+### 1.1.0
+
 - fix bug with a hardcoded VAT percentage
 - add methods to cast response errors to more informative objects
 - add option to use reverse charge VAT
