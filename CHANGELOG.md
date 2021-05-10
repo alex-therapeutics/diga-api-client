@@ -2,6 +2,10 @@
 
 ### Snapshot
 
+### 1.1.1
+
+- fix bug in code validation using the wrong IK number for encryption
+
 ### 1.1.0
 
 - fix bug with a hardcoded VAT percentage
