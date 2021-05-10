@@ -110,6 +110,7 @@ class DigaApiClientTest {
         var codeInfo = Mockito.mock(DigaCodeInformation.class);
         Mockito.when(codeParser.parseCodeForValidation(Mockito.anyString())).thenReturn(codeInfo);
         Mockito.when(codeInfo.getInsuranceCompanyIKNumber()).thenReturn("IK123456789");
+        Mockito.when(codeInfo.getClearingCenterIKNumber()).thenReturn("IK123456789");
         var xmlRequest = new byte[]{5,6};
         Mockito.when(xmlRequestWriter.createCodeValidationRequest(Mockito.any())).thenReturn(xmlRequest);
         var encrBuild = Mockito.mock(DigaEncryption.DigaEncryptionBuilder.class, Mockito.RETURNS_SELF);
@@ -130,6 +131,7 @@ class DigaApiClientTest {
         var info = Mockito.mock(DigaBillingInformation.class);
         Mockito.when(codeParser.parseCodeForBilling(Mockito.anyString())).thenReturn(info);
         Mockito.when(info.getInsuranceCompanyIKNumber()).thenReturn("IK123456789");
+        Mockito.when(info.getClearingCenterIKNumber()).thenReturn("IK123456789");
         Mockito.when(info.getBuyerInvoicingMethod()).thenReturn(DigaInvoiceMethod.API);
         var xmlRequest = new byte[]{5,6};
         Mockito.when(xmlRequestWriter.createBillingRequest(invoice, info)).thenReturn(xmlRequest);

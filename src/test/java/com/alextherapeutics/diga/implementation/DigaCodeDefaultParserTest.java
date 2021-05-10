@@ -98,6 +98,7 @@ class DigaCodeDefaultParserTest {
         krank.setEndpunktKommunikationsstelle("dum");
         krank.setIKAbrechnungsstelle("dum");
         krank.setIKDesRechnungsempfaengers("dum");
+        krank.setKostentraegerkennung("dum");
         krank.setNameDesKostentraegers("dum");
         krank.setPLZ("dum");
         krank.setStrassePostfach("dum");
