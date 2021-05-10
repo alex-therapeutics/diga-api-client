@@ -141,7 +141,6 @@ public final class DigaApiClient {
                 .fullDigaCode(testCode.getCode())
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
                 .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
-                .invoiceRecipientIKNumber(healthInsuranceInformation.getIKDesRechnungsempfaengers())
                 .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
                 .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .build();
@@ -164,7 +163,6 @@ public final class DigaApiClient {
         var billingInformation = DigaBillingInformation.builder()
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
                 .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
-                .invoiceRecipientIKNumber(healthInsuranceInformation.getIKDesRechnungsempfaengers())
                 .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())                .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
                 .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .buyerCompanyPostalCode(
