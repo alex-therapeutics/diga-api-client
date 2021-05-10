@@ -140,7 +140,9 @@ public final class DigaApiClient {
         var testCodeInformation = DigaCodeInformation.builder()
                 .fullDigaCode(testCode.getCode())
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
-                .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
+                .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
+                .invoiceRecipientIKNumber(healthInsuranceInformation.getIKDesRechnungsempfaengers())
+                .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
                 .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .build();
         return performCodeValidation(testCodeInformation);
@@ -161,8 +163,9 @@ public final class DigaApiClient {
         var healthInsuranceInformation = healthInsuranceDirectory.getInformation(insuranceCompanyPrefix);
         var billingInformation = DigaBillingInformation.builder()
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
-                .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
-                .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
+                .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
+                .invoiceRecipientIKNumber(healthInsuranceInformation.getIKDesRechnungsempfaengers())
+                .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())                .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
                 .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .buyerCompanyPostalCode(
                         healthInsuranceInformation.getPLZ() != null
@@ -189,14 +192,14 @@ public final class DigaApiClient {
         var xmlRequest = xmlRequestWriter.createCodeValidationRequest(codeInformation);
         var encryptRequestAttempt = encryptionFactory.newEncryption()
                 .encryptionTarget(xmlRequest)
-                .recipientAlias(DigaUtils.ikNumberWithPrefix(codeInformation.getInsuranceCompanyIKNumber()))
+                .recipientAlias(DigaUtils.ikNumberWithPrefix(codeInformation.getClearingCenterIKNumber()))
                 .build();
         try {
             var encryptedXmlBody = encryptRequestAttempt.encrypt().toByteArray();
             var httpApiRequest = DigaApiHttpRequest.builder()
                     .url(DigaUtils.buildPostDigaEndpoint(codeInformation.getEndpoint()))
                     .senderIK(digaInformation.getManufacturingCompanyIk())
-                    .recipientIK(codeInformation.getInsuranceCompanyIKNumber())
+                    .recipientIK(codeInformation.getClearingCenterIKNumber())
                     .encryptedContent(encryptedXmlBody)
                     .processCode(
                             DigaUtils.isDigaTestCode(codeInformation.getFullDigaCode())
@@ -237,12 +240,12 @@ public final class DigaApiClient {
     private DigaInvoiceResponse performDigaInvoicingAgainstApi(DigaBillingInformation billingInformation, byte[] xmlInvoice, DigaProcessCode processCode) throws DigaEncryptionException, DigaHttpClientException, DigaDecryptionException, DigaXmlReaderException {
         var encryptionAttempt = encryptionFactory.newEncryption()
                 .encryptionTarget(xmlInvoice)
-                .recipientAlias(DigaUtils.ikNumberWithPrefix(billingInformation.getInsuranceCompanyIKNumber()))
+                .recipientAlias(DigaUtils.ikNumberWithPrefix(billingInformation.getClearingCenterIKNumber()))
                 .build();
         var encryptedXmlInvoice = encryptionAttempt.encrypt().toByteArray();
         var httpApiRequest = DigaApiHttpRequest.builder()
                 .encryptedContent(encryptedXmlInvoice)
-                .recipientIK(billingInformation.getInsuranceCompanyIKNumber())
+                .recipientIK(billingInformation.getClearingCenterIKNumber())
                 .processCode(processCode)
                 .url(DigaUtils.buildPostDigaEndpoint(billingInformation.getEndpoint()))
                 .senderIK(digaInformation.getManufacturingCompanyIk())

@@ -41,7 +41,9 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
         // TODO null check and throw exception?
         return DigaCodeInformation.builder()
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
-                .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
+                .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
+                .invoiceRecipientIKNumber(healthInsuranceInformation.getIKDesRechnungsempfaengers())
+                .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
                 .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .fullDigaCode(code)
                 .personalDigaCode(parsedCode.healthInsuranceIndividualCode)
@@ -54,7 +56,9 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
         var healthInsuranceInformation = healthInsuranceDirectory.getInformation(parsedCode.healthInsuranceCode);
         return DigaBillingInformation.builder()
                 .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
-                .insuranceCompanyIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
+                .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
+                .invoiceRecipientIKNumber(healthInsuranceInformation.getIKDesRechnungsempfaengers())
+                .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
                 .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
                 .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
                 .buyerCompanyPostalCode(

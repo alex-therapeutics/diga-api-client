@@ -34,6 +34,16 @@ public abstract class AbstractDigaInsuranceInformation {
     @NonNull
     private String insuranceCompanyIKNumber;
     /**
+     * The invoice recipients IK number of the insurance that generated this code.
+     */
+    @NonNull
+    private String invoiceRecipientIKNumber;
+    /**
+     * The clearing centers IK number of the insurance that generated this code.
+     */
+    @NonNull
+    private String clearingCenterIKNumber;
+    /**
      * The name of the insurance company that generated this code.
      */
     @NonNull
