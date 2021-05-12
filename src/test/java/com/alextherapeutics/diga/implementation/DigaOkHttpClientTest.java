@@ -19,62 +19,68 @@
 package com.alextherapeutics.diga.implementation;
 
 import com.alextherapeutics.diga.DigaHttpClientException;
+import java.security.KeyStore;
+import java.util.Optional;
+import javax.net.ssl.X509ExtendedTrustManager;
 import nl.altindag.ssl.SSLFactory;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import javax.net.ssl.X509ExtendedTrustManager;
-import java.security.KeyStore;
-import java.util.Optional;
-
 class DigaOkHttpClientTest {
-    private OkHttpClient okHttpClient;
-    private DigaOkHttpClient client;
+  private OkHttpClient okHttpClient;
+  private DigaOkHttpClient client;
 
-    @BeforeEach
-    void init() throws DigaHttpClientException {
-        // setup so you can check the okhttpclient mock for interactions
-        try (var keystore = Mockito.mockStatic(KeyStore.class)) {
-            var mockStore = Mockito.mock(KeyStore.class);
-            keystore.when(() -> {
+  @BeforeEach
+  void init() throws DigaHttpClientException {
+    // setup so you can check the okhttpclient mock for interactions
+    try (var keystore = Mockito.mockStatic(KeyStore.class)) {
+      var mockStore = Mockito.mock(KeyStore.class);
+      keystore
+          .when(
+              () -> {
                 KeyStore.getInstance(Mockito.anyString());
-            })
-                    .thenReturn(mockStore);
-            try (var sslFactory = Mockito.mockStatic(SSLFactory.class)) {
-                var mockSslBuilder = Mockito.mock(SSLFactory.Builder.class);
-                sslFactory.when(SSLFactory::builder).thenReturn(mockSslBuilder);
-                Mockito.when(mockSslBuilder.withDefaultTrustMaterial()).thenReturn(mockSslBuilder);
-                Mockito.when(mockSslBuilder.withSystemTrustMaterial()).thenReturn(mockSslBuilder);
-                Mockito.when(mockSslBuilder.withTrustMaterial(Mockito.any(KeyStore.class))).thenReturn(mockSslBuilder);
-                Mockito.when(mockSslBuilder.withIdentityMaterial(Mockito.any(KeyStore.class), Mockito.any(char[].class))).thenReturn(mockSslBuilder);
-                var mockSslFactory = Mockito.mock(SSLFactory.class);
-                Mockito.when(mockSslBuilder.build()).thenReturn(mockSslFactory);
-                Mockito.when(mockSslFactory.getTrustManager()).thenReturn(Optional.of(Mockito.mock(X509ExtendedTrustManager.class)));
-                okHttpClient = Mockito.mock(OkHttpClient.class);
-                try (var mockedOkHttpBuilder = Mockito.mockConstruction(
-                        OkHttpClient.Builder.class,
-                        (mock, context) -> {
-                            Mockito.when(mock.sslSocketFactory(Mockito.any(), Mockito.any())).thenReturn(mock);
-                            Mockito.when(mock.hostnameVerifier(Mockito.any())).thenReturn(mock);
-                            Mockito.when(mock.build()).thenReturn(okHttpClient);
-                        }
-                )) {
-                    client = DigaOkHttpClient.builder()
-                            .certificatesFileContent(new byte[]{})
-                            .certificatesPassword("dummy")
-                            .keyStoreFileContent(new byte[]{})
-                            .keyStorePassword("dummy")
-                            .build();
-                }
-            }
+              })
+          .thenReturn(mockStore);
+      try (var sslFactory = Mockito.mockStatic(SSLFactory.class)) {
+        var mockSslBuilder = Mockito.mock(SSLFactory.Builder.class);
+        sslFactory.when(SSLFactory::builder).thenReturn(mockSslBuilder);
+        Mockito.when(mockSslBuilder.withDefaultTrustMaterial()).thenReturn(mockSslBuilder);
+        Mockito.when(mockSslBuilder.withSystemTrustMaterial()).thenReturn(mockSslBuilder);
+        Mockito.when(mockSslBuilder.withTrustMaterial(Mockito.any(KeyStore.class)))
+            .thenReturn(mockSslBuilder);
+        Mockito.when(
+                mockSslBuilder.withIdentityMaterial(
+                    Mockito.any(KeyStore.class), Mockito.any(char[].class)))
+            .thenReturn(mockSslBuilder);
+        var mockSslFactory = Mockito.mock(SSLFactory.class);
+        Mockito.when(mockSslBuilder.build()).thenReturn(mockSslFactory);
+        Mockito.when(mockSslFactory.getTrustManager())
+            .thenReturn(Optional.of(Mockito.mock(X509ExtendedTrustManager.class)));
+        okHttpClient = Mockito.mock(OkHttpClient.class);
+        try (var mockedOkHttpBuilder =
+            Mockito.mockConstruction(
+                OkHttpClient.Builder.class,
+                (mock, context) -> {
+                  Mockito.when(mock.sslSocketFactory(Mockito.any(), Mockito.any()))
+                      .thenReturn(mock);
+                  Mockito.when(mock.hostnameVerifier(Mockito.any())).thenReturn(mock);
+                  Mockito.when(mock.build()).thenReturn(okHttpClient);
+                })) {
+          client =
+              DigaOkHttpClient.builder()
+                  .certificatesFileContent(new byte[] {})
+                  .certificatesPassword("dummy")
+                  .keyStoreFileContent(new byte[] {})
+                  .keyStorePassword("dummy")
+                  .build();
         }
+      }
     }
+  }
 
-    // not sure what to test here.. but the class is set up for later
-    @Test
-    void test() {
-    }
-
+  // not sure what to test here.. but the class is set up for later
+  @Test
+  void test() {}
 }

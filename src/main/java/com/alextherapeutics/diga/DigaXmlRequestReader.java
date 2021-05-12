@@ -20,28 +20,30 @@ package com.alextherapeutics.diga;
 
 import com.alextherapeutics.diga.model.DigaCodeValidationResponse;
 import com.alextherapeutics.diga.model.DigaInvoiceResponse;
-
 import java.io.InputStream;
 
-/**
- * Reads decrypted raw XML request/response bodies and outputs more readable Java objects.
- */
+/** Reads decrypted raw XML request/response bodies and outputs more readable Java objects. */
 public interface DigaXmlRequestReader {
-    /**
-     * Read an inputstream with XML contents containing the validation of a DiGA code validation request and parse it.
-     *
-     * @param decryptedResponse
-     * @return Relevant information in a new {@link DigaCodeValidationResponse} object. Note that the DigaApiResponse object contains fields which are not set by XML readers, like the HTTP status code.
-     * @throws DigaXmlReaderException when reading the request body failed
-     */
-    DigaCodeValidationResponse readCodeValidationResponse(InputStream decryptedResponse) throws DigaXmlReaderException;
+  /**
+   * Read an inputstream with XML contents containing the validation of a DiGA code validation
+   * request and parse it.
+   *
+   * @param decryptedResponse
+   * @return Relevant information in a new {@link DigaCodeValidationResponse} object. Note that the
+   *     DigaApiResponse object contains fields which are not set by XML readers, like the HTTP
+   *     status code.
+   * @throws DigaXmlReaderException when reading the request body failed
+   */
+  DigaCodeValidationResponse readCodeValidationResponse(InputStream decryptedResponse)
+      throws DigaXmlReaderException;
 
-    /**
-     * Read an inputstream with XML contents containing the validation report from a DiGA invoice and parse it.
-     *
-     * @param decryptedReport
-     * @return Relevant information in a new {@link DigaInvoiceResponse} object.
-     * @throws DigaXmlReaderException when reading the request body failed
-     */
-    DigaInvoiceResponse readBillingReport(InputStream decryptedReport) throws DigaXmlReaderException;
+  /**
+   * Read an inputstream with XML contents containing the validation report from a DiGA invoice and
+   * parse it.
+   *
+   * @param decryptedReport
+   * @return Relevant information in a new {@link DigaInvoiceResponse} object.
+   * @throws DigaXmlReaderException when reading the request body failed
+   */
+  DigaInvoiceResponse readBillingReport(InputStream decryptedReport) throws DigaXmlReaderException;
 }

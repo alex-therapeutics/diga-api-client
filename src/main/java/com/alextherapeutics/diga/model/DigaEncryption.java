@@ -22,56 +22,41 @@ import com.alextherapeutics.diga.DigaEncryptionException;
 import de.tk.opensource.secon.SECON;
 import de.tk.opensource.secon.SeconException;
 import de.tk.opensource.secon.Subscriber;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-/**
- * Attempt to encrypt an inputstream using SECON
- */
+/** Attempt to encrypt an inputstream using SECON */
 @Builder
 @Slf4j
 public class DigaEncryption {
-    /**
-     * The encrypting subscriber
-     */
-    @NonNull
-    private Subscriber subscriber;
-    /**
-     * The input to encrypt
-     */
-    @NonNull
-    private byte[] encryptionTarget;
-    /**
-     * The alias of the key in the public key directory
-     */
-    @NonNull
-    private String recipientAlias;
+  /** The encrypting subscriber */
+  @NonNull private final Subscriber subscriber;
+  /** The input to encrypt */
+  @NonNull private final byte[] encryptionTarget;
+  /** The alias of the key in the public key directory */
+  @NonNull private final String recipientAlias;
 
-    /**
-     * Encrypt the contents as a byte array output stream
-     *
-     * @return
-     */
-    public ByteArrayOutputStream encrypt() throws DigaEncryptionException {
-        try {
-            try (var input = new ByteArrayInputStream(encryptionTarget)) {
-                try (var output = new ByteArrayOutputStream()) {
-                    SECON.copy(
-                            () -> new ByteArrayInputStream(input.readAllBytes()),
-                            subscriber.signAndEncryptTo(
-                                    () -> output, recipientAlias
-                            )
-                    );
-                    return output;
-                }
-            }
-        } catch (IOException | SeconException e) {
-            throw new DigaEncryptionException(e);
+  /**
+   * Encrypt the contents as a byte array output stream
+   *
+   * @return
+   */
+  public ByteArrayOutputStream encrypt() throws DigaEncryptionException {
+    try {
+      try (var input = new ByteArrayInputStream(encryptionTarget)) {
+        try (var output = new ByteArrayOutputStream()) {
+          SECON.copy(
+              () -> new ByteArrayInputStream(input.readAllBytes()),
+              subscriber.signAndEncryptTo(() -> output, recipientAlias));
+          return output;
         }
+      }
+    } catch (IOException | SeconException e) {
+      throw new DigaEncryptionException(e);
     }
+  }
 }

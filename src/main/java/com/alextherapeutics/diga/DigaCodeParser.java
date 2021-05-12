@@ -22,25 +22,25 @@ import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
 
 /**
- * Parses DiGA code returning an information object containing information gathered
- * from the insurance company mapping list at https://kkv.gkv-diga.de/
+ * Parses DiGA code returning an information object containing information gathered from the
+ * insurance company mapping list at https://kkv.gkv-diga.de/
  */
 public interface DigaCodeParser {
-    /**
-     * Parse a full DiGA code which was input into the DiGA by a patient.
-     *
-     * @param code
-     * @return A {@link DigaCodeInformation} object containing information derived from the parsing.
-     * @throws DigaCodeValidationException
-     */
-    DigaCodeInformation parseCodeForValidation(String code) throws DigaCodeValidationException;
+  /**
+   * Parse a full DiGA code which was input into the DiGA by a patient.
+   *
+   * @param code
+   * @return A {@link DigaCodeInformation} object containing information derived from the parsing.
+   * @throws DigaCodeValidationException
+   */
+  DigaCodeInformation parseCodeForValidation(String code) throws DigaCodeValidationException;
 
-    /**
-     * Parse a full DiGA code for billing information.
-     *
-     * @param code
-     * @return Billing information for the company that generated the code.
-     * @throws DigaCodeValidationException
-     */
-    DigaBillingInformation parseCodeForBilling(String code) throws DigaCodeValidationException;
+  /**
+   * Parse a full DiGA code for billing information.
+   *
+   * @param code
+   * @return Billing information for the company that generated the code.
+   * @throws DigaCodeValidationException
+   */
+  DigaBillingInformation parseCodeForBilling(String code) throws DigaCodeValidationException;
 }

@@ -20,58 +20,48 @@ package com.alextherapeutics.diga.model;
 
 import com.alextherapeutics.diga.DigaDecryptionException;
 import de.tk.opensource.secon.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-/**
- * Attempt to decrypt a SECON encrypted inputstream
- */
+/** Attempt to decrypt a SECON encrypted inputstream */
 @Builder
 @Slf4j
 public class DigaDecryption {
-    /**
-     * The decrypting subscriber
-     */
-    @NonNull
-    private Subscriber subscriber;
-    /**
-     * The body to decrypt
-     */
-    @NonNull
-    private byte[] decryptionTarget;
+  /** The decrypting subscriber */
+  @NonNull private final Subscriber subscriber;
+  /** The body to decrypt */
+  @NonNull private final byte[] decryptionTarget;
 
-    /**
-     * Decrypt the content
-     *
-     * @return
-     * @throws IOException
-     * @throws SeconException
-     */
-    public ByteArrayOutputStream decrypt() throws DigaDecryptionException {
-        try {
-            try (var outputStream = new ByteArrayOutputStream()) {
-                try (var inputStream = new ByteArrayInputStream(decryptionTarget)) {
-                    SECON.copy(
-                            subscriber.decryptAndVerifyFrom(
-                                    () -> inputStream,
-                                    Verifier.NULL
-                            ),
-                            () -> outputStream
-                    );
-                    return outputStream;
-                } catch (CertificateNotFoundException e) {
-                    // there seems to be something wrong in the key list from itsg which means some certificates have the wrong serial number on returning a response. in the future hopefully this is not a necessary catch
-                    log.debug("Failed to validate sender certificate after (successfully) finishing decrypting the content.\n Since we wouldnt get this far without the server and us having the correct private and public keys for eachother, we pass the decrypted content as a success.");
-                    return outputStream;
-                }
-            }
-        } catch (IOException | SeconException e) {
-            throw new DigaDecryptionException(e);
+  /**
+   * Decrypt the content
+   *
+   * @return
+   * @throws IOException
+   * @throws SeconException
+   */
+  public ByteArrayOutputStream decrypt() throws DigaDecryptionException {
+    try {
+      try (var outputStream = new ByteArrayOutputStream()) {
+        try (var inputStream = new ByteArrayInputStream(decryptionTarget)) {
+          SECON.copy(
+              subscriber.decryptAndVerifyFrom(() -> inputStream, Verifier.NULL),
+              () -> outputStream);
+          return outputStream;
+        } catch (CertificateNotFoundException e) {
+          // there seems to be something wrong in the key list from itsg which means some
+          // certificates have the wrong serial number on returning a response. in the future
+          // hopefully this is not a necessary catch
+          log.debug(
+              "Failed to validate sender certificate after (successfully) finishing decrypting the content.\n Since we wouldnt get this far without the server and us having the correct private and public keys for eachother, we pass the decrypted content as a success.");
+          return outputStream;
         }
+      }
+    } catch (IOException | SeconException e) {
+      throw new DigaDecryptionException(e);
     }
+  }
 }

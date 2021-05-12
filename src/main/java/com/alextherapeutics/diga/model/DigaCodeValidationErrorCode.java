@@ -18,39 +18,37 @@
 
 package com.alextherapeutics.diga.model;
 
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
 /**
  * Code Validation error codes listed in Annex 5 at
  * https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp
  */
 public enum DigaCodeValidationErrorCode {
-    CODE_TIMED_OUT(100),
-    CODE_CANCELLED(101),
-    CODE_NOT_FOUND(102),
-    REQUEST_OR_DATA_INVALID(200),
-    SERVER_ERROR(201),
-    SERVER_MEMORY_ERROR(202);
+  CODE_TIMED_OUT(100),
+  CODE_CANCELLED(101),
+  CODE_NOT_FOUND(102),
+  REQUEST_OR_DATA_INVALID(200),
+  SERVER_ERROR(201),
+  SERVER_MEMORY_ERROR(202);
 
-    private static final Map<Integer, DigaCodeValidationErrorCode> BY_CODE = new HashMap<>();
+  private static final Map<Integer, DigaCodeValidationErrorCode> BY_CODE = new HashMap<>();
 
-    static {
-        for (DigaCodeValidationErrorCode code : values()) {
-            BY_CODE.put(code.code, code);
-        }
+  static {
+    for (DigaCodeValidationErrorCode code : values()) {
+      BY_CODE.put(code.code, code);
     }
+  }
 
-    @Getter
-    private int code;
+  @Getter private final int code;
 
-    DigaCodeValidationErrorCode(int code) {
-        this.code = code;
-    }
+  DigaCodeValidationErrorCode(int code) {
+    this.code = code;
+  }
 
-    public static DigaCodeValidationErrorCode fromCode(int code) {
-        return BY_CODE.get(code);
-    }
+  public static DigaCodeValidationErrorCode fromCode(int code) {
+    return BY_CODE.get(code);
+  }
 }
