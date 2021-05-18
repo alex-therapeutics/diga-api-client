@@ -81,6 +81,15 @@ in this project, so the easiest thing is to create such a file (`Main.java`) in 
 
     ````
 
+## Coding Style
+
+We use the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html) and enforce it automatically
+by using the [spotless](https://github.com/diffplug/spotless) maven plugin.
+
+This means that the code will be checked at the `verify` maven stage and the build will fail if it doesn't conform to
+the styling rules. You can easily fix that by running `mvn spotless:apply` or by using the [google java format](https://plugins.jetbrains.com/plugin/8527-google-java-format)
+plugin for IntellIJ and using the IDE's code reformatting.
+
 ## Making a Pull Request
 
 When you are done, create a Pull Request against the `main` branch. Describe what you have done and what you are trying to fix.

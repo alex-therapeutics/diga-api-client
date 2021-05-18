@@ -18,30 +18,27 @@
 
 package com.alextherapeutics.diga.model;
 
+import java.util.Date;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Date;
-
 /**
- * Collects the information received from an API response for a code validation request.
- * Mutable object interacted with by several interfaces:
- * Contains information from both the HTTP response as well as the XML response, and the original request.
+ * Collects the information received from an API response for a code validation request. Mutable
+ * object interacted with by several interfaces: Contains information from both the HTTP response as
+ * well as the XML response, and the original request.
  */
 @SuperBuilder
 @Data
 public class DigaCodeValidationResponse extends AbstractDigaApiResponse {
-    /**
-     * The code which was validated. This field is only set if validation was successful.
-     */
-    private String validatedDigaCode;
-    /**
-     * The full DiGAVEid which was validated.
-     * It consists of your DiGAID + 3 numbers. It is unclear what the last 3 digits mean so far, but you need to put this
-     * DiGAVEid in the invoice you send to get paid for this code validation, see {@link DigaInvoice#getDigavEid()}.
-     */
-    private String validatedDigaveid;
+  /** The code which was validated. This field is only set if validation was successful. */
+  private String validatedDigaCode;
+  /**
+   * The full DiGAVEid which was validated. It consists of your DiGAID + 3 numbers. It is unclear
+   * what the last 3 digits mean so far, but you need to put this DiGAVEid in the invoice you send
+   * to get paid for this code validation, see {@link DigaInvoice#getDigavEid()}.
+   */
+  private String validatedDigaveid;
 
-    // TODO figure out what this translation means ("tag der leistungserbringung" from "antwort")
-    private Date dayOfServiceProvision;
+  // TODO figure out what this translation means ("tag der leistungserbringung" from "antwort")
+  private Date dayOfServiceProvision;
 }

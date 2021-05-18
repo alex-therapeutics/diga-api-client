@@ -22,30 +22,16 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 
-/**
- * Information about an insurance company gathered from parsing a DiGA code.
- */
+/** Information about an insurance company gathered from parsing a DiGA code. */
 @SuperBuilder
 @Getter
 public abstract class AbstractDigaInsuranceInformation {
-    /**
-     * The IK number of the insurance company that generated this code.
-     */
-    @NonNull
-    private String insuranceCompanyIKNumber;
-    /**
-     * The clearing centers IK number of the insurance that generated this code.
-     */
-    @NonNull
-    private String clearingCenterIKNumber;
-    /**
-     * The name of the insurance company that generated this code.
-     */
-    @NonNull
-    private String insuranceCompanyName;
-    /**
-     * The API endpoint of the insurance company that generated this code.
-     */
-    @NonNull
-    private String endpoint;
+  /** The IK number of the insurance company that generated this code. */
+  @NonNull private final String insuranceCompanyIKNumber;
+  /** The clearing centers IK number of the insurance that generated this code. */
+  @NonNull private final String clearingCenterIKNumber;
+  /** The name of the insurance company that generated this code. */
+  @NonNull private final String insuranceCompanyName;
+  /** The API endpoint of the insurance company that generated this code. */
+  @NonNull private final String endpoint;
 }

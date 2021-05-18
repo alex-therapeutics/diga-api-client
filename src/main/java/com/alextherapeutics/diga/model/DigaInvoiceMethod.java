@@ -18,49 +18,40 @@
 
 package com.alextherapeutics.diga.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * An invoice method specified for an insurance company
- * For a transitional period, insurance companies are allowed to not accept invoices through the API but
- * via email or post.
- * <p>
- * In these cases, the DiGA manufacturer have to send the invoices manually. For email, you are supposed to send
- * the invoice in XRechnung format to the email specified in the mapping file. For post, it is unclear which format,
- * but you are supposed to send the invoice via the post details in the mapping file.
+ * An invoice method specified for an insurance company For a transitional period, insurance
+ * companies are allowed to not accept invoices through the API but via email or post.
+ *
+ * <p>In these cases, the DiGA manufacturer have to send the invoices manually. For email, you are
+ * supposed to send the invoice in XRechnung format to the email specified in the mapping file. For
+ * post, it is unclear which format, but you are supposed to send the invoice via the post details
+ * in the mapping file.
  */
 @AllArgsConstructor
 public enum DigaInvoiceMethod {
-    /**
-     * Invoices should be sent via the API
-     */
-    API(1),
-    /**
-     * Invoices should be sent by email
-     */
-    EMAIL(2),
-    /**
-     * Invoices should be sent by post
-     */
-    POST(3);
+  /** Invoices should be sent via the API */
+  API(1),
+  /** Invoices should be sent by email */
+  EMAIL(2),
+  /** Invoices should be sent by post */
+  POST(3);
 
-    private static final Map<Integer, DigaInvoiceMethod> BY_IDENTIFIER = new HashMap<>();
+  private static final Map<Integer, DigaInvoiceMethod> BY_IDENTIFIER = new HashMap<>();
 
-    static {
-        for (DigaInvoiceMethod invoiceMethod : values()) {
-            BY_IDENTIFIER.put(invoiceMethod.identifier, invoiceMethod);
-        }
+  static {
+    for (DigaInvoiceMethod invoiceMethod : values()) {
+      BY_IDENTIFIER.put(invoiceMethod.identifier, invoiceMethod);
     }
+  }
 
-    @Getter
-    private int identifier;
+  @Getter private final int identifier;
 
-    public static DigaInvoiceMethod fromIdentifier(int identifier) {
-        return BY_IDENTIFIER.get(identifier);
-    }
-
+  public static DigaInvoiceMethod fromIdentifier(int identifier) {
+    return BY_IDENTIFIER.get(identifier);
+  }
 }

@@ -18,37 +18,35 @@
 
 package com.alextherapeutics.diga.model;
 
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 
 /**
- * Valid DiGA API process codes.
- * These go in the "Verfahrenskennung" header so that the API endpoint understands which type of request it is
+ * Valid DiGA API process codes. These go in the "Verfahrenskennung" header so that the API endpoint
+ * understands which type of request it is
  */
 public enum DigaProcessCode {
-    CODE_VALIDATION("EDFC0"),
-    CODE_VALIDATION_TEST("TDFC0"),
-    BILLING("EDRE0"),
-    BILLING_TEST("TDRE0");
+  CODE_VALIDATION("EDFC0"),
+  CODE_VALIDATION_TEST("TDFC0"),
+  BILLING("EDRE0"),
+  BILLING_TEST("TDRE0");
 
-    private static final Map<String, DigaProcessCode> BY_CODE = new HashMap<>();
+  private static final Map<String, DigaProcessCode> BY_CODE = new HashMap<>();
 
-    static {
-        for (DigaProcessCode code : values()) {
-            BY_CODE.put(code.code, code);
-        }
+  static {
+    for (DigaProcessCode code : values()) {
+      BY_CODE.put(code.code, code);
     }
+  }
 
-    @Getter
-    private String code;
+  @Getter private final String code;
 
-    DigaProcessCode(String code) {
-        this.code = code;
-    }
+  DigaProcessCode(String code) {
+    this.code = code;
+  }
 
-    public static DigaProcessCode fromCode(int code) {
-        return BY_CODE.get(code);
-    }
+  public static DigaProcessCode fromCode(int code) {
+    return BY_CODE.get(code);
+  }
 }
