@@ -2,6 +2,11 @@
 
 ### Snapshot
 
+### 1.1.2
+
+- fix bug in billing where creditor ik was wrong
+- fix bug in billing where numbers werent properly rounded
+
 ### 1.1.1
 
 - fix bug in code validation using the wrong IK number for encryption
