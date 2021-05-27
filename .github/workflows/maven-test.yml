@@ -16,5 +16,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Run Linting
+        run: mvn spotless:check
       - name: Run Tests
-        run: mvn spotless:check && mvn test
+        run: mvn test
