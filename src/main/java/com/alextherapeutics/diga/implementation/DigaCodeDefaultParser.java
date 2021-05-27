@@ -27,95 +27,90 @@ import com.alextherapeutics.diga.model.DigaInvoiceMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-/**
- * Parses a DiGA Code
- */
+/** Parses a DiGA Code */
 @AllArgsConstructor
 public class DigaCodeDefaultParser implements DigaCodeParser {
-    private DigaHealthInsuranceDirectory healthInsuranceDirectory;
+  private final DigaHealthInsuranceDirectory healthInsuranceDirectory;
 
-    @Override
-    public DigaCodeInformation parseCodeForValidation(String code) throws DigaCodeValidationException {
-        var parsedCode = parseCode(code);
-        var healthInsuranceInformation = healthInsuranceDirectory.getInformation(parsedCode.healthInsuranceCode);
-        // TODO null check and throw exception?
-        return DigaCodeInformation.builder()
-                .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
-                .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
-                .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
-                .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
-                .fullDigaCode(code)
-                .personalDigaCode(parsedCode.healthInsuranceIndividualCode)
-                .build();
-    }
+  @Override
+  public DigaCodeInformation parseCodeForValidation(String code)
+      throws DigaCodeValidationException {
+    var parsedCode = parseCode(code);
+    var healthInsuranceInformation =
+        healthInsuranceDirectory.getInformation(parsedCode.healthInsuranceCode);
+    // TODO null check and throw exception?
+    return DigaCodeInformation.builder()
+        .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
+        .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
+        .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
+        .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
+        .fullDigaCode(code)
+        .personalDigaCode(parsedCode.healthInsuranceIndividualCode)
+        .build();
+  }
 
-    @Override
-    public DigaBillingInformation parseCodeForBilling(String code) throws DigaCodeValidationException {
-        var parsedCode = parseCode(code);
-        var healthInsuranceInformation = healthInsuranceDirectory.getInformation(parsedCode.healthInsuranceCode);
-        return DigaBillingInformation.builder()
-                .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
-                .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
-                .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
-                .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
-                .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
-                .buyerCompanyPostalCode(
-                        healthInsuranceInformation.getPLZ() != null
-                                ? healthInsuranceInformation.getPLZ()
-                                : DigaBillingInformation.INFORMATION_MISSING
-                )
-                .buyerCompanyAddressLine(
-                        healthInsuranceInformation.getStrassePostfach() != null
-                                ? healthInsuranceInformation.getStrassePostfach() + " " + healthInsuranceInformation.getHausnummerPostfachnummer()
-                                : DigaBillingInformation.INFORMATION_MISSING
-                )
-                .buyerCompanyCity(
-                        healthInsuranceInformation.getOrt() != null
-                                ? healthInsuranceInformation.getOrt()
-                                : DigaBillingInformation.INFORMATION_MISSING
-                )
-                .buyerInvoicingMethod(DigaInvoiceMethod.fromIdentifier(healthInsuranceInformation.getVersandart().intValue()))
-                .buyerInvoicingEmail(healthInsuranceInformation.getEMailKostentraeger())
-                .build();
-    }
+  @Override
+  public DigaBillingInformation parseCodeForBilling(String code)
+      throws DigaCodeValidationException {
+    var parsedCode = parseCode(code);
+    var healthInsuranceInformation =
+        healthInsuranceDirectory.getInformation(parsedCode.healthInsuranceCode);
+    return DigaBillingInformation.builder()
+        .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
+        .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
+        .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
+        .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
+        .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
+        .buyerCompanyPostalCode(
+            healthInsuranceInformation.getPLZ() != null
+                ? healthInsuranceInformation.getPLZ()
+                : DigaBillingInformation.INFORMATION_MISSING)
+        .buyerCompanyAddressLine(
+            healthInsuranceInformation.getStrassePostfach() != null
+                ? healthInsuranceInformation.getStrassePostfach()
+                    + " "
+                    + healthInsuranceInformation.getHausnummerPostfachnummer()
+                : DigaBillingInformation.INFORMATION_MISSING)
+        .buyerCompanyCity(
+            healthInsuranceInformation.getOrt() != null
+                ? healthInsuranceInformation.getOrt()
+                : DigaBillingInformation.INFORMATION_MISSING)
+        .buyerInvoicingMethod(
+            DigaInvoiceMethod.fromIdentifier(healthInsuranceInformation.getVersandart().intValue()))
+        .buyerInvoicingEmail(healthInsuranceInformation.getEMailKostentraeger())
+        .build();
+  }
 
-    // according to
-    // https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anlage_1_Technische_Anlage_zur_RL_V1.0.pdf
-    private ParsedDigaCode parseCodeString(String codeString) {
-        return ParsedDigaCode.builder()
-                .healthInsuranceCode(
-                        codeString.substring(0, 2)
-                )
-                .version(
-                        Character.toString(codeString.charAt(2))
-                )
-                .healthInsuranceIndividualCode(
-                        codeString.substring(3, 15)
-                )
-                .checksum(
-                        Character.toString(codeString.charAt(15))
-                )
-                .build();
-    }
+  // according to
+  // https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anlage_1_Technische_Anlage_zur_RL_V1.0.pdf
+  private ParsedDigaCode parseCodeString(String codeString) {
+    return ParsedDigaCode.builder()
+        .healthInsuranceCode(codeString.substring(0, 2))
+        .version(Character.toString(codeString.charAt(2)))
+        .healthInsuranceIndividualCode(codeString.substring(3, 15))
+        .checksum(Character.toString(codeString.charAt(15)))
+        .build();
+  }
 
-    private boolean validateDigaCodeStructure(String code) {
-        // TODO - make more check, like regex, the different parts, etc.
-        // TODO maybe use checksum to check validity?
-        return code != null && code.length() == 16;
-    }
+  private boolean validateDigaCodeStructure(String code) {
+    // TODO - make more check, like regex, the different parts, etc.
+    // TODO maybe use checksum to check validity?
+    return code != null && code.length() == 16;
+  }
 
-    private DigaCodeDefaultParser.ParsedDigaCode parseCode(String code) throws DigaCodeValidationException {
-        if (!validateDigaCodeStructure(code)) {
-            throw new DigaCodeValidationException("Invalid DiGA code");
-        }
-        return parseCodeString(code);
+  private DigaCodeDefaultParser.ParsedDigaCode parseCode(String code)
+      throws DigaCodeValidationException {
+    if (!validateDigaCodeStructure(code)) {
+      throw new DigaCodeValidationException("Invalid DiGA code");
     }
+    return parseCodeString(code);
+  }
 
-    @Builder
-    private static class ParsedDigaCode {
-        private String healthInsuranceCode;
-        private String version;
-        private String healthInsuranceIndividualCode;
-        private String checksum;
-    }
+  @Builder
+  private static class ParsedDigaCode {
+    private final String healthInsuranceCode;
+    private final String version;
+    private final String healthInsuranceIndividualCode;
+    private final String checksum;
+  }
 }

@@ -22,26 +22,27 @@ import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
 import com.alextherapeutics.diga.model.DigaInvoice;
 
-/**
- * Creates raw XML data bodies containing code validation requests or DiGA invoices.
- */
+/** Creates raw XML data bodies containing code validation requests or DiGA invoices. */
 public interface DigaXmlRequestWriter {
-    /**
-     * Create a XML request body for DiGA code validation (A "PruefungFreischaltCode - Anfrage")
-     *
-     * @param codeInformation - information required to create the request
-     * @return A byte array containing a (non-encrypted) PruefungFreischaltcode - Anfrage XML request
-     * @throws DigaXmlWriterException - if the request body couldn't be created
-     */
-    byte[] createCodeValidationRequest(DigaCodeInformation codeInformation) throws DigaXmlWriterException;
+  /**
+   * Create a XML request body for DiGA code validation (A "PruefungFreischaltCode - Anfrage")
+   *
+   * @param codeInformation - information required to create the request
+   * @return A byte array containing a (non-encrypted) PruefungFreischaltcode - Anfrage XML request
+   * @throws DigaXmlWriterException - if the request body couldn't be created
+   */
+  byte[] createCodeValidationRequest(DigaCodeInformation codeInformation)
+      throws DigaXmlWriterException;
 
-    /**
-     * Create a XML request body containing a DiGA invoice (an "XRechnung" invoice conforming to UN/CEFACT standard)
-     *
-     * @param invoice            - information required to create the invoice
-     * @param billingInformation - information on the buyer
-     * @return A byte array containing a (non-encrypted) XRechnung XML invoice
-     * @throws DigaXmlWriterException - if the request body couldn't be created
-     */
-    byte[] createBillingRequest(DigaInvoice invoice, DigaBillingInformation billingInformation) throws DigaXmlWriterException;
+  /**
+   * Create a XML request body containing a DiGA invoice (an "XRechnung" invoice conforming to
+   * UN/CEFACT standard)
+   *
+   * @param invoice - information required to create the invoice
+   * @param billingInformation - information on the buyer
+   * @return A byte array containing a (non-encrypted) XRechnung XML invoice
+   * @throws DigaXmlWriterException - if the request body couldn't be created
+   */
+  byte[] createBillingRequest(DigaInvoice invoice, DigaBillingInformation billingInformation)
+      throws DigaXmlWriterException;
 }

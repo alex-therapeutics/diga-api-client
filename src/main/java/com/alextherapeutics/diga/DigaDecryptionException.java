@@ -18,11 +18,9 @@
 
 package com.alextherapeutics.diga;
 
-/**
- * Decrypting an encrypted XML body response failed
- */
+/** Decrypting an encrypted XML body response failed */
 public class DigaDecryptionException extends Exception {
-    public DigaDecryptionException(Throwable e) {
-        super("Diga decryption failed due to exception", e);
-    }
+  public DigaDecryptionException(Throwable e) {
+    super("Diga decryption failed due to exception", e);
+  }
 }

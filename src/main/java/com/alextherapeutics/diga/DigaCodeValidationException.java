@@ -18,11 +18,9 @@
 
 package com.alextherapeutics.diga;
 
-/**
- * The provided DiGA Code was not valid.
- */
+/** The provided DiGA Code was not valid. */
 public class DigaCodeValidationException extends Exception {
-    public DigaCodeValidationException(String msg) {
-        super(msg);
-    }
+  public DigaCodeValidationException(String msg) {
+    super(msg);
+  }
 }

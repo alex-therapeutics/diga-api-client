@@ -19,11 +19,11 @@
 package com.alextherapeutics.diga;
 
 /**
- * Thrown when the library fails to read the XML response from the 'nutzdaten' data part of a DiGA API response
- * Inspect the underlying exception for details
+ * Thrown when the library fails to read the XML response from the 'nutzdaten' data part of a DiGA
+ * API response Inspect the underlying exception for details
  */
 public class DigaXmlReaderException extends Exception {
-    public DigaXmlReaderException(Throwable e) {
-        super("Exception thrown when trying to read XML request body: ", e);
-    }
+  public DigaXmlReaderException(Throwable e) {
+    super("Exception thrown when trying to read XML request body: ", e);
+  }
 }

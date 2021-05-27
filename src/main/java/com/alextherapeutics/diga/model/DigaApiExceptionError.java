@@ -22,12 +22,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
-/**
- * An error which occured by an exception being thrown inside the library.
- */
+/** An error which occured by an exception being thrown inside the library. */
 @AllArgsConstructor
 @Data
 @ToString
 public class DigaApiExceptionError implements DigaApiResponseError {
-    private Throwable exception;
+  private Throwable exception;
 }

@@ -23,7 +23,7 @@ package com.alextherapeutics.diga;
  * This is a critical error which occurs early when creating a new request.
  */
 public class DigaXmlWriterException extends Exception {
-    public DigaXmlWriterException(Throwable e) {
-        super("Exception thrown when trying to create XML request body: ", e);
-    }
+  public DigaXmlWriterException(Throwable e) {
+    super("Exception thrown when trying to create XML request body: ", e);
+  }
 }

@@ -22,17 +22,14 @@ import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Contains information gained from a (parsed) DiGA code when compared with the insurance company mapping file
+ * Contains information gained from a (parsed) DiGA code when compared with the insurance company
+ * mapping file
  */
 @SuperBuilder
 @Getter
 public class DigaCodeInformation extends AbstractDigaInsuranceInformation {
-    /**
-     * The full (unparsed) 16 character diga code.
-     */
-    private String fullDigaCode;
-    /**
-     * The individual 12 character part of the diga code (Krankenkassenindividueller Code)
-     */
-    private String personalDigaCode;
+  /** The full (unparsed) 16 character diga code. */
+  private final String fullDigaCode;
+  /** The individual 12 character part of the diga code (Krankenkassenindividueller Code) */
+  private final String personalDigaCode;
 }

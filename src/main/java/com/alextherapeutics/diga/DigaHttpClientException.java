@@ -18,11 +18,9 @@
 
 package com.alextherapeutics.diga;
 
-/**
- * The DiGA HTTP client failed to perform the specified task
- */
+/** The DiGA HTTP client failed to perform the specified task */
 public class DigaHttpClientException extends Exception {
-    public DigaHttpClientException(Throwable e) {
-        super("Diga Http Client error", e);
-    }
+  public DigaHttpClientException(Throwable e) {
+    super("Diga Http Client error", e);
+  }
 }

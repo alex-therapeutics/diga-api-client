@@ -25,13 +25,13 @@ import com.alextherapeutics.diga.model.generatedxml.codevalidation.Krankenkassen
  * https://kkv.gkv-diga.de/ and provides methods for accessing the information.
  */
 public interface DigaHealthInsuranceDirectory {
-    /**
-     * Get information from the insurance directory based on the company code prefix,
-     * or "Kostentraegerkuerzel"
-     *
-     * @param prefix
-     * @return
-     */
-    // TODO provide english mapping of this model
-    KrankenkasseninformationCtp getInformation(String prefix);
+  /**
+   * Get information from the insurance directory based on the company code prefix, or
+   * "Kostentraegerkuerzel"
+   *
+   * @param prefix
+   * @return
+   */
+  // TODO provide english mapping of this model
+  KrankenkasseninformationCtp getInformation(String prefix);
 }
