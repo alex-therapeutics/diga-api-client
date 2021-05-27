@@ -326,12 +326,19 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
   }
 
   // money details like price, taxes, etc
-  private HeaderTradeSettlementType createApplicableHeaderTradeSettlement(
-      DigaInvoice digaInvoice) {
+  private HeaderTradeSettlementType createApplicableHeaderTradeSettlement(DigaInvoice digaInvoice) {
     // we calculate money values here
-    var netPrice = digaInformation.getNetPricePerPrescription().setScale(2, RoundingMode.HALF_EVEN);;
-    var taxPercent = digaInformation.isReverseChargeVAT() ? BigDecimal.ZERO : digaInformation.getApplicableVATpercent();
-    var calculatedTax = taxPercent.divide(new BigDecimal(100)).multiply(netPrice).setScale(2, RoundingMode.HALF_EVEN);
+    var netPrice = digaInformation.getNetPricePerPrescription().setScale(2, RoundingMode.HALF_EVEN);
+    ;
+    var taxPercent =
+        digaInformation.isReverseChargeVAT()
+            ? BigDecimal.ZERO
+            : digaInformation.getApplicableVATpercent();
+    var calculatedTax =
+        taxPercent
+            .divide(new BigDecimal(100))
+            .multiply(netPrice)
+            .setScale(2, RoundingMode.HALF_EVEN);
     var grandTotal = netPrice.add(calculatedTax).setScale(2, RoundingMode.HALF_EVEN);
 
     var applicableHeaderTradeSettlement = billingObjectFactory.createHeaderTradeSettlementType();
@@ -378,7 +385,10 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         .getDuePayableAmount()
         .add(createAmountType(grandTotal));
 
-    applicableHeaderTradeSettlement.setCreditorReferenceID(createIdType(digaInformation.getManufacturingCompanyIk(), "IK")); // creditor - this needs to be the IK of the entity that sends the invoice
+    applicableHeaderTradeSettlement.setCreditorReferenceID(
+        createIdType(
+            digaInformation.getManufacturingCompanyIk(),
+            "IK")); // creditor - this needs to be the IK of the entity that sends the invoice
 
     applicableHeaderTradeSettlement.setInvoiceCurrencyCode(
         createCurrencyCodeType(digaInvoice.getInvoiceCurrencyCode()));
