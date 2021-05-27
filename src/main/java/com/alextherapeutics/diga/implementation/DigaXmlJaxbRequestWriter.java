@@ -30,6 +30,7 @@ import com.alextherapeutics.diga.model.generatedxml.codevalidation.Verfahrensken
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -182,7 +183,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         createApplicableHeaderTradeAgreement(digaInvoice, billingInformation));
     transaction.setApplicableHeaderTradeDelivery(createApplicableHeaderTradeDelivery(digaInvoice));
     transaction.setApplicableHeaderTradeSettlement(
-        createApplicableHeaderTradeSettlement(digaInvoice, billingInformation));
+        createApplicableHeaderTradeSettlement(digaInvoice));
     return transaction;
   }
 
@@ -326,15 +327,12 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
   // money details like price, taxes, etc
   private HeaderTradeSettlementType createApplicableHeaderTradeSettlement(
-      DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
+      DigaInvoice digaInvoice) {
     // we calculate money values here
-    var netPrice = digaInformation.getNetPricePerPrescription();
-    var taxPercent =
-        digaInformation.isReverseChargeVAT()
-            ? BigDecimal.ZERO
-            : digaInformation.getApplicableVATpercent();
-    var calculatedTax = taxPercent.divide(new BigDecimal(100)).multiply(netPrice);
-    var grandTotal = netPrice.add(calculatedTax);
+    var netPrice = digaInformation.getNetPricePerPrescription().setScale(2, RoundingMode.HALF_EVEN);;
+    var taxPercent = digaInformation.isReverseChargeVAT() ? BigDecimal.ZERO : digaInformation.getApplicableVATpercent();
+    var calculatedTax = taxPercent.divide(new BigDecimal(100)).multiply(netPrice).setScale(2, RoundingMode.HALF_EVEN);
+    var grandTotal = netPrice.add(calculatedTax).setScale(2, RoundingMode.HALF_EVEN);
 
     var applicableHeaderTradeSettlement = billingObjectFactory.createHeaderTradeSettlementType();
 
@@ -380,10 +378,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         .getDuePayableAmount()
         .add(createAmountType(grandTotal));
 
-    applicableHeaderTradeSettlement.setCreditorReferenceID(
-        createIdType(
-            billingInformation.getBuyerCompanyCreditorIk(),
-            "IK")); // creditor - see mapping file not same as "buyer ik"
+    applicableHeaderTradeSettlement.setCreditorReferenceID(createIdType(digaInformation.getManufacturingCompanyIk(), "IK")); // creditor - this needs to be the IK of the entity that sends the invoice
+
     applicableHeaderTradeSettlement.setInvoiceCurrencyCode(
         createCurrencyCodeType(digaInvoice.getInvoiceCurrencyCode()));
     applicableHeaderTradeSettlement
