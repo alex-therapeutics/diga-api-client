@@ -18,7 +18,7 @@ together with information on how many companies are using each endpoint, and iss
 ## Endpoints
 
 - diga.bitmarck-daten.de - 85 companies - CODE TEST OK - CODE OK - BILLING TEST OK - BILLING OK
-- diga-api.tk.de/diga/api/public/rest - 1 company - CODE TEST OK - CODE NOT VERIFIED
+- diga-api.tk.de/diga/api/public/rest - 1 company - CODE TEST OK - CODE OK - BILLING TEST OK - BILLING OK
 - da-api.gkvi.de - 5 companies - CODE TEST OK - CODE OK - BILLING TEST OK - BILLING OK
 - diga.kkh.de - 1 company - CODE TEST OK - CODE NOT VERIFIED
 - itscare.da-api.aok.de - 3 companies - CODE TEST OK - CODE OK - BILLING TEST OK - BILLING NOT VERIFIED
