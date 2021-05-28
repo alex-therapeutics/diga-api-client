@@ -2,6 +2,10 @@
 
 ### Snapshot
 
+### 1.1.3
+
+- workaround for diga-api.tk.de/diga/api/public/rest endpoint responding using xml with invalid encoding
+
 ### 1.1.2
 
 - fix bug in billing where creditor ik was wrong
