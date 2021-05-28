@@ -27,7 +27,6 @@ import com.alextherapeutics.diga.model.generatedxml.billingreport.ResourceType;
 import com.alextherapeutics.diga.model.generatedxml.billingreport.ValidationStepResultType;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.PruefungFreischaltcode;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -40,7 +39,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -63,7 +61,8 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
   public DigaInvoiceResponse readBillingReport(InputStream decryptedReport)
       throws DigaXmlReaderException {
     try {
-      XMLStreamReader xmlStream = XMLInputFactory.newInstance().createXMLStreamReader(decryptedReport);
+      XMLStreamReader xmlStream =
+          XMLInputFactory.newInstance().createXMLStreamReader(decryptedReport);
       var encoding = xmlStream.getEncoding();
       var charset = Charset.forName(encoding);
 
