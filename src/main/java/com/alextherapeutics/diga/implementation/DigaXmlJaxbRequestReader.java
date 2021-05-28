@@ -27,9 +27,9 @@ import com.alextherapeutics.diga.model.generatedxml.billingreport.ResourceType;
 import com.alextherapeutics.diga.model.generatedxml.billingreport.ValidationStepResultType;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.NachrichtentypStp;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.PruefungFreischaltcode;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -37,6 +37,10 @@ import java.util.stream.Collectors;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -59,7 +63,14 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
   public DigaInvoiceResponse readBillingReport(InputStream decryptedReport)
       throws DigaXmlReaderException {
     try {
-      var bytes = decryptedReport.readAllBytes();
+      XMLStreamReader xmlStream = XMLInputFactory.newInstance().createXMLStreamReader(decryptedReport);
+      var encoding = xmlStream.getEncoding();
+      var charset = Charset.forName(encoding);
+
+      // xml is not always properly encoded despite the stated encoding in the xml
+      // therefore we re-encode based on the specified encoding
+      var bytes = new String(decryptedReport.readAllBytes(), charset).getBytes();
+
       var report = (Report) billingReportUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
       return DigaInvoiceResponse.builder()
           .hasError(!report.isValid())
@@ -67,7 +78,7 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
           .rawXmlResponseBody(bytes)
           .generatedInvoice(IOUtils.toString(bytes, "UTF-8"))
           .build();
-    } catch (JAXBException | IOException e) {
+    } catch (JAXBException | IOException | XMLStreamException e) {
       throw new DigaXmlReaderException(e);
     }
   }
