@@ -26,9 +26,19 @@ Patients receive 16-character prescription codes by their insurances. The codes 
 
 The first two characters are an identifier for the insurance. They can be used to get additional information from a mapping (xml) file which can be downloaded [here](https://kkv.gkv-diga.de/).
 
-The other parts contain a version and a unique code for the patient & insurance. The last character is a checksum which is described [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anhang3_Freischaltcode_Berechnungsregel_Pruefziffer_V1.0.pdf) with an open source implementation for different languages on [Github](https://github.com/bitmarck-service).
+The other parts contain a version (`A`) and a unique code for the patient & insurance. The last character is a checksum which is described [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anhang3_Freischaltcode_Berechnungsregel_Pruefziffer_V1.0.pdf) with an open source implementation for different languages on [Github](https://github.com/bitmarck-service).
 
 Codes for testing can be downloaded as xlsx [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Pseudo-Codes.xlsx). Some of these codes are invalid with error codes defined [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anhang5_Fehlerausgaben_V1.0.1_20210423.pdf).
+
+| Rückgabewert | Freischaltcode   | Fehlertext                    | Erläuterung                                                                                                                                                                            |
+| ------------ | ---------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0            | 77AAAAAAAAAAAAAX | Anfrage gültig                | Aktuelles Tagesdatum für "Tag_der_Leistungserbringung" aus EDFC0-basis_2.0.0.xsd verweden. Für die DiGANr laut aus EDFC0-basis_2.0.0.xsd sind die letzten 3-Stellen mit 000 anzugeben. |
+| 100          | 77AAAAAAAAAAADEV | Freischaltcode abgelaufen     | Fachlicher Fehler. Der Fehler wird ausgegebene wenn der Code zeitlich abgelaufen ist.                                                                                                  |
+| 101          | 77AAAAAAAAAAADFF | Freischaltcode storniert      | Fachlicher Fehler.                                                                                                                                                                     |
+| 102          | 77AAAAAAAAAAADGE | Fresichaltcode nicht gefunden | Fachlicher Fehler. Der Fehler wird ausgegeben wenn bspw. die Zuordnung des Freischaltcodes zur DiGA nicht stimmt.                                                                      |
+| 200          | 77AAAAAAAAAAAGIS | Anfrage oder Datei ungültig   | Die Anfrage oder die Datei konnte nicht verarbeitet werden. Der Fehler wird bspw. bei einer Schemaverletzung ausgegeben.                                                               |
+| 201          | 77AAAAAAAAAAAGJC | Serverfehler                  | Technischer Fehler. Der Fehler wird bspw. bei einem Übertragungsfehler ausgegeben.                                                                                                     |
+| 202          | 77AAAAAAAAAAAGKD | Speicherfehler                | Technischer Fehler. Der Fehler wird bspw. bei einem Datenbankfehler ausgegeben.                                                                                                        |
 
 ### Mapping file for insurances
 
@@ -63,15 +73,31 @@ Although insurances use their own apis, they do follow an openapi specification 
 According to the openapi specification the request contains 4 different parameters which are sent with `ContentType: multipart/form-data`:
 
 - `iksender` - Institutionskennzeichen (IK) of the DiGA manufacturer (an id required for payments)
-- `ikempfaenger` - IK of the insurance which can be found in the mapping file
+- `ikempfaenger` - IK of the insurance which can be found in the mapping file (`Kostentraegerkennung` - [section 5.2.2](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf))
 - `verfahren` - a code which discriminates requests for code verification and reimbursement
 - `nutzdaten` - additional information for the request, including the prescription code
   - the `nutzdaten` are described later in more detail as this is the tricky bit of the request
 
 ### Institutionskennzeichen - IK numbers
 
-The IK numbers are 9 digits long and must be requested by every DiGA manufacturer.
-**TODO** add more information about this process.
+Detailed information about the IK numbers can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/GR_IK_2020-06-01.pdf) (German only).
+
+> Das IK ist ein eindeutiges Merkmal für die Abrechnung medizinischer und rehabilitativer
+> Leistungen mit den Trägern der Sozialversicherung [...] Es gilt damit als offizielles Kennzeichen der Leistungsträger und Leistungserbringer
+> im Schriftverkehr und für Abrechnungszwecke (§ 293 SGB V).
+
+IK numbers are unique identifiers, 9 digits long, which are required for the billing of medical services and used as official identifiers. Therefore, every DiGA manufacturer must request an IK number. An IK number is also required when [requesting a certificate from ITSG](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/) which is required for encrypting and decrypting the `nutzdaten` of the request. IK numbers might be updated when the name, address, or billing address of a company changes.
+
+The linked document also holds more information about how the numbers are structured and more importantly, how they can be requested.
+
+#### Requesting an IK number
+
+According to section 2.2.1
+
+> Die Vergabe, die Änderung der Daten [...] erfolgen auf Antrag. Der Erfassungsbeleg kann bei der ARGE•IK sowie bei jedem Sozialversicherungsträger angefordert oder auf der Internetseite der ARGE•IK (www.arge-ik.de) heruntergeladen werden.
+
+You need to request the IK or changes using a form. You can check the [ARGE-IK](https://www.dguv.de/arge-ik/index.jsp) website for more information (German). Specific information for requesting the number can be found in the [Antrag](https://www.dguv.de/arge-ik/antrag/index.jsp) tab.
+The form can be sent by email and a blueprint can be downloaded [here](https://www.dguv.de/medien/arge-ik/downloads/erfass.pdf).
 
 ### Verfahren
 
