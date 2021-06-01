@@ -99,6 +99,8 @@ According to section 2.2.1
 You need to request the IK or changes using a form. You can check the [ARGE-IK](https://www.dguv.de/arge-ik/index.jsp) website for more information (German). Specific information for requesting the number can be found in the [Antrag](https://www.dguv.de/arge-ik/antrag/index.jsp) tab.
 The form can be sent by email and a blueprint can be downloaded [here](https://www.dguv.de/medien/arge-ik/downloads/erfass.pdf).
 
+[Additional information](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/20210401_Broschuere_TP5.pdf) which also contains a section about requesting certificates from ITSG trust center.
+
 ### Verfahren
 
 The `verfahren` parameter consists of 5 characters describing the kind of the request. The first character is either `T` or `E` denoting `Testdaten` (test data) or `Echtdaten` (real data) - [source](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_4_-_Verfahrenskennungen.pdf).
@@ -117,9 +119,13 @@ The last one is for versioning which leaves us with the following values:
 
 **TODO**
 
+Must be signed using a certificate and then encoded to byte array
+
 ## Request details
 
 **TODO**
+
+Processing time constraints: Mean value 10000[msec], 95% quantile [msec] 15000
 
 ### Code verification requests
 
@@ -131,9 +137,25 @@ Invoices must be created using the `XRechnung` standard. There might also be ded
 
 **TODO**
 
+itplr-kosit/validator: Validates XML documents with XML Schema and Schematron
+Can be done via email or mail in the beginning. See mapping table for insurance-specific information
+
+Die Abrechnung hat insbesondere folgende Bestandteile:
+
+- Freischaltcode / Rezeptcode
+- Eindeutige DiGA Nummer gemäß dem Verzeichnis nach §139e SGB Vs
+- Verordnungsdauer
+- Informationen zum Rechnungssteller und zum Kostenträger
+
 ### Encryption
 
 **TODO**
+
+https://github.com/alex-therapeutics/secon-keystore-generator
+https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf
+Page 52: Die CA (Trust Center) generiert auf Anfrage ein Zertifikat das u.a. den Namen des Systemteilnehmers, den öffentlichen Schlüssel sowie den Namen des Zertifikatserzeugers enthält
+
+https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/
 
 ## FAQ
 
