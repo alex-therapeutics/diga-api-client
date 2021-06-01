@@ -195,7 +195,22 @@ Mean value 10000[msec], 95% quantile [msec] 15000
 Is that really 10 seconds for a single request?
 
 ## FAQ
+### What can I do if I want to make requests but my DiGA is not approved yet and I therefore do not have a diga id?
+
+Just sent some 5 digit number as part of the `nutzdaten`, e.g. `12345`.
 
 ### What can I do if I dont know the IK number yet and still want to test the client?
 
-### What can I do if I want to make requests but my DiGA is not approved yet and therefore does not have a diga id?
+You will need an IK number to request the certificate for encryption and decryption. Therefore, it is a must-have.
+
+### Are there solutions for non-java users?
+
+So far, there are no other clients available. A solution could be to create a docker image which exposes the java client via an api. Additionally, we hope that this documentation provides enough information so that clients in other languages can be developed.
+
+### My DiGA is only valid for 30 days. Can users request a fresh code from the insurance while their existing code is still valid?
+
+**TODO** Hopefully, users want to continue using your DiGA after their initial prescription code expired.
+
+- Can they already request a new code while still being active?
+- How will the verification and billing api handle these cases?
+- Is the `TagDerLeistungserbringung` the date on which the request is made or is this set by the insurance when issuing the prescription code?
