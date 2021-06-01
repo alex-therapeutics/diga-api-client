@@ -117,19 +117,52 @@ The last one is for versioning which leaves us with the following values:
 
 ### Nutzdaten
 
-**TODO**
-
-Must be signed using a certificate and then encoded to byte array
+`nutzdaten` is the tricky field which contains verification or billing related information based on the `verfahren` value. `nutzdaten` are defined in an xml sheet which needs to be encrypted and encoded as byte array before sending the actual requests.
+The structure of the xml files are defined by `xsd` files which can be found in `src/main/resources` or downloaded [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_XSD_20201029.zip).
+Examples for the data and additional details on the encryption are described in the following.
 
 ## Request details
 
-**TODO**
-
-Processing time constraints: Mean value 10000[msec], 95% quantile [msec] 15000
-
 ### Code verification requests
 
-**TODO**
+See `EDFC0-Pruefung_2.0.0.xsd` file for reference:
+
+Data for sending the request:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Pruefung_Freischaltcode xmlns="http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/2.0.0"
+                         version="002.000.000" gueltigab="2020-07-01" verfahrenskennung="TDFC0" nachrichtentyp="ANF"
+                         absender="987654321" empfaenger="123456789">
+    <Antwort>
+        <IK_DiGA_Hersteller>123456789</IK_DiGA_Hersteller>
+        <IK_Krankenkasse>987654321</IK_Krankenkasse>
+        <DiGAID>12345000</DiGAVEID>
+        <Freischaltcode>ABCDEFGHIJKLMNOP</Freischaltcode>
+    </Antwort>
+</Pruefung_Freischaltcode>
+```
+
+In case you are not an approved DiGA manufacturer yet, you can put `12345` as `DiGAID`. You should already have an `IK` number though as otherwise, you also wouldnt have the certificate for encryption/decryption.
+
+Successful response data:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Pruefung_Freischaltcode xmlns="http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/2.0.0"
+                         version="002.000.000" gueltigab="2020-07-01" verfahrenskennung="TDFC0" nachrichtentyp="ANT"
+                         absender="987654321" empfaenger="123456789">
+    <Antwort>
+        <IK_DiGA_Hersteller>123456789</IK_DiGA_Hersteller>
+        <IK_Krankenkasse>987654321</IK_Krankenkasse>
+        <DiGAVEID>12345000</DiGAVEID>
+        <Freischaltcode>ABCDEFGHIJKLMNOP</Freischaltcode>
+        <Tag_der_Leistungserbringung>2020-08-19</Tag_der_Leistungserbringung>
+    </Antwort>
+</Pruefung_Freischaltcode>
+```
+
+The response differs from the request by having `nachrichtentyp="ANT"` as header (`Antwort`) instead of `nachrichtentyp="ANF"` (`Anfrage`). Also the diga id is listed as `DiGAVEID` (verified ID) and an additional field `Tag_der_Leistungserbringung` is returned (day when the service started).
 
 ### Billing requests
 
@@ -156,6 +189,14 @@ https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technisch
 Page 52: Die CA (Trust Center) generiert auf Anfrage ein Zertifikat das u.a. den Namen des Systemteilnehmers, den öffentlichen Schlüssel sowie den Namen des Zertifikatserzeugers enthält
 
 https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/
+
+### Request processing time
+
+According to the documentation, the processing time constraints are as follows:
+
+Mean value 10000[msec], 95% quantile [msec] 15000
+
+Is that really 10 seconds for a single request?
 
 ## FAQ
 
