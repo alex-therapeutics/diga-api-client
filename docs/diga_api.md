@@ -169,6 +169,7 @@ The response differs from the request by having `nachrichtentyp="ANT"` as header
 Invoices must be created using the `XRechnung` standard. There might also be dedicated accounting/book-keeping software which allows creating and sending invoices according to this standard, so that billing might also be handled outside the production system. However, the client supports sending invoices by mail. It is up to the users of the client to define what should happen with the response from the diga api. E.g. invoices are likely to be required for accounting and therefore must be stored. Also handling of apis which do not support billing yet, must be defined.
 
 The invoice should contain the following information:
+
 - prescription code
 - DiGA id of the manufacturer
 - time period for prescription
@@ -178,13 +179,12 @@ Additional information can be found on this [wiki page](https://github.com/alex-
 
 ### Encryption
 
-**TODO**
+Given that we are dealing with patient data, it is required to properly encrypt the data sent within requests.
+The encryption is based on certificates which need to be requested at the itsg which acts as a trust center.
+You can request it [here](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/), assuming that you already have an IK number.
 
-https://github.com/alex-therapeutics/secon-keystore-generator
-https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf
-Page 52: Die CA (Trust Center) generiert auf Anfrage ein Zertifikat das u.a. den Namen des Systemteilnehmers, den öffentlichen Schlüssel sowie den Namen des Zertifikatserzeugers enthält
-
-https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/
+A technical documentation for the encryption (of course in German) can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf).
+Once the certificates are issued, checkout the [prerequisites](https://github.com/alex-therapeutics/diga-api-client#prerequisites) within the Readme to be able to use them with the api client.
 
 ### Request processing time
 
