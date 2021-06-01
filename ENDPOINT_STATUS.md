@@ -18,16 +18,16 @@ together with information on how many companies are using each endpoint, and iss
 
 ## Endpoints
 
-| Api                                 | # companies | CODE TEST | CODE         | BILLING TEST | BILLING      |
-| ----------------------------------- | ----------- | --------- | ------------ | ------------ | ------------ |
-| diga.bitmarck-daten.de              | 85          | OK        | OK           | OK           | OK           |
-| diga-api.tk.de/diga/api/public/rest | 1           | OK        | OK           | OK           | OK           |
-| da-api.gkvi.de                      | 5           | OK        | OK           | OK           | OK           |
-| diga.kkh.de                         | 1 company   | OK        | NOT VERIFIED |
-| itscare.da-api.aok.de               | 3           | OK        | OK           | OK           | NOT VERIFIED |
-| kubus-it.da-api.aok.de              | 2           | OK        | NOT VERIFIED | OK           | NOT VERIFIED |
-| arge.da-api.aok.de                  | 3           | NOT OK    | NOT OK       | OK           | NOT VERIFIED |
-| diga.apimisc.de                     | 3           | OK        | OK           | NOT OK       | OK           |
+| Api                                 | #Companies | CODE TEST | CODE         | BILLING TEST | BILLING      |
+| ----------------------------------- | ---------- | --------- | ------------ | ------------ | ------------ |
+| diga.bitmarck-daten.de              | 85         | OK        | OK           | OK           | OK           |
+| diga-api.tk.de/diga/api/public/rest | 1          | OK        | OK           | OK           | OK           |
+| da-api.gkvi.de                      | 5          | OK        | OK           | OK           | OK           |
+| diga.kkh.de                         | 1          | OK        | NOT VERIFIED |
+| itscare.da-api.aok.de               | 3          | OK        | OK           | OK           | NOT VERIFIED |
+| kubus-it.da-api.aok.de              | 2          | OK        | NOT VERIFIED | OK           | NOT VERIFIED |
+| arge.da-api.aok.de                  | 3          | NOT OK    | NOT OK       | OK           | NOT VERIFIED |
+| diga.apimisc.de                     | 3          | OK        | OK           | NOT OK       | OK           |
 
 ## Summary
 
