@@ -166,19 +166,15 @@ The response differs from the request by having `nachrichtentyp="ANT"` as header
 
 ### Billing requests
 
-Invoices must be created using the `XRechnung` standard. There might also be dedicated account/book-keeping software which allows creating and sending invoices according to this standard, so that billing might also be handled outside of the deployed system. However, the client supports sending invoices by mail. It is up to the users of the client to define what should happen with the response from the diga api. E.g. invoices are likely to be required for accounting and therefore must be stored. Also handling of apis which do not support billing yet, must be defined.
+Invoices must be created using the `XRechnung` standard. There might also be dedicated accounting/book-keeping software which allows creating and sending invoices according to this standard, so that billing might also be handled outside the production system. However, the client supports sending invoices by mail. It is up to the users of the client to define what should happen with the response from the diga api. E.g. invoices are likely to be required for accounting and therefore must be stored. Also handling of apis which do not support billing yet, must be defined.
 
-**TODO**
+The invoice should contain the following information:
+- prescription code
+- DiGA id of the manufacturer
+- time period for prescription
+- information about the invoice issuer and the insurance company
 
-itplr-kosit/validator: Validates XML documents with XML Schema and Schematron
-Can be done via email or mail in the beginning. See mapping table for insurance-specific information
-
-Die Abrechnung hat insbesondere folgende Bestandteile:
-
-- Freischaltcode / Rezeptcode
-- Eindeutige DiGA Nummer gemäß dem Verzeichnis nach §139e SGB Vs
-- Verordnungsdauer
-- Informationen zum Rechnungssteller und zum Kostenträger
+Additional information can be found on this [wiki page](https://github.com/alex-therapeutics/diga-api-client/wiki/Billing-validation---XRechnung).
 
 ### Encryption
 
