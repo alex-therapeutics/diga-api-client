@@ -7,7 +7,7 @@ together with information on how many companies are using each endpoint, and iss
 | -------------------- | ----------------------------------------------------------------------------------------------------- |
 | CODE TEST OK         | test codes are working                                                                                |
 | CODE TEST NOT OK     | test codes are not working                                                                            |
-| CODE OK              | real code validation has been attemped and verified to work                                           |
+| CODE OK              | real code validation has been attempted and verified to work                                          |
 | CODE NOT VERIFIED    | real code validation probably works, but it has not been tested on a real code yet                    |
 | CODE NOT OK          | real code validation does not work                                                                    |
 | BILLING TEST OK      | test bill is working (the APIs dont support this completely, but as far as you can get it is working) |
@@ -23,7 +23,7 @@ together with information on how many companies are using each endpoint, and iss
 | diga.bitmarck-daten.de              | 85         | OK        | OK           | OK           | OK           |
 | diga-api.tk.de/diga/api/public/rest | 1          | OK        | OK           | OK           | OK           |
 | da-api.gkvi.de                      | 5          | OK        | OK           | OK           | OK           |
-| diga.kkh.de                         | 1          | OK        | NOT VERIFIED |
+| diga.kkh.de                         | 1          | OK        | NOT VERIFIED |              |              |
 | itscare.da-api.aok.de               | 3          | OK        | OK           | OK           | NOT VERIFIED |
 | kubus-it.da-api.aok.de              | 2          | OK        | NOT VERIFIED | OK           | NOT VERIFIED |
 | arge.da-api.aok.de                  | 3          | NOT OK    | NOT OK       | OK           | NOT VERIFIED |
