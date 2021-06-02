@@ -1,11 +1,18 @@
 # Overview
 
-Manufacturers of digitial health applications (DiGA) can apply for a fast track at [bfarm](https://www.bfarm.de/EN/MedicalDevices/DiGA/_node.html) to place their solutions in a directory of apps which can be prescribed by doctors to patients. By showing evidence that the apps improve patients' health and by obtaining medical device certifications, it can be assured that the apps are of high quality. On the other side, DiGA manufacturers get reimbursed by health insurance companies when their apps are prescribed to patients. The prescription process is built around a 16-character prescription code which can be used to activate the apps but which is also required to send the invoices. This repository holds code to:
+Manufacturers of digitial health applications (DiGA) can apply for a fast track at [bfarm](https://www.bfarm.de/EN/MedicalDevices/DiGA/_node.html) to place their solutions in a directory of apps which can be prescribed by doctors to patients.
+By showing evidence that the apps improve patients' health and by obtaining medical device certifications, it can be assured that the apps are of high quality.
+On the other side, DiGA manufacturers get reimbursed by health insurance companies when their apps are prescribed to patients.
+The prescription process is built around a 16-character prescription code which can be used to activate the apps but which is also required to send the invoices.
+This repository holds code to:
 
 - verify that user-entered prescription codes are valid
 - create and send invoices to insurer based on prescription codes.
 
-This documentation complements the code by describing the DiGA api and the full flow on a higher level. With this documentation we hope that other DiGA manufacturers can understand the required steps to verify and reimburse prescription codes without having to read through the (mainly German) official documentation. Also we hope that it will facilitate writing similar solutions in other programming languages if necessary. Finally, it can be used as a place to collect questions and answers around the DiGA api.
+This documentation complements the code by describing the DiGA api and the full flow on a higher level.
+With this documentation we hope that other DiGA manufacturers can understand the required steps to verify and reimburse prescription codes without having to read through the (mainly German) official documentation.
+Also we hope that it will facilitate writing similar solutions in other programming languages if necessary.
+Finally, it can be used as a place to collect questions and answers around the DiGA api.
 
 ## Summary
 
@@ -18,7 +25,9 @@ This documentation complements the code by describing the DiGA api and the full 
 
 ## The prescription code
 
-Patients receive 16-character prescription codes by their insurance companies. The codes are used to activate the DiGA apps and for creating invoices for billing. The structure of the code is defined [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf) on page 9 (German).
+Patients receive 16-character prescription codes by their insurance companies.
+The codes are used to activate the DiGA apps and for creating invoices for billing.
+The structure of the code is defined [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf) on page 9 (German).
 
 | Krankenkassencode/Kostenträgerkürzel | Version     | Unique code for insurer | Checksum    |
 | ------------------------------------ | ----------- | ------------------------- | ----------- |
@@ -26,9 +35,11 @@ Patients receive 16-character prescription codes by their insurance companies. T
 
 The first two characters are an identifier for the insurer. They can be used to get additional information from a mapping (xml) file which can be downloaded [here](https://kkv.gkv-diga.de/).
 
-The other parts contain a version (`A`) and a unique code for the patient & insurer. The last character is a checksum which is described [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anhang3_Freischaltcode_Berechnungsregel_Pruefziffer_V1.0.pdf) with an open source implementation for different languages on [Github](https://github.com/bitmarck-service).
+The other parts contain a version (`A`) and a unique code for the patient & insurer.
+The last character is a checksum which is described [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anhang3_Freischaltcode_Berechnungsregel_Pruefziffer_V1.0.pdf) with an open source implementation for different languages on [Github](https://github.com/bitmarck-service).
 
-Codes for testing can be downloaded as xlsx [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Pseudo-Codes.xlsx). Some of these codes are invalid with error codes defined [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anhang5_Fehlerausgaben_V1.0.1_20210423.pdf).
+Codes for testing can be downloaded as xlsx [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Pseudo-Codes.xlsx).
+Some of these codes are invalid with error codes defined [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anhang5_Fehlerausgaben_V1.0.1_20210423.pdf).
 
 | Rückgabewert | Freischaltcode   | Fehlertext                    | Erläuterung                                                                                                                                                                            |
 | ------------ | ---------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -64,9 +75,16 @@ Data for one insurer is listed below.
 </n1:Krankenkasseninformation>
 ```
 
-The file can be updated by insurance companies which requires keeping the mapping file used for the client up-to-date. The field `Kostentraegerkuerzel` is what can be used to find insurer information based on the prescription code. The information lists a field `Endpunkt_Kommunikationsstelle`. This is the base url for the endpoint for a specific insurer. There is no central diga endpoint for verifying and reimbursing DiGA apps and handling might differ across apis. Some apis might also not support billing as of now. Invoices in these cases must be sent by email or post.
+The file can be updated by insurance companies which requires keeping the mapping file used for the client up-to-date.
+The field `Kostentraegerkuerzel` is what can be used to find insurer information based on the prescription code.
+The information lists a field `Endpunkt_Kommunikationsstelle`.
+This is the base url for the endpoint for a specific insurer.
+There is no central diga endpoint for verifying and reimbursing DiGA apps and handling might differ across apis.
+Some apis might also not support billing as of now.
+Invoices in these cases must be sent by email or post.
 
-Although insurance companies use their own apis, they do follow an openapi specification for the request which can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml). This [documents](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the client.
+Although insurance companies use their own apis, they do follow an openapi specification for the request which can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml).
+This [documents](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the client.
 
 ## Request format
 
@@ -84,7 +102,10 @@ Detailed information about the IK numbers can be found [here](https://www.gkv-da
 
 > Das IK ist ein eindeutiges Merkmal für die Abrechnung medizinischer und rehabilitativer Leistungen mit den Trägern der Sozialversicherung [...]
 
-IK numbers are unique identifiers, 9 digits long, required for the billing of medical services and used as official identifiers. Therefore, every DiGA manufacturer must request an IK number. An IK number is also required when [requesting a certificate from ITSG](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/) which is required for encrypting and decrypting the `nutzdaten` of the request. IK numbers might be updated when the name, address, or billing address of a company changes.
+IK numbers are unique identifiers, 9 digits long, required for the billing of medical services and used as official identifiers.
+Therefore, every DiGA manufacturer must request an IK number.
+An IK number is also required when [requesting a certificate from ITSG](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/) which is required for encrypting and decrypting the `nutzdaten` of the request.
+IK numbers might be updated when the name, address, or billing address of a company changes.
 
 The linked document also holds more information about how the numbers are structured and more importantly, how they can be requested.
 
@@ -94,14 +115,17 @@ According to section 2.2.1
 
 > Die Vergabe, die Änderung der Daten [...] erfolgen auf Antrag. Der Erfassungsbeleg kann bei der ARGE•IK sowie bei jedem Sozialversicherungsträger angefordert oder auf der Internetseite der ARGE•IK (www.arge-ik.de) heruntergeladen werden.
 
-You need to request the IK or changes using a form. You can check the [ARGE-IK](https://www.dguv.de/arge-ik/index.jsp) website for more information (German). Specific information for requesting the number can be found in the [Antrag](https://www.dguv.de/arge-ik/antrag/index.jsp) tab.
+You need to request the IK or changes using a form.
+You can check the [ARGE-IK](https://www.dguv.de/arge-ik/index.jsp) website for more information (German).
+Specific information for requesting the number can be found in the [Antrag](https://www.dguv.de/arge-ik/antrag/index.jsp) tab.
 The form can be sent by email and a blueprint can be downloaded [here](https://www.dguv.de/medien/arge-ik/downloads/erfass.pdf).
 
 [Additional information](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/20210401_Broschuere_TP5.pdf) which also contains a section about requesting certificates from ITSG trust center.
 
 ### Verfahren
 
-The `verfahren` parameter consists of 5 characters describing the kind of the request. The first character is either `T` or `E` denoting `Testdaten` (test data) or `Echtdaten` (real data) - [source](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_4_-_Verfahrenskennungen.pdf).
+The `verfahren` parameter consists of 5 characters describing the kind of the request.
+The first character is either `T` or `E` denoting `Testdaten` (test data) or `Echtdaten` (real data) - [source](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_4_-_Verfahrenskennungen.pdf).
 
 The next 3 characters are used to discriminate between:
 
@@ -115,7 +139,8 @@ The last one is for versioning which leaves us with the following values:
 
 ### Nutzdaten
 
-`nutzdaten` is the tricky field which contains verification or billing related information based on the `verfahren` value. `nutzdaten` are defined in an xml sheet which needs to be encrypted and encoded as byte array before sending the actual requests.
+`nutzdaten` is the tricky field which contains verification or billing related information based on the `verfahren` value.
+`nutzdaten` are defined in an xml sheet which needs to be encrypted and encoded as byte array before sending the actual requests.
 The structure of the xml files are defined by `xsd` files which can be found in `src/main/resources` or downloaded [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_XSD_20201029.zip).
 Examples for the data and additional details on the encryption are described in the following.
 
@@ -141,7 +166,8 @@ Data for sending the request:
 </Pruefung_Freischaltcode>
 ```
 
-In case you are not an approved DiGA manufacturer yet, you can put `12345` as `DiGAID`. You should already have an `IK` number though as otherwise, you also wouldn't have the certificate for encryption/decryption.
+In case you are not an approved DiGA manufacturer yet, you can put `12345` as `DiGAID`.
+You should already have an `IK` number though as otherwise, you also wouldn't have the certificate for encryption/decryption.
 
 Successful response data:
 
@@ -160,11 +186,17 @@ Successful response data:
 </Pruefung_Freischaltcode>
 ```
 
-The response differs from the request by having `nachrichtentyp="ANT"` as header (`Antwort`) instead of `nachrichtentyp="ANF"` (`Anfrage`). Also the diga id is listed as `DiGAVEID` (verified ID) and an additional field `Tag_der_Leistungserbringung` is returned (day when the service started).
+The response differs from the request by having `nachrichtentyp="ANT"` as header (`Antwort`) instead of `nachrichtentyp="ANF"` (`Anfrage`).
+Also the diga id is listed as `DiGAVEID` (verified ID) and an additional field `Tag_der_Leistungserbringung` is returned (day when the service started).
 
 ### Billing requests
 
-Invoices must be created using the `XRechnung` standard. There might also be dedicated accounting/book-keeping software which allows creating and sending invoices according to this standard, so that billing might also be handled outside the production system. However, the client supports sending invoices by mail. It is up to the users of the client to define what should happen with the response from the diga api. E.g. invoices are likely to be required for accounting and therefore must be stored. Also handling of apis which do not support billing yet, must be defined.
+Invoices must be created using the `XRechnung` standard.
+There might also be dedicated accounting/book-keeping software which allows creating and sending invoices according to this standard, so that billing might also be handled outside the production system.
+However, the client supports sending invoices by mail.
+It is up to the users of the client to define what should happen with the response from the diga api.
+E.g. invoices are likely to be required for accounting and therefore must be stored.
+Also handling of apis which do not support billing yet, must be defined.
 
 The invoice should contain the following information:
 
@@ -203,7 +235,9 @@ You will need an IK number to request the certificate for encryption and decrypt
 
 ### Are there solutions for non-java users?
 
-So far, there are no other clients available. A solution could be to create a docker image which exposes the java client via an api. Additionally, we hope that this documentation provides enough information so that clients in other languages can be developed.
+So far, there are no other clients available.
+A solution could be to create a docker image which exposes the java client via an api.
+Additionally, we hope that this documentation provides enough information so that clients in other languages can be developed.
 
 ### My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?
 
