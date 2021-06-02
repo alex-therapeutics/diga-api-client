@@ -22,6 +22,7 @@ This document aims to help DiGA manufacturers figure out how prescription codes 
   - [What can I do if I dont know the IK number yet and still want to test the client?](#what-can-i-do-if-i-dont-know-the-ik-number-yet-and-still-want-to-test-the-client)
   - [Are there solutions for non-java users?](#are-there-solutions-for-non-java-users)
   - [My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?](#my-diga-app-is-only-valid-for-30-days-can-users-request-a-fresh-code-from-their-insurer-while-their-existing-code-is-still-valid)
+  - [Does the diga-api-client expect prescription codes in a special format, e.g. all capitalized?](#does-the-diga-api-client-expect-prescription-codes-in-a-special-format-eg-all-capitalized)
 - [Glossary](#glossary)
 
 # Overview
@@ -274,6 +275,12 @@ Additionally, we hope that this documentation provides enough information so tha
 - Can they already request a new code while still being active?
 - How will the verification and billing api handle these cases?
 - Is the `TagDerLeistungserbringung` the date on which the request is made or is this set by the insurer when issuing the prescription code?
+
+## Does the diga-api-client expect prescription codes in a special format, e.g. all capitalized?
+
+The insurance information are extracted based on the prescription code from the mapping file. Therefore, the code must be capitalized.
+
+**TODO**: How do the apis handle this?
 
 # Glossary
 
