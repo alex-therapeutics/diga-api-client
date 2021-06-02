@@ -56,9 +56,9 @@ Patients receive 16-character prescription codes from their insurance company.
 The codes are used to activate the DiGA apps and for creating invoices for billing.
 The structure of the code is defined in the attachment [Technische Anlage für die elektronische Abrechnung der digitalen Gesundheitsanwendungen nach § 33a SGB V (elektronische Datenübermittlung) V1.2 (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf) on page 9. ([Overview Page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp))
 
-| Krankenkassencode/Kostenträgerkürzel | Version     | Unique code for insurer | Checksum    |
-| ------------------------------------ | ----------- | ----------------------- | ----------- |
-| 2 characters                         | 1 character | 12 characters           | 1 character |
+| Insurance ID - Krankenkassencode/Kostenträgerkürzel | Version     | Unique code for insurer | Checksum    |
+| --------------------------------------------------- | ----------- | ----------------------- | ----------- |
+| 2 characters                                        | 1 character | 12 characters           | 1 character |
 
 The first two characters are an identifier for the insurer. They can be used to get additional information from a mapping (xml) file which can be downloaded [here](https://kkv.gkv-diga.de/).
 
@@ -66,17 +66,17 @@ The other parts contain a version (`A`) and a unique code for the patient & insu
 The last character is a checksum which is described in [Anhang 3 - Freischaltcode / Rezeptcode – Berechnungsregel Prüfziffer (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anhang3_Freischaltcode_Berechnungsregel_Pruefziffer_V1.0.pdf) with an open source implementation for different languages on [Github](https://github.com/bitmarck-service).
 
 Codes for testing can be downloaded from [Anhang 6 - DiGA-Pseudocodes (XLSX)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Pseudo-Codes.xlsx).
-Some of these codes are invalid with error codes defined in [Anhang 5 - Fehlerausgaben (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anhang5_Fehlerausgaben_V1.0.1_20210423.pdf).
+Some of these codes are invalid with error codes defined in [Anhang 5 - Fehlerausgaben (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anhang5_Fehlerausgaben_V1.0.1_20210423.pdf). A translated table can be found below
 
-| Rückgabewert | Freischaltcode   | Fehlertext                    | Erläuterung                                                                                                                                                                            |
-| ------------ | ---------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 0            | 77AAAAAAAAAAAAAX | Anfrage gültig                | Aktuelles Tagesdatum für "Tag_der_Leistungserbringung" aus EDFC0-basis_2.0.0.xsd verweden. Für die DiGANr laut aus EDFC0-basis_2.0.0.xsd sind die letzten 3-Stellen mit 000 anzugeben. |
-| 100          | 77AAAAAAAAAAADEV | Freischaltcode abgelaufen     | Fachlicher Fehler. Der Fehler wird ausgegebene wenn der Code zeitlich abgelaufen ist.                                                                                                  |
-| 101          | 77AAAAAAAAAAADFF | Freischaltcode storniert      | Fachlicher Fehler.                                                                                                                                                                     |
-| 102          | 77AAAAAAAAAAADGE | Fresichaltcode nicht gefunden | Fachlicher Fehler. Der Fehler wird ausgegeben wenn bspw. die Zuordnung des Freischaltcodes zur DiGA nicht stimmt.                                                                      |
-| 200          | 77AAAAAAAAAAAGIS | Anfrage oder Datei ungültig   | Die Anfrage oder die Datei konnte nicht verarbeitet werden. Der Fehler wird bspw. bei einer Schemaverletzung ausgegeben.                                                               |
-| 201          | 77AAAAAAAAAAAGJC | Serverfehler                  | Technischer Fehler. Der Fehler wird bspw. bei einem Übertragungsfehler ausgegeben.                                                                                                     |
-| 202          | 77AAAAAAAAAAAGKD | Speicherfehler                | Technischer Fehler. Der Fehler wird bspw. bei einem Datenbankfehler ausgegeben.                                                                                                        |
+| Rückgabewert | Freischaltcode   | Fehlertext              | Erläuterung                                                                                                                                              |
+| ------------ | ---------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0            | 77AAAAAAAAAAAAAX | Request valid           | Use current date for "Tag_der_Leistungserbringung" from EDFC0-basis_2.0.0.xsd. For the DiGANr from EDFC0-basis_2.0.0.xsd the last 3 digits must be `000` |
+| 100          | 77AAAAAAAAAAADEV | Code expired            | The code is expired.                                                                                                                                     |
+| 101          | 77AAAAAAAAAAADFF | Code canceled           | "Fachlicher Fehler." - very unspecific - might be invalidated by insurer?                                                                                |
+| 102          | 77AAAAAAAAAAADGE | Code not found          | E.g. code is not linked to DiGA                                                                                                                          |
+| 200          | 77AAAAAAAAAAAGIS | Request or file invalid | The request or file might be invalid so they cannot be processed, e.g. schema error                                                                      |
+| 201          | 77AAAAAAAAAAAGJC | Server error            | Technical Error, e.g. network issue                                                                                                                      |
+| 202          | 77AAAAAAAAAAAGKD | Memory error            | Technical Error, e.g. database error                                                                                                                     |
 
 ## Mapping file for insurance companies
 
