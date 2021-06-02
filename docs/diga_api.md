@@ -1,3 +1,29 @@
+# DiGA API documentation
+
+This document aims to help DiGA manufacturers figure out how prescription codes can be verified and used for billing.
+
+- [DiGA API documentation](#diga-api-documentation)
+- [Overview](#overview)
+- [Summary](#summary)
+- [The prescription code](#the-prescription-code)
+  - [Mapping file for insurance companies](#mapping-file-for-insurance-companies)
+- [Request format](#request-format)
+  - [Institutionskennzeichen - IK numbers](#institutionskennzeichen---ik-numbers)
+    - [Requesting an IK number](#requesting-an-ik-number)
+  - [Verfahren](#verfahren)
+  - [Nutzdaten](#nutzdaten)
+- [Request details](#request-details)
+  - [Code verification requests](#code-verification-requests)
+  - [Billing requests](#billing-requests)
+  - [Encryption](#encryption)
+  - [Request processing time](#request-processing-time)
+- [FAQ](#faq)
+  - [What can I do if I want to make requests but my DiGA is not approved yet and I therefore do not have a diga id?](#what-can-i-do-if-i-want-to-make-requests-but-my-diga-is-not-approved-yet-and-i-therefore-do-not-have-a-diga-id)
+  - [What can I do if I dont know the IK number yet and still want to test the client?](#what-can-i-do-if-i-dont-know-the-ik-number-yet-and-still-want-to-test-the-client)
+  - [Are there solutions for non-java users?](#are-there-solutions-for-non-java-users)
+  - [My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?](#my-diga-app-is-only-valid-for-30-days-can-users-request-a-fresh-code-from-their-insurer-while-their-existing-code-is-still-valid)
+- [Glossary](#glossary)
+
 # Overview
 
 Manufacturers of digitial health applications (DiGA) can apply for a fast track at [bfarm](https://www.bfarm.de/EN/MedicalDevices/DiGA/_node.html) to place their solutions in a directory of apps which can be prescribed by doctors to patients.
@@ -14,7 +40,7 @@ With this documentation we hope that other DiGA manufacturers can understand the
 Also we hope that it will facilitate writing similar solutions in other programming languages if necessary.
 Finally, it can be used as a place to collect questions and answers around the DiGA api.
 
-## Summary
+# Summary
 
 - user enters prescription code in the DiGA (app)
 - insurer information is extracted from the code
@@ -23,7 +49,7 @@ Finally, it can be used as a place to collect questions and answers around the D
   - the response value for `Tag der Leistungserbringung` is required for the billing process
 - another request is made for reimbursing the code
 
-## The prescription code
+# The prescription code
 
 Patients receive 16-character prescription codes from their insurance company.
 The codes are used to activate the DiGA apps and for creating invoices for billing.
@@ -51,7 +77,7 @@ Some of these codes are invalid with error codes defined [here](https://www.gkv-
 | 201          | 77AAAAAAAAAAAGJC | Serverfehler                  | Technischer Fehler. Der Fehler wird bspw. bei einem Übertragungsfehler ausgegeben.                                                                                                     |
 | 202          | 77AAAAAAAAAAAGKD | Speicherfehler                | Technischer Fehler. Der Fehler wird bspw. bei einem Datenbankfehler ausgegeben.                                                                                                        |
 
-### Mapping file for insurance companies
+## Mapping file for insurance companies
 
 Data for one insurer is listed below.
 
@@ -86,7 +112,7 @@ Invoices in these cases must be sent by email or post.
 Although insurance companies use their own apis, they do follow an openapi specification for the request which can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml).
 This [documents](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the client.
 
-## Request format
+# Request format
 
 According to the openapi specification the request contains 4 different parameters which are sent with `ContentType: multipart/form-data`:
 
@@ -96,7 +122,7 @@ According to the openapi specification the request contains 4 different paramete
 - `nutzdaten` - additional information for the request, including the prescription code
   - the `nutzdaten` are described later in more detail as this is the tricky bit of the request
 
-### Institutionskennzeichen - IK numbers
+## Institutionskennzeichen - IK numbers
 
 Detailed information about the IK numbers can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/GR_IK_2020-06-01.pdf) (German only).
 
@@ -109,7 +135,7 @@ IK numbers might be updated when the name, address, or billing address of a comp
 
 The linked document also contains more information about how the numbers are structured and more importantly, how they can be requested.
 
-#### Requesting an IK number
+### Requesting an IK number
 
 According to section 2.2.1
 
@@ -122,7 +148,7 @@ The form can be sent by email and a blueprint can be downloaded [here](https://w
 
 [Additional information](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/20210401_Broschuere_TP5.pdf) which also contains a section about requesting certificates from ITSG trust center.
 
-### Verfahren
+## Verfahren
 
 The `verfahren` parameter consists of 5 characters describing the kind of the request.
 The first character is either `T` or `E` denoting `Testdaten` (test data) or `Echtdaten` (real data) - [source](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_4_-_Verfahrenskennungen.pdf).
@@ -137,16 +163,16 @@ The last one is for versioning which leaves us with the following values:
 - `EDFC0` and `TDFC0` for verification
 - `EDRE0` and `TDRE0` for billing.
 
-### Nutzdaten
+## Nutzdaten
 
 `nutzdaten` is the tricky field which contains verification or billing related information based on the `verfahren` value.
 `nutzdaten` are defined in an xml sheet which needs to be encrypted and encoded as byte array before sending the actual requests.
 The structure of the xml files are defined by `xsd` files which can be found in `src/main/resources` or downloaded [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_XSD_20201029.zip).
 Examples for the data and additional details on the encryption are described in the following.
 
-## Request details
+# Request details
 
-### Code verification requests
+## Code verification requests
 
 See `EDFC0-Pruefung_2.0.0.xsd` file for reference:
 
@@ -189,7 +215,7 @@ Successful response data:
 The response differs from the request by having `nachrichtentyp="ANT"` as header (`Antwort`) instead of `nachrichtentyp="ANF"` (`Anfrage`).
 Also the diga id is listed as `DiGAVEID` (verified ID) and an additional field `Tag_der_Leistungserbringung` is returned (day when the service started).
 
-### Billing requests
+## Billing requests
 
 Invoices must be created using the `XRechnung` standard.
 There might also be dedicated accounting/book-keeping software which allows creating and sending invoices according to this standard, so that billing might also be handled outside the production system.
@@ -207,7 +233,7 @@ The invoice should contain the following information:
 
 Additional information can be found on this [wiki page](https://github.com/alex-therapeutics/diga-api-client/wiki/Billing-validation---XRechnung).
 
-### Encryption
+## Encryption
 
 Given that we are dealing with patient data, it is required to properly encrypt the data sent within requests.
 The encryption is based on certificates which need to be requested at the ITSG which acts as a trust center.
@@ -216,7 +242,7 @@ You can request it [here](https://www.itsg.de/produkte/trust-center/zertifikat-b
 A technical documentation for the encryption (of course in German) can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf).
 Once the certificates are issued, checkout the [prerequisites](https://github.com/alex-therapeutics/diga-api-client#prerequisites) within the Readme to be able to use them with the api client.
 
-### Request processing time
+## Request processing time
 
 According to the documentation, the processing time constraints are as follows:
 
@@ -224,23 +250,23 @@ Mean value 10000[msec], 95% quantile [msec] 15000
 
 Is that really 10 seconds for a single request?
 
-## FAQ
+# FAQ
 
-### What can I do if I want to make requests but my DiGA is not approved yet and I therefore do not have a diga id?
+## What can I do if I want to make requests but my DiGA is not approved yet and I therefore do not have a diga id?
 
 Just sent some 5 digit number as part of the `nutzdaten`, e.g. `12345`.
 
-### What can I do if I dont know the IK number yet and still want to test the client?
+## What can I do if I dont know the IK number yet and still want to test the client?
 
 You will need an IK number to request the certificate for encryption and decryption. Therefore, it is a must-have.
 
-### Are there solutions for non-java users?
+## Are there solutions for non-java users?
 
 So far, there are no other clients available.
 A solution could be to create a docker image which exposes the java client via an api.
 Additionally, we hope that this documentation provides enough information so that clients in other languages can be developed.
 
-### My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?
+## My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?
 
 **TODO** Hopefully, users want to continue using your DiGA after their initial prescription code expired.
 
@@ -248,8 +274,8 @@ Additionally, we hope that this documentation provides enough information so tha
 - How will the verification and billing api handle these cases?
 - Is the `TagDerLeistungserbringung` the date on which the request is made or is this set by the insurer when issuing the prescription code?
 
-## Glossary
+# Glossary
 
-| Term (German original)                | Short description in English                       |
-| ------------------------------------- | -------------------------------------------------- |
-| Institutionskennzeichen               | Unique of a DiGA manufacturer                      |
+| Term (German original)  | Short description in English  |
+| ----------------------- | ----------------------------- |
+| Institutionskennzeichen | Unique of a DiGA manufacturer |
