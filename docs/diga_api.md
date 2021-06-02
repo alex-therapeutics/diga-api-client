@@ -53,7 +53,7 @@ Finally, it can be used as a place to collect questions and answers around the D
 
 Patients receive 16-character prescription codes from their insurance company.
 The codes are used to activate the DiGA apps and for creating invoices for billing.
-The structure of the code is defined [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf) on page 9 (German).
+The structure of the code is defined in the attachment [Technische Anlage für die elektronische Abrechnung der digitalen Gesundheitsanwendungen nach § 33a SGB V (elektronische Datenübermittlung) V1.2 (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf) on page 9. ([Overview Page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp))
 
 | Krankenkassencode/Kostenträgerkürzel | Version     | Unique code for insurer | Checksum    |
 | ------------------------------------ | ----------- | ----------------------- | ----------- |
@@ -62,10 +62,10 @@ The structure of the code is defined [here](https://www.gkv-datenaustausch.de/me
 The first two characters are an identifier for the insurer. They can be used to get additional information from a mapping (xml) file which can be downloaded [here](https://kkv.gkv-diga.de/).
 
 The other parts contain a version (`A`) and a unique code for the patient & insurer.
-The last character is a checksum which is described [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anhang3_Freischaltcode_Berechnungsregel_Pruefziffer_V1.0.pdf) with an open source implementation for different languages on [Github](https://github.com/bitmarck-service).
+The last character is a checksum which is described in [Anhang 3 - Freischaltcode / Rezeptcode – Berechnungsregel Prüfziffer (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anhang3_Freischaltcode_Berechnungsregel_Pruefziffer_V1.0.pdf) with an open source implementation for different languages on [Github](https://github.com/bitmarck-service).
 
-Codes for testing can be downloaded as xlsx [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Pseudo-Codes.xlsx).
-Some of these codes are invalid with error codes defined [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anhang5_Fehlerausgaben_V1.0.1_20210423.pdf).
+Codes for testing can be downloaded from [Anhang 6 - DiGA-Pseudocodes (XLSX)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Pseudo-Codes.xlsx).
+Some of these codes are invalid with error codes defined in [Anhang 5 - Fehlerausgaben (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anhang5_Fehlerausgaben_V1.0.1_20210423.pdf).
 
 | Rückgabewert | Freischaltcode   | Fehlertext                    | Erläuterung                                                                                                                                                                            |
 | ------------ | ---------------- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -109,7 +109,7 @@ There is no central diga endpoint for verifying and reimbursing DiGA apps and ha
 Some apis might also not support billing as of now.
 Invoices in these cases must be sent by email or post.
 
-Although insurance companies use their own apis, they do follow an openapi specification for the request which can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml).
+Although insurance companies use their own apis, they do follow an openapi specification for the request which is listed as [DiGA-YAML-Datei (YAML)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml) at the same [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp).
 This [documents](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the client.
 
 # Request format
@@ -124,7 +124,7 @@ According to the openapi specification the request contains 4 different paramete
 
 ## Institutionskennzeichen - IK numbers
 
-Detailed information about the IK numbers can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/GR_IK_2020-06-01.pdf) (German only).
+Detailed information about the IK numbers can be found on the gkv page [Sonstige Leistungserbringer](https://www.gkv-datenaustausch.de/leistungserbringer/sonstige_leistungserbringer/sonstige_leistungserbringer.jsp) in the file [Gemeinsames Rundschreiben Institutionskennzeichen (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/GR_IK_2020-06-01.pdf) (German only).
 
 > Das IK ist ein eindeutiges Merkmal für die Abrechnung medizinischer und rehabilitativer Leistungen mit den Trägern der Sozialversicherung [...]
 
@@ -137,7 +137,7 @@ The linked document also contains more information about how the numbers are str
 
 ### Requesting an IK number
 
-According to section 2.2.1
+According to section 2.2.1 from [Gemeinsames Rundschreiben Institutionskennzeichen (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/GR_IK_2020-06-01.pdf)
 
 > Die Vergabe, die Änderung der Daten [...] erfolgen auf Antrag. Der Erfassungsbeleg kann bei der ARGE•IK sowie bei jedem Sozialversicherungsträger angefordert oder auf der Internetseite der ARGE•IK (www.arge-ik.de) heruntergeladen werden.
 
@@ -146,17 +146,18 @@ You can check the [ARGE-IK](https://www.dguv.de/arge-ik/index.jsp) website for m
 Specific information for requesting the number can be found in the [Antrag](https://www.dguv.de/arge-ik/antrag/index.jsp) tab.
 The form can be sent by email and a blueprint can be downloaded [here](https://www.dguv.de/medien/arge-ik/downloads/erfass.pdf).
 
-[Additional information](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/20210401_Broschuere_TP5.pdf) which also contains a section about requesting certificates from ITSG trust center.
+Additional information at [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/sonstige_leistungserbringer/sonstige_leistungserbringer.jsp) can be found in [20210401_Broschuere_TP5 (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/20210401_Broschuere_TP5.pdf)
+which also contains a section about requesting certificates from ITSG trust center.
 
 ## Verfahren
 
 The `verfahren` parameter consists of 5 characters describing the kind of the request.
-The first character is either `T` or `E` denoting `Testdaten` (test data) or `Echtdaten` (real data) - [source](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_4_-_Verfahrenskennungen.pdf).
+The first character is either `T` or `E` denoting `Testdaten` (test data) or `Echtdaten` (real data) - [attachment 4 - Verfahrenskennungen](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_4_-_Verfahrenskennungen.pdf) on [gkv technische standards page](https://www.gkv-datenaustausch.de/technische_standards_1/technische_standards.jsp).
 
 The next 3 characters are used to discriminate between:
 
 - verification - DFC (**D**iga **F**reischalt**c**ode)
-- billing - DRE (**D**iga **Re**chnung) [source](https://github.com/bitmarck-service/validator-configuration-diga).
+- billing - DRE (**D**iga **Re**chnung).
 
 The last one is for versioning which leaves us with the following values:
 
@@ -167,7 +168,7 @@ The last one is for versioning which leaves us with the following values:
 
 `nutzdaten` is the tricky field which contains verification or billing related information based on the `verfahren` value.
 `nutzdaten` are defined in an xml sheet which needs to be encrypted and encoded as byte array before sending the actual requests.
-The structure of the xml files are defined by `xsd` files which can be found in `src/main/resources` or downloaded [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_XSD_20201029.zip).
+The structure of the xml files are defined by `xsd` files which can be found in `src/main/resources` or downloaded from [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp) as [attachment - DiGA-Abrechnungsschema (XSD) (ZIP)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_XSD_20201029.zip).
 Examples for the data and additional details on the encryption are described in the following.
 
 # Request details
@@ -237,10 +238,10 @@ Additional information can be found on this [wiki page](https://github.com/alex-
 
 Given that we are dealing with patient data, it is required to properly encrypt the data sent within requests.
 The encryption is based on certificates which need to be requested at the ITSG which acts as a trust center.
-You can request it [here](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/), assuming that you already have an IK number.
+You can request it at [ITSG website](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/), assuming that you already have an IK number.
 
-A technical documentation for the encryption (of course in German) can be found [here](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf).
-Once the certificates are issued, checkout the [prerequisites](https://github.com/alex-therapeutics/diga-api-client#prerequisites) within the Readme to be able to use them with the api client.
+A technical documentation for the encryption (of course in German) can be found on the [technical standards page at gkv](https://www.gkv-datenaustausch.de/technische_standards_1/technische_standards.jsp) as [attachment 16](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf) under `Security Schnittstelle (SECON)` section.
+Once the certificates are issued, checkout the [prerequisites from the Readme](https://github.com/alex-therapeutics/diga-api-client#prerequisites) to be able to use them with the api client.
 
 ## Request processing time
 
