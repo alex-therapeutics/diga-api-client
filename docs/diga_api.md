@@ -4,7 +4,7 @@ Manufacturers of digitial health applications (DiGA) can apply for a fast track 
 By showing evidence that the apps improve patients' health and by obtaining medical device certifications, it can be assured that the apps are of high quality.
 On the other side, DiGA manufacturers get reimbursed by health insurance companies when their apps are prescribed to patients.
 The prescription process is built around a 16-character prescription code which can be used to activate the apps but which is also required to send the invoices.
-This repository holds code to:
+This repository contains code to:
 
 - verify that user-entered prescription codes are valid
 - create and send invoices to insurer based on prescription codes.
@@ -25,13 +25,13 @@ Finally, it can be used as a place to collect questions and answers around the D
 
 ## The prescription code
 
-Patients receive 16-character prescription codes by their insurance companies.
+Patients receive 16-character prescription codes from their insurance company.
 The codes are used to activate the DiGA apps and for creating invoices for billing.
 The structure of the code is defined [here](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf) on page 9 (German).
 
 | Krankenkassencode/Kostenträgerkürzel | Version     | Unique code for insurer | Checksum    |
-| ------------------------------------ | ----------- | ------------------------- | ----------- |
-| 2 characters                         | 1 character | 12 characters             | 1 character |
+| ------------------------------------ | ----------- | ----------------------- | ----------- |
+| 2 characters                         | 1 character | 12 characters           | 1 character |
 
 The first two characters are an identifier for the insurer. They can be used to get additional information from a mapping (xml) file which can be downloaded [here](https://kkv.gkv-diga.de/).
 
@@ -107,7 +107,7 @@ Therefore, every DiGA manufacturer must request an IK number.
 An IK number is also required when [requesting a certificate from ITSG](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/) which is required for encrypting and decrypting the `nutzdaten` of the request.
 IK numbers might be updated when the name, address, or billing address of a company changes.
 
-The linked document also holds more information about how the numbers are structured and more importantly, how they can be requested.
+The linked document also contains more information about how the numbers are structured and more importantly, how they can be requested.
 
 #### Requesting an IK number
 
@@ -225,6 +225,7 @@ Mean value 10000[msec], 95% quantile [msec] 15000
 Is that really 10 seconds for a single request?
 
 ## FAQ
+
 ### What can I do if I want to make requests but my DiGA is not approved yet and I therefore do not have a diga id?
 
 Just sent some 5 digit number as part of the `nutzdaten`, e.g. `12345`.
@@ -246,3 +247,9 @@ Additionally, we hope that this documentation provides enough information so tha
 - Can they already request a new code while still being active?
 - How will the verification and billing api handle these cases?
 - Is the `TagDerLeistungserbringung` the date on which the request is made or is this set by the insurer when issuing the prescription code?
+
+## Glossary
+
+| Term (German original)                | Short description in English                       |
+| ------------------------------------- | -------------------------------------------------- |
+| Institutionskennzeichen               | Unique of a DiGA manufacturer                      |
