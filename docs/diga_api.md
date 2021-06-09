@@ -1,6 +1,6 @@
 # DiGA API documentation
 
-This document aims to help DiGA manufacturers figure out how prescription codes can be verified and used for billing.
+This documents contains information for DiGA manufacturers on how the DiGA API works regarding prescription code validation and billing. It is targeted at manufacturers who wish to develop their own integration with the DiGA API or are curious to know how it works. If you are looking for an out-of-the-box solution that already works, you can use the [diga api client](https://github.com/alex-therapeutics/diga-api-client) provided in this repository as a java library, or you can use the [diga api service](https://github.com/gtuk/diga-api-service) (work in progress), which is an api wrapper around this library, as a microservice in your stack. Information on how to use these solutions is provided in their readmes and code documentation, and not in this document.
 
 - [DiGA API documentation](#diga-api-documentation)
 - [Overview](#overview)
@@ -111,7 +111,7 @@ Some apis might also not support billing as of now.
 The api response should include details on how to proceed with the billing request in this case, e.g. sending invoices by mail or post.
 
 Although insurance companies use their own apis, they do follow an openapi specification for the request which is listed as [DiGA-YAML-Datei (YAML)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml) at the same [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp).
-This [documents](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the client.
+This [document](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the diga api client.
 
 # Request format
 
