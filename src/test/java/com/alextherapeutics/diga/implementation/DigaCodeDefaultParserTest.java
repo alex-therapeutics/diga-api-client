@@ -54,18 +54,18 @@ class DigaCodeDefaultParserTest {
   void testParseCodeForValidation() throws DigaCodeValidationException {
     var krank = createKrankenKasseInfo();
     Mockito.when(healthInsuranceDirectory.getInformation(Mockito.anyString())).thenReturn(krank);
-    var code = "BH1234567890000X";
+    var code = "ZL7LVPW6VW7O7SXR";
     parser.parseCodeForValidation(code);
-    Mockito.verify(healthInsuranceDirectory, Mockito.times(1)).getInformation("BH");
+    Mockito.verify(healthInsuranceDirectory, Mockito.times(1)).getInformation("ZL");
   }
 
   @Test
   void testParseCodeForBilling() throws DigaCodeValidationException {
     var krank = createKrankenKasseInfo();
     Mockito.when(healthInsuranceDirectory.getInformation(Mockito.anyString())).thenReturn(krank);
-    var code = "BH1234567890000X";
+    var code = "ZL7LVPW6VW7O7SXR";
     parser.parseCodeForBilling(code);
-    Mockito.verify(healthInsuranceDirectory, Mockito.times(1)).getInformation("BH");
+    Mockito.verify(healthInsuranceDirectory, Mockito.times(1)).getInformation("ZL");
   }
 
   @Test
@@ -76,7 +76,7 @@ class DigaCodeDefaultParserTest {
     krank.setStrassePostfach(null);
     krank.setHausnummerPostfachnummer(null);
     Mockito.when(healthInsuranceDirectory.getInformation(Mockito.anyString())).thenReturn(krank);
-    var resp = parser.parseCodeForBilling("BH1234567890000X");
+    var resp = parser.parseCodeForBilling("ZL7LVPW6VW7O7SXR");
     assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyAddressLine());
     assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyPostalCode());
     assertEquals(DigaBillingInformation.INFORMATION_MISSING, resp.getBuyerCompanyCity());
