@@ -1,6 +1,6 @@
 # DiGA API documentation
 
-This document aims to help DiGA manufacturers figure out how prescription codes can be verified and used for billing.
+This documents contains information for DiGA manufacturers on how the DiGA API works regarding prescription code validation and billing. It is targeted at manufacturers who wish to develop their own integration with the DiGA API or are curious to know how it works. If you are looking for an out-of-the-box solution that already works, you can use the [diga api client](https://github.com/alex-therapeutics/diga-api-client) provided in this repository as a java library, or you can use the [diga api service](https://github.com/gtuk/diga-api-service) (work in progress), which is an api wrapper around this library, as a microservice in your stack. Information on how to use these solutions is provided in their readmes and code documentation, and not in this document.
 
 - [DiGA API documentation](#diga-api-documentation)
 - [Overview](#overview)
@@ -74,7 +74,7 @@ Some of these codes are invalid with error codes defined in [Anhang 5 - Fehlerau
 | 0            | 77AAAAAAAAAAAAAX | Request valid           | Use current date for "Tag_der_Leistungserbringung" from EDFC0-basis_2.0.0.xsd. For the DiGANr from EDFC0-basis_2.0.0.xsd the last 3 digits must be `000` |
 | 100          | 77AAAAAAAAAAADEV | Code expired            | The code is expired.                                                                                                                                     |
 | 101          | 77AAAAAAAAAAADFF | Code canceled           | "Fachlicher Fehler." - very unspecific - might be invalidated by insurer?                                                                                |
-| 102          | 77AAAAAAAAAAADGE | Code not found          | E.g. code is not linked to DiGA                                                                                                                          |
+| 102          | 77AAAAAAAAAAADGE | Code not found          | E.g. code was not distributed by the insurer                                                                                                                          |
 | 200          | 77AAAAAAAAAAAGIS | Request or file invalid | The request or file might be invalid so they cannot be processed, e.g. schema error                                                                      |
 | 201          | 77AAAAAAAAAAAGJC | Server error            | Technical Error, e.g. network issue                                                                                                                      |
 | 202          | 77AAAAAAAAAAAGKD | Memory error            | Technical Error, e.g. database error                                                                                                                     |
@@ -117,7 +117,7 @@ The `Versandart` field in the mapping file can be used to check this beforehand:
 - 3 = post
 
 Although insurance companies use their own apis, they do follow an openapi specification for the request which is listed as [DiGA-YAML-Datei (YAML)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml) at the same [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp).
-This [documents](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the client.
+This [document](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the diga api client.
 
 # Request format
 
