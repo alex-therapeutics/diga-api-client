@@ -21,7 +21,6 @@ This document aims to help DiGA manufacturers figure out how prescription codes 
   - [What can I do if I dont know the IK number yet and still want to test the client?](#what-can-i-do-if-i-dont-know-the-ik-number-yet-and-still-want-to-test-the-client)
   - [Are there solutions for non-java users?](#are-there-solutions-for-non-java-users)
   - [My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?](#my-diga-app-is-only-valid-for-30-days-can-users-request-a-fresh-code-from-their-insurer-while-their-existing-code-is-still-valid)
-  - [Does the diga-api-client expect prescription codes in a special format, e.g. all capitalized?](#does-the-diga-api-client-expect-prescription-codes-in-a-special-format-eg-all-capitalized)
 - [Glossary](#glossary)
 
 # Overview
@@ -54,12 +53,15 @@ Finally, it can be used as a place to collect questions and answers around the D
 Patients receive 16-character prescription codes from their insurance company.
 The codes are used to activate the DiGA apps and for creating invoices for billing.
 The structure of the code is defined in the attachment [Technische Anlage für die elektronische Abrechnung der digitalen Gesundheitsanwendungen nach § 33a SGB V (elektronische Datenübermittlung) V1.2 (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf) on page 9. ([Overview Page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp))
+The code contains only capitalized characters and digits from: `[A-Z; 2-7]`.
 
 | Insurance ID - Krankenkassencode/Kostenträgerkürzel | Version     | Unique code for insurer | Checksum    |
 | --------------------------------------------------- | ----------- | ----------------------- | ----------- |
 | 2 characters                                        | 1 character | 12 characters           | 1 character |
 
-The first two characters are an identifier for the insurer. They can be used to get additional information from a mapping (xml) file which can be downloaded [here](https://kkv.gkv-diga.de/).
+The first two characters are an identifier for the insurer.
+They can be used to get additional information from a mapping (xml) file which can be downloaded [here](https://kkv.gkv-diga.de/).
+Therefore, the code is **case-sensitive**.
 
 The other parts contain a version (`A`) and a unique code for the patient & insurer.
 The last character is a checksum which is described in [Anhang 3 - Freischaltcode / Rezeptcode – Berechnungsregel Prüfziffer (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/Anhang3_Freischaltcode_Berechnungsregel_Pruefziffer_V1.0.pdf) with an open source implementation for different languages on [Github](https://github.com/bitmarck-service).
@@ -267,12 +269,6 @@ Additionally, we hope that this documentation provides enough information so tha
 - Can they already request a new code while still being active?
 - How will the verification and billing api handle these cases?
 - Is the `TagDerLeistungserbringung` the date on which the request is made or is this set by the insurer when issuing the prescription code?
-
-## Does the diga-api-client expect prescription codes in a special format, e.g. all capitalized?
-
-The insurance information are extracted based on the prescription code from the mapping file. Therefore, the code must be capitalized.
-
-**TODO**: How do the apis handle this?
 
 # Glossary
 
