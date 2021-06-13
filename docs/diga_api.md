@@ -16,6 +16,7 @@ This documents contains information for DiGA manufacturers on how the DiGA API w
   - [Code verification requests](#code-verification-requests)
   - [Billing requests](#billing-requests)
   - [Encryption](#encryption)
+  - [Auditing](#auditing)
 - [FAQ](#faq)
   - [What can I do if I want to make requests but my DiGA is not approved yet and I therefore do not have a diga id?](#what-can-i-do-if-i-want-to-make-requests-but-my-diga-is-not-approved-yet-and-i-therefore-do-not-have-a-diga-id)
   - [What can I do if I dont know the IK number yet and still want to test the client?](#what-can-i-do-if-i-dont-know-the-ik-number-yet-and-still-want-to-test-the-client)
@@ -251,6 +252,28 @@ You can request it at [ITSG website](https://www.itsg.de/produkte/trust-center/z
 A technical documentation for the encryption (of course in German) can be found on the [technical standards page at gkv](https://www.gkv-datenaustausch.de/technische_standards_1/technische_standards.jsp) as [attachment 16](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf) under `Security Schnittstelle (SECON)` section.
 Once the certificates are issued, checkout the [prerequisites from the Readme](https://github.com/alex-therapeutics/diga-api-client#prerequisites) to be able to use them with the api client.
 
+
+## Auditing
+
+The communication with the DiGA api must be logged by the DiGA manufacturer.
+Details are described in [section 4.4 - Protokollierung](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf).
+
+```
+Die Protokollierung muss die folgenden Mindestinhalte umfassen:
+- Eindeutige Bezeichnung der Kommunikationspartner (Institutionskennzeichen)
+- Zeitstempel im Format „yyyy-MM-dd HH:mm:ss“, basierend auf deutscher Zeit
+- Prozesskennzeichen (Prüfung Freischaltcode / Rezeptcode / Abrechnung)
+- Freischaltcode / Rezeptcode
+- Verarbeitungskennzeichen (fehlerfrei/fehlerhaft)
+```
+
+Translated fields:
+
+- ik numbers
+- timestamp in German timezone
+- value for `verfahren`
+- prescription code
+- flag if code os valid or not
 
 # FAQ
 
