@@ -81,7 +81,9 @@ Some of these codes are invalid with error codes defined in [Anhang 5 - Fehlerau
 
 ## Mapping file for insurance companies
 
-Data for one insurer is listed below.
+When receiving a patient's code you need to find out where to send it and which data to send in the request.
+For this, you should use the insurance company mapping file from [here](https://kkv.gkv-diga.de/).
+Data for one insurer is listed below where the `Kostentraegerkuerzel` should match the first two characters of the prescription code.
 
 ```xml
 <n1:Krankenkasseninformation Nummer="ID1">
