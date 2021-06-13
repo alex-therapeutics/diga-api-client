@@ -264,9 +264,8 @@ You will need an IK number to request the certificate for encryption and decrypt
 
 ## Are there solutions for non-java users?
 
-So far, there are no other clients available.
-A solution could be to create a docker image which exposes the java client via an api.
-Additionally, we hope that this documentation provides enough information so that clients in other languages can be developed.
+You can find an api-wrapper, developed in Kotlin, [here](https://github.com/gtuk/diga-api-service).
+It also comes with a Dockerfile to facilitate integration into your system.
 
 ## My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?
 
