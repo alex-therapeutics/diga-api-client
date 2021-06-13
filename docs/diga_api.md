@@ -126,6 +126,7 @@ According to the openapi specification the request contains 4 different paramete
 - `iksender` - Institutionskennzeichen (IK) of the DiGA manufacturer (an id required for payments)
 - `ikempfaenger` - IK of the insurer which can be found in the mapping file (`Kostentraegerkennung` - [section 5.2.2](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf))
 - `verfahren` - a code which discriminates requests for code verification and reimbursement
+  - values are described in a [later section](#verfahren)
 - `nutzdaten` - additional information for the request, including the prescription code
   - the `nutzdaten` are described later in more detail as this is the tricky bit of the request
 
