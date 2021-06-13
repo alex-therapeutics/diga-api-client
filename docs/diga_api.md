@@ -113,7 +113,7 @@ There is no central DiGA endpoint for verifying and reimbursing DiGA apps and ha
 Some apis might also not support billing as of now.
 The `Versandart` field in the mapping file can be used to check this beforehand:
 - 1 = api is supported for billing
-- 2 = email
+- 2 = email (none of the insurances in the mapping file use emails)
 - 3 = post
 
 Although insurance companies use their own apis, they do follow an openapi specification for the request which is listed as [DiGA-YAML-Datei (YAML)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml) at the same [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp).
@@ -226,10 +226,10 @@ Also the diga id is listed as `DiGAVEID` (verified ID) and an additional field `
 
 ## Billing requests
 
-Invoices must be created using the `XRechnung` standard.
+Invoices must be created using the `XRechnung` standard and for each prescription code, exactly one invoice must be sent.
 There might also be dedicated accounting/book-keeping software which allows creating and sending invoices according to this standard, so that billing might also be handled outside the production system.
-However, the client supports sending invoices by mail.
-It is up to the users of the client to define what should happen with the response from the diga api.
+However, this can be a lot of work compared to sending invoices using this client.
+When sending invoices with this client, it is up to the users of the client to define what should happen with the response from the diga api.
 E.g. invoices are likely to be required for accounting and therefore must be stored.
 Also handling of apis which do not support billing yet, must be defined.
 
