@@ -16,7 +16,6 @@ This document aims to help DiGA manufacturers figure out how prescription codes 
   - [Code verification requests](#code-verification-requests)
   - [Billing requests](#billing-requests)
   - [Encryption](#encryption)
-  - [Request processing time](#request-processing-time)
 - [FAQ](#faq)
   - [What can I do if I want to make requests but my DiGA is not approved yet and I therefore do not have a diga id?](#what-can-i-do-if-i-want-to-make-requests-but-my-diga-is-not-approved-yet-and-i-therefore-do-not-have-a-diga-id)
   - [What can I do if I dont know the IK number yet and still want to test the client?](#what-can-i-do-if-i-dont-know-the-ik-number-yet-and-still-want-to-test-the-client)
@@ -244,13 +243,6 @@ You can request it at [ITSG website](https://www.itsg.de/produkte/trust-center/z
 A technical documentation for the encryption (of course in German) can be found on the [technical standards page at gkv](https://www.gkv-datenaustausch.de/technische_standards_1/technische_standards.jsp) as [attachment 16](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf) under `Security Schnittstelle (SECON)` section.
 Once the certificates are issued, checkout the [prerequisites from the Readme](https://github.com/alex-therapeutics/diga-api-client#prerequisites) to be able to use them with the api client.
 
-## Request processing time
-
-According to the documentation, the processing time constraints are as follows:
-
-Mean value 10000[msec], 95% quantile [msec] 15000
-
-Is that really 10 seconds for a single request?
 
 # FAQ
 
