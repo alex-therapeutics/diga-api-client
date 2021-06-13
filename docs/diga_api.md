@@ -111,7 +111,10 @@ The information lists a field `Endpunkt_Kommunikationsstelle`.
 This is the base url for the endpoint for a specific insurer.
 There is no central DiGA endpoint for verifying and reimbursing DiGA apps and handling might differ across apis.
 Some apis might also not support billing as of now.
-The api response should include details on how to proceed with the billing request in this case, e.g. sending invoices by mail or post.
+The `Versandart` field in the mapping file can be used to check this beforehand:
+- 1 = api is supported for billing
+- 2 = email
+- 3 = post
 
 Although insurance companies use their own apis, they do follow an openapi specification for the request which is listed as [DiGA-YAML-Datei (YAML)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml) at the same [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp).
 This [documents](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the client.
