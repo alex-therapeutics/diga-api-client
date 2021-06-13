@@ -195,7 +195,7 @@ Data for sending the request:
     <Antwort>
         <IK_DiGA_Hersteller>123456789</IK_DiGA_Hersteller>
         <IK_Krankenkasse>987654321</IK_Krankenkasse>
-        <DiGAID>12345000</DiGAVEID>
+        <DiGAID>12345</DiGAVEID>
         <Freischaltcode>ABCDEFGHIJKLMNOP</Freischaltcode>
     </Antwort>
 </Pruefung_Freischaltcode>
