@@ -43,9 +43,9 @@ Finally, it can be used as a place to collect questions and answers around the D
 
 - user enters prescription code in the DiGA (app)
 - insurer information is extracted from the code
-- a request is made to the api of the insurer to verify the code
-  - response contains `Tag der Leistungserbringung` which is the day a user started to use the app
-  - the response value for `Tag der Leistungserbringung` is required for the billing process
+- a request is made to the api of the insurer to verify the code. The response includes two fields which are required for the billing:
+  - `Tag der Leistungserbringung` = the day a user started to use the app
+  - `digaVEID` = diga id + 3 digits
 - another request is made for reimbursing the code
 
 # The prescription code
