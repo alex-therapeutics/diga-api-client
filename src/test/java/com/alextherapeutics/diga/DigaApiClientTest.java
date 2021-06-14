@@ -19,13 +19,12 @@
 package com.alextherapeutics.diga;
 
 import com.alextherapeutics.diga.model.*;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 
 class DigaApiClientTest {
   private DigaApiClient client;
