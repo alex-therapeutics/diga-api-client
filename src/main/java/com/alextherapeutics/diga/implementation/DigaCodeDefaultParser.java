@@ -24,6 +24,7 @@ import com.alextherapeutics.diga.DigaHealthInsuranceDirectory;
 import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
 import com.alextherapeutics.diga.model.DigaInvoiceMethod;
+import de.bitmarck.bms.base32.Base32Check1;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
@@ -93,9 +94,23 @@ public class DigaCodeDefaultParser implements DigaCodeParser {
   }
 
   private boolean validateDigaCodeStructure(String code) {
-    // TODO - make more check, like regex, the different parts, etc.
-    // TODO maybe use checksum to check validity?
-    return code != null && code.length() == 16;
+    if (code != null && code.length() == 16) {
+      var codeToCheck = code.substring(0, code.length() - 1);
+      var extractedChecksum = code.substring(code.length() - 1);
+      var base32Instance = Base32Check1.getInstance();
+
+      try {
+        var calculatedChecksum = base32Instance.compute(codeToCheck);
+
+        if (base32Instance.validate(codeToCheck + calculatedChecksum)) {
+          return extractedChecksum.equals(String.valueOf(calculatedChecksum));
+        }
+      } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+        return false;
+      }
+    }
+
+    return false;
   }
 
   private DigaCodeDefaultParser.ParsedDigaCode parseCode(String code)
