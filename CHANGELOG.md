@@ -2,6 +2,10 @@
 
 ### Snapshot
 
+### 1.2.0
+
+- add check character code validation
+
 ### 1.1.3
 
 - workaround for diga-api.tk.de/diga/api/public/rest endpoint responding using xml with invalid encoding
