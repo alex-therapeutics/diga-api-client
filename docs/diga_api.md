@@ -153,10 +153,15 @@ According to section 2.2.1 from [Gemeinsames Rundschreiben Institutionskennzeich
 You need to request the IK or changes using a form.
 You can check the [ARGE-IK](https://www.dguv.de/arge-ik/index.jsp) website for more information (German).
 Specific information for requesting the number can be found in the [Antrag](https://www.dguv.de/arge-ik/antrag/index.jsp) tab.
-The form can be sent by email and a blueprint can be downloaded [here](https://www.dguv.de/medien/arge-ik/downloads/erfass.pdf).
+The form must be sent by email to `info@arge-ik.de` and a blueprint can be downloaded [here](https://www.dguv.de/medien/arge-ik/downloads/erfass.pdf).
 
 Additional information at [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/sonstige_leistungserbringer/sonstige_leistungserbringer.jsp) can be found in [20210401_Broschuere_TP5 (PDF)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/sonstige_leistungserbringer/20210401_Broschuere_TP5.pdf)
 which also contains a section about requesting certificates from ITSG trust center.
+
+Based on our experience:
+Once the ARGE-IK received the application they sent another document to be signed back via mail which took 8 working days to arrive.
+After we filled out this document we received our official IK, again via mail, which took another 8 working days from the day we sent the letter.
+Therefore, we recommend to request the IK number as early as possible.
 
 ## Verfahren
 
