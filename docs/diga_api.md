@@ -250,6 +250,9 @@ The encryption is based on certificates which need to be requested at the ITSG w
 You can request it at [ITSG website](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/), assuming that you already have an IK number.
 
 A technical documentation for the encryption (of course in German) can be found on the [technical standards page at gkv](https://www.gkv-datenaustausch.de/technische_standards_1/technische_standards.jsp) as [attachment 16](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf) under `Security Schnittstelle (SECON)` section.
+
+A [short guide](https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-howto_p10_openssl_rsa4096.pdf) (in German) for how to generate the public/private key pair with OpenSSL is available on the ITSG website under the [FAQ: _Was versteht man unter einem "Hashcode oder Fingerprint des öffentlichen Schlüssels"?_](https://www.itsg.de/produkte/trust-center/fragen-und-antworten-faq/). It also includes the command for how to export the digest/fingerprint of the public key which must be included in the application to ITSG.
+
 Once the certificates are issued, checkout the [prerequisites from the Readme](https://github.com/alex-therapeutics/diga-api-client#prerequisites) to be able to use them with the api client.
 
 
