@@ -16,6 +16,7 @@ This documents contains information for DiGA manufacturers on how the DiGA API w
   - [Code verification requests](#code-verification-requests)
   - [Billing requests](#billing-requests)
   - [Encryption](#encryption)
+    - [Useful Links](#useful-links)
   - [Auditing](#auditing)
 - [FAQ](#faq)
   - [What can I do if I want to make requests but my DiGA is not approved yet and I therefore do not have a diga id?](#what-can-i-do-if-i-want-to-make-requests-but-my-diga-is-not-approved-yet-and-i-therefore-do-not-have-a-diga-id)
@@ -256,10 +257,22 @@ You can request it at [ITSG website](https://www.itsg.de/produkte/trust-center/z
 
 A technical documentation for the encryption (of course in German) can be found on the [technical standards page at gkv](https://www.gkv-datenaustausch.de/technische_standards_1/technische_standards.jsp) as [attachment 16](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf) under `Security Schnittstelle (SECON)` section.
 
-A [short guide](https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-howto_p10_openssl_rsa4096.pdf) (in German) for how to generate the public/private key pair with OpenSSL is available on the ITSG website under the [FAQ: _Was versteht man unter einem "Hashcode oder Fingerprint des öffentlichen Schlüssels"?_](https://www.itsg.de/produkte/trust-center/fragen-und-antworten-faq/). It also includes the command for how to export the digest/fingerprint of the public key which must be included in the application to ITSG.
+A [short guide](https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-howto_p10_openssl_rsa4096.pdf) (in German) for how to generate the public/private key pair with `OpenSSL` is available on the ITSG website under the [FAQ: _Was versteht man unter einem "Hashcode oder Fingerprint des öffentlichen Schlüssels"?_](https://www.itsg.de/produkte/trust-center/fragen-und-antworten-faq/).
+It also includes the command for how to export the digest/fingerprint of the public key which must be included in the application to ITSG.
 
 Once the certificates are issued, checkout the [prerequisites from the Readme](https://github.com/alex-therapeutics/diga-api-client#prerequisites) to be able to use them with the api client.
 
+### Useful Links
+
+Updated on: 2021-07-02
+
+- Main page for application process: https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/
+- FAQ https://www.itsg.de/produkte/trust-center/fragen-und-antworten-faq/
+- How to generate key for certificate: https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-howto_p10_openssl_rsa4096.pdf
+- How to get the certificate: https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-141016_So_erhalten_Sie_Ihr_Zertifikat_als_Leistungserbringer.pdf
+- Application Form: https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-Muster-Zertifizierungsantrag-200203.pdf
+  - Example form:  https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-Ausfuellhilfe-141016.pdf 
+- Online tracking of application process after submission: https://www.itsg-trust.de/all/antrag.php
 
 ## Auditing
 
