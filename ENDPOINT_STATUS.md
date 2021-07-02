@@ -23,7 +23,7 @@ together with information on how many companies are using each endpoint, and iss
 | diga.bitmarck-daten.de              | 85         | OK        | OK           | OK           | OK           |
 | diga-api.tk.de/diga/api/public/rest | 1          | OK        | OK           | OK           | OK           |
 | da-api.gkvi.de                      | 5          | OK        | OK           | OK           | OK           |
-| diga.kkh.de                         | 1          | OK        | NOT VERIFIED |              |              |
+| diga.kkh.de                         | 1          | OK        | OK           |              |              |
 | itscare.da-api.aok.de               | 3          | OK        | OK           | OK           | NOT VERIFIED |
 | kubus-it.da-api.aok.de              | 2          | OK        | NOT VERIFIED | OK           | NOT VERIFIED |
 | arge.da-api.aok.de                  | 3          | OK        | OK           | OK           | OK           |
