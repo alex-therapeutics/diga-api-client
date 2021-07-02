@@ -20,7 +20,7 @@ together with information on how many companies are using each endpoint, and iss
 
 | Api                                 | #Companies | CODE TEST | CODE         | BILLING TEST | BILLING      |
 | ----------------------------------- | ---------- | --------- | ------------ | ------------ | ------------ |
-| diga.bitmarck-daten.de              | 85         | OK        | OK           | OK           | OK           |
+| diga.bitmarck-daten.de              | 86         | OK        | OK           | OK           | OK           |
 | diga-api.tk.de/diga/api/public/rest | 1          | OK        | OK           | OK           | OK           |
 | da-api.gkvi.de                      | 5          | OK        | OK           | OK           | OK           |
 | diga.kkh.de                         | 1          | OK        | OK           |              |              |
@@ -31,9 +31,9 @@ together with information on how many companies are using each endpoint, and iss
 
 ## Summary
 
-Endpoints covering 97/103 insurance companies are working with test code validation requests.
+Endpoints covering 97/104 insurance companies are working with test code validation requests.
 
-Endpoints covering 98/103 insurance companies are working with test invoice requests.
+Endpoints covering 98/104 insurance companies are working with test invoice requests.
 
 However, since this library is not used in production yet, we can not verify if __real__ requests work or not.
 We will update this as we find out. If you are using this library in production, and you find out that a request to
