@@ -31,9 +31,9 @@ together with information on how many companies are using each endpoint, and iss
 
 ## Summary
 
-Endpoints covering 97/104 insurance companies are working with test code validation requests.
+Endpoints covering 98/104 insurance companies are working with test code validation requests.
 
-Endpoints covering 98/104 insurance companies are working with test invoice requests.
+Endpoints covering 99/104 insurance companies are working with test invoice requests.
 
 However, since this library is not used in production yet, we can not verify if __real__ requests work or not.
 We will update this as we find out. If you are using this library in production, and you find out that a request to
