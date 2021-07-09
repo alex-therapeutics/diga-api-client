@@ -23,7 +23,7 @@ For insurance companies which do not support API invoicing (5/104) the library w
 ## Get Started
 
 To communicate with the DiGA api companies **must request an IK number and certificates for encryption**.
-These two prerequisites cannot be requested in parallel and it takes up to three weeks to get them.
+These two prerequisites cannot be requested in parallel and it takes up to four weeks to get them.
 Therefore, make sure to request them as early as possible.
 Please see the [docs](docs/diga_api.md#Requesting-an-IK-number) folder for more information.
 
