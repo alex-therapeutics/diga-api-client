@@ -17,8 +17,8 @@ Also, if you have information on how to solve existing issues but don't want to 
 All contributions are welcome, we do not expect you to commit code if you do not want to.
 
 ## Project Status
-The first version of the project has been released. Currently, the DiGA code validation works against 97/103 health insurance companies and invoicing works against 98/103 companies. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
-For insurance companies which do not support API invoicing (5/103) the library will return a response which indicates what to do next (invoice via email or post).
+The first version of the project has been released. Currently, the DiGA code validation works against 98/104 health insurance companies and invoicing works against 99/104 companies. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
+For insurance companies which do not support API invoicing (5/104) the library will return a response which indicates what to do next (invoice via email or post).
 
 ## Get Started
 
@@ -28,7 +28,6 @@ Therefore, make sure to request them as early as possible.
 Please see the [docs](docs/diga_api.md#Requesting-an-IK-number) folder for more information.
 
 ### Prerequisites
-
 * PKCS12 keystores for the certificates of all the health insurance companies as well as your private key and certificate that you applied for from ITSG.
   You must give your private key/certificate an alias to use it with the library, and all health insurance certificates must have the company's IK number as an alias
   in the form _IK123456789_. You can create the keystore with a single command using the [secon-keystore-generator](https://github.com/mawendo-gmbh/secon-keystore-generator) tool.
