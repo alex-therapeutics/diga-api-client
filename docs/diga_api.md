@@ -1,12 +1,16 @@
 # DiGA API documentation
 
-This documents contains information for DiGA manufacturers on how the DiGA API works regarding prescription code validation and billing. It is targeted at manufacturers who wish to develop their own integration with the DiGA API or are curious to know how it works. If you are looking for an out-of-the-box solution that already works, you can use the [diga api client](https://github.com/alex-therapeutics/diga-api-client) provided in this repository as a java library, or you can use the [diga api service](https://github.com/gtuk/diga-api-service) (work in progress), which is an api wrapper around this library, as a microservice in your stack. Information on how to use these solutions is provided in their readmes and code documentation, and not in this document.
+This documents contains information for DiGA manufacturers on how the DiGA API works regarding prescription code validation and billing.
+It is targeted at manufacturers who wish to develop their own integration with the DiGA API or are curious to know how it works.
+If you are looking for an out-of-the-box solution that already works, you can use the [diga api client](https://github.com/alex-therapeutics/diga-api-client) provided in this repository as a java library, or you can use the [diga api service](https://github.com/gtuk/diga-api-service) (work in progress), which is an api wrapper around this library, as a microservice in your stack.
+Information on how to use these solutions is provided in their readmes and code documentation, and not in this document.
 
 - [DiGA API documentation](#diga-api-documentation)
 - [Overview](#overview)
 - [Summary](#summary)
 - [The prescription code](#the-prescription-code)
   - [Mapping file for insurance companies](#mapping-file-for-insurance-companies)
+    - [IK numbers](#ik-numbers)
 - [Request format](#request-format)
   - [Institutionskennzeichen - IK numbers](#institutionskennzeichen---ik-numbers)
     - [Requesting an IK number](#requesting-an-ik-number)
@@ -76,7 +80,7 @@ Some of these codes are invalid with error codes defined in [Anhang 5 - Fehlerau
 | 0            | 77AAAAAAAAAAAAAX | Request valid           | Use current date for "Tag_der_Leistungserbringung" from EDFC0-basis_2.0.0.xsd. For the DiGANr from EDFC0-basis_2.0.0.xsd the last 3 digits must be `000` |
 | 100          | 77AAAAAAAAAAADEV | Code expired            | The code is expired.                                                                                                                                     |
 | 101          | 77AAAAAAAAAAADFF | Code canceled           | "Fachlicher Fehler." - very unspecific - might be invalidated by insurer?                                                                                |
-| 102          | 77AAAAAAAAAAADGE | Code not found          | E.g. code was not distributed by the insurer                                                                                                                          |
+| 102          | 77AAAAAAAAAAADGE | Code not found          | E.g. code was not distributed by the insurer                                                                                                             |
 | 200          | 77AAAAAAAAAAAGIS | Request or file invalid | The request or file might be invalid so they cannot be processed, e.g. schema error                                                                      |
 | 201          | 77AAAAAAAAAAAGJC | Server error            | Technical Error, e.g. network issue                                                                                                                      |
 | 202          | 77AAAAAAAAAAAGKD | Memory error            | Technical Error, e.g. database error                                                                                                                     |
@@ -114,6 +118,7 @@ This is the base url for the endpoint for a specific insurer.
 There is no central DiGA endpoint for verifying and reimbursing DiGA apps and handling might differ across apis.
 Some apis might also not support billing as of now.
 The `Versandart` field in the mapping file can be used to check this beforehand:
+
 - 1 = api is supported for billing
 - 2 = email (none of the insurances in the mapping file use emails)
 - 3 = post
@@ -121,12 +126,35 @@ The `Versandart` field in the mapping file can be used to check this beforehand:
 Although insurance companies use their own apis, they do follow an openapi specification for the request which is listed as [DiGA-YAML-Datei (YAML)](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/digaSP_1_0_05.yaml) at the same [gkv page](https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp).
 This [document](https://github.com/alex-therapeutics/diga-api-client/blob/main/ENDPOINT_STATUS.md) lists which apis are currently working with the diga api client.
 
+The mapping file also contains billing-related information about the insurance companies as well as different IK numbers.
+The following section describes what the different IK numbers are used for as this might not be obvious from the documentation.
+
+### IK numbers
+
+The xml file contains the following rows:
+
+```xml
+<bas:Kostentraegerkennung>109034270</bas:Kostentraegerkennung>
+<bas:IK_des_Rechnungsempfaengers>109034270</bas:IK_des_Rechnungsempfaengers>
+<bas:IK_Abrechnungsstelle>660500345</bas:IK_Abrechnungsstelle>
+```
+
+The values for `Kostentraegerkennung` and `IK_des_Rechnungsempfaengers` are the same in this case (not always true) but the `IK_Abrechnungsstelle` is different.
+The IK number `660500345` is the IK number of the api provider, here bitmarck and the other IK number relates to the insurance company.
+When making requests it is important to use the correct IK numbers in the request header or in the `nutzdaten` field.
+
+| xml field name              | name in this repository  | where to use                                                                            |
+| --------------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
+| Kostentraegerkennung        | insuranceCompanyIKNumber | TODO                                                                                    |
+| IK_des_Rechnungsempfaengers | buyerCompanyCreditorIk   | TODO                                                                                    |
+| IK_Abrechnungsstelle        | clearingCenterIKNumber   | used in the request body as `ikempfaenger` & relevant for the encryption of `nutzdaten` |
+
 # Request format
 
 According to the openapi specification the request contains 4 different parameters which are sent with `ContentType: multipart/form-data`:
 
 - `iksender` - Institutionskennzeichen (IK) of the DiGA manufacturer (an id required for payments)
-- `ikempfaenger` - IK of the insurer which can be found in the mapping file (`Kostentraegerkennung` - [section 5.2.2](https://www.gkv-datenaustausch.de/media/dokumente/leistungserbringer_1/digitale_gesundheitsanwendungen/technische_anlagen_aktuell_7/DiGA_Anlage_1_Technische_Anlage_zur_RL_V1.1_20210225.pdf))
+- `ikempfaenger` - IK of the api service provider, i.e. `IK_Abrechnungsstelle`
 - `verfahren` - a code which discriminates requests for code verification and reimbursement
   - values are described in a [later section](#verfahren)
 - `nutzdaten` - additional information for the request, including the prescription code
@@ -271,7 +299,7 @@ Updated on: 2021-07-02
 - How to generate key for certificate: https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-howto_p10_openssl_rsa4096.pdf
 - How to get the certificate: https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-141016_So_erhalten_Sie_Ihr_Zertifikat_als_Leistungserbringer.pdf
 - Application Form: https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-Muster-Zertifizierungsantrag-200203.pdf
-  - Example form:  https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-Ausfuellhilfe-141016.pdf 
+  - Example form: https://www.itsg.de/wp-content/uploads/2020/11/Trust-Center-Ausfuellhilfe-141016.pdf
 - Online tracking of application process after submission: https://www.itsg-trust.de/all/antrag.php
 
 ## Auditing
