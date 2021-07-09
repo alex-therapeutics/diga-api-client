@@ -21,6 +21,12 @@ The first version of the project has been released. Currently, the DiGA code val
 For insurance companies which do not support API invoicing (5/104) the library will return a response which indicates what to do next (invoice via email or post).
 
 ## Get Started
+
+To communicate with the DiGA api companies **must request an IK number and certificates for encryption**.
+These two prerequisites cannot be requested in parallel and it takes up to four weeks to get them.
+Therefore, make sure to request them as early as possible.
+Please see the [docs](docs/diga_api.md#Requesting-an-IK-number) folder for more information.
+
 ### Prerequisites
 * PKCS12 keystores for the certificates of all the health insurance companies as well as your private key and certificate that you applied for from ITSG.
   You must give your private key/certificate an alias to use it with the library, and all health insurance certificates must have the company's IK number as an alias
