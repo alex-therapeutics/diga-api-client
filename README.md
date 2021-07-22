@@ -150,7 +150,7 @@ var testCodeValidationResponse = apiClient.sendTestRequest(DigaApiTestCode.VALID
 // send a test invoice to the insurance company with prefix "BY". note that test bills never return as completely valid by the APIs 
 // at the moment. you will at best get a response like "code not found" or "wrong check digit"
 var testInvoiceResponse = apiClient.sendTestInvoiceRequest(
-        DigaInvoice.builder().invoiceId("1").validatedDigaCode(DigaApiTestCode.VALID).build(),
+        DigaInvoice.builder().invoiceId("1").validatedDigaCode(DigaApiTestCode.VALID.toString()).build(),
         "BY"
 );
 ```
