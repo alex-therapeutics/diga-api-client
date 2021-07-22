@@ -145,8 +145,8 @@ When making requests it is important to use the correct IK numbers in the reques
 
 | xml field name              | name in this repository  | where to use                                                                            |
 | --------------------------- | ------------------------ | --------------------------------------------------------------------------------------- |
-| Kostentraegerkennung        | insuranceCompanyIKNumber | TODO                                                                                    |
-| IK_des_Rechnungsempfaengers | buyerCompanyCreditorIk   | TODO                                                                                    |
+| Kostentraegerkennung        | insuranceCompanyIKNumber | used as `empfaenger` and `IK_Krankenkasse` in XML file for code validation request      |
+| IK_des_Rechnungsempfaengers | buyerCompanyCreditorIk   | used in billing request                                                                 |
 | IK_Abrechnungsstelle        | clearingCenterIKNumber   | used in the request body as `ikempfaenger` & relevant for the encryption of `nutzdaten` |
 
 # Request format
@@ -220,20 +220,33 @@ Examples for the data and additional details on the encryption are described in 
 
 See `EDFC0-Pruefung_2.0.0.xsd` file for reference:
 
-Data for sending the request:
+Assuming request is sent to insurer with following details from mapping file and own IK number `000000000`:
 
 ```xml
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bas:Kostentraegerkennung>111111111</bas:Kostentraegerkennung>
+<bas:IK_des_Rechnungsempfaengers>222222222</bas:IK_des_Rechnungsempfaengers>
+<bas:IK_Abrechnungsstelle>333333333</bas:IK_Abrechnungsstelle>
+```
+
+Request headers:
+
+- ikempfaenger="333333333"
+- iksender="000000000"
+
+Data for sending the request (`nutzdaten` before encryption):
+
+```xml
+"<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Pruefung_Freischaltcode xmlns="http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/2.0.0"
-                         version="002.000.000" gueltigab="2020-07-01" verfahrenskennung="TDFC0" nachrichtentyp="ANF"
-                         absender="987654321" empfaenger="123456789">
-    <Antwort>
-        <IK_DiGA_Hersteller>123456789</IK_DiGA_Hersteller>
-        <IK_Krankenkasse>987654321</IK_Krankenkasse>
-        <DiGAID>12345</DiGAVEID>
-        <Freischaltcode>ABCDEFGHIJKLMNOP</Freischaltcode>
-    </Antwort>
-</Pruefung_Freischaltcode>
+                          version="002.000.000" gueltigab="2020-07-01" verfahrenskennung="TDFC0" nachrichtentyp="ANF"
+                          absender="000000000" empfaenger="111111111">
+    <Anfrage>
+        <IK_DiGA_Hersteller>000000000</IK_DiGA_Hersteller>
+        <IK_Krankenkasse>111111111</IK_Krankenkasse>
+        <DiGAID>12345</DiGAID>
+        <Freischaltcode>77AAAAAAAAAAAAAX</Freischaltcode>
+    </Anfrage>
+</Pruefung_Freischaltcode>"
 ```
 
 In case you are not an approved DiGA manufacturer yet, you can put `12345` as `DiGAID`.
@@ -245,10 +258,10 @@ Successful response data:
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Pruefung_Freischaltcode xmlns="http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/2.0.0"
                          version="002.000.000" gueltigab="2020-07-01" verfahrenskennung="TDFC0" nachrichtentyp="ANT"
-                         absender="987654321" empfaenger="123456789">
+                         absender="333333333" empfaenger="000000000">
     <Antwort>
-        <IK_DiGA_Hersteller>123456789</IK_DiGA_Hersteller>
-        <IK_Krankenkasse>987654321</IK_Krankenkasse>
+        <IK_DiGA_Hersteller>000000000</IK_DiGA_Hersteller>
+        <IK_Krankenkasse>111111111</IK_Krankenkasse>
         <DiGAVEID>12345000</DiGAVEID>
         <Freischaltcode>ABCDEFGHIJKLMNOP</Freischaltcode>
         <Tag_der_Leistungserbringung>2020-08-19</Tag_der_Leistungserbringung>
@@ -282,6 +295,7 @@ Additional information can be found on this [wiki page](https://github.com/alex-
 Given that we are dealing with patient data, it is required to properly encrypt the data sent within requests.
 The encryption is based on certificates which need to be requested at the ITSG which acts as a trust center.
 You can request it at [ITSG website](https://www.itsg.de/produkte/trust-center/zertifikat-beantragen/), assuming that you already have an IK number.
+It takes approximately a week to received the certificates back.
 
 A technical documentation for the encryption (of course in German) can be found on the [technical standards page at gkv](https://www.gkv-datenaustausch.de/technische_standards_1/technische_standards.jsp) as [attachment 16](https://www.gkv-datenaustausch.de/media/dokumente/standards_und_normen/technische_spezifikationen/Anlage_16.pdf) under `Security Schnittstelle (SECON)` section.
 
