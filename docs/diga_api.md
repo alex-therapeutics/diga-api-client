@@ -290,6 +290,143 @@ The invoice should contain the following information:
 
 Additional information can be found on this [wiki page](https://github.com/alex-therapeutics/diga-api-client/wiki/Billing-validation---XRechnung).
 
+Assuming request is sent to insurer with following details from mapping file and own IK number `000000000`:
+
+```xml
+<bas:Kostentraegerkennung>111111111</bas:Kostentraegerkennung>
+<bas:IK_des_Rechnungsempfaengers>222222222</bas:IK_des_Rechnungsempfaengers>
+<bas:IK_Abrechnungsstelle>333333333</bas:IK_Abrechnungsstelle>
+```
+
+Request headers:
+
+- ikempfaenger="333333333"
+- iksender="000000000"
+
+<details><summary>Data for sending the request (`nutzdaten` before encryption):</summary>
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CrossIndustryInvoice xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                          xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100"
+                          xmlns:ns3="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                          xmlns:ns4="urn:un:unece:uncefact:data:standard:QualifiedDataType:100">
+    <ns3:ExchangedDocumentContext>
+        <GuidelineSpecifiedDocumentContextParameter>
+            <ID>urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.0</ID>
+        </GuidelineSpecifiedDocumentContextParameter>
+    </ns3:ExchangedDocumentContext>
+    <ns3:ExchangedDocument>
+        <ID>1</ID>
+        <TypeCode>380</TypeCode>
+        <IssueDateTime>
+            <ns2:DateTimeString format="102">20210722</ns2:DateTimeString>
+        </IssueDateTime>
+    </ns3:ExchangedDocument>
+    <ns3:SupplyChainTradeTransaction>
+        <IncludedSupplyChainTradeLineItem>
+            <AssociatedDocumentLineDocument>
+                <LineID>1</LineID>
+            </AssociatedDocumentLineDocument>
+            <SpecifiedTradeProduct>
+                <GlobalID schemeID="DiGAVEID" />
+                <BuyerAssignedID schemeID="Freischaltcode">VALID</BuyerAssignedID>
+                <Name>digaName</Name>
+                <Description>A digaName prescription.</Description>
+            </SpecifiedTradeProduct>
+            <SpecifiedLineTradeAgreement>
+                <NetPriceProductTradePrice>
+                    <ChargeAmount>100</ChargeAmount>
+                </NetPriceProductTradePrice>
+            </SpecifiedLineTradeAgreement>
+            <SpecifiedLineTradeDelivery>
+                <BilledQuantity unitCode="C62">1</BilledQuantity>
+            </SpecifiedLineTradeDelivery>
+            <SpecifiedLineTradeSettlement>
+                <ApplicableTradeTax>
+                    <TypeCode>VAT</TypeCode>
+                    <CategoryCode>S</CategoryCode>
+                    <RateApplicablePercent>19</RateApplicablePercent>
+                </ApplicableTradeTax>
+                <SpecifiedTradeSettlementLineMonetarySummation>
+                    <LineTotalAmount>100</LineTotalAmount>
+                </SpecifiedTradeSettlementLineMonetarySummation>
+            </SpecifiedLineTradeSettlement>
+        </IncludedSupplyChainTradeLineItem>
+        <ApplicableHeaderTradeAgreement>
+            <BuyerReference>Leitweg-ID</BuyerReference>
+            <SellerTradeParty>
+                <ID>IK000000000</ID>
+                <ID schemeID="IK">000000000</ID>
+                <Name>manufacturingCompanyName</Name>
+                <DefinedTradeContact>
+                    <PersonName>fullName</PersonName>
+                    <TelephoneUniversalCommunication>
+                        <CompleteNumber>phoneNumber</CompleteNumber>
+                    </TelephoneUniversalCommunication>
+                    <EmailURIUniversalCommunication>
+                        <URIID>svensvensson@awesomedigacompany.com</URIID>
+                    </EmailURIUniversalCommunication>
+                </DefinedTradeContact>
+                <PostalTradeAddress>
+                    <PostcodeCode>postalCode</PostcodeCode>
+                    <LineOne>adressLine</LineOne>
+                    <CityName>city</CityName>
+                    <CountryID>countryCode</CountryID>
+                </PostalTradeAddress>
+                <SpecifiedTaxRegistration>
+                    <ID schemeID="VA">manufacturingCompanyVATRegistration</ID>
+                </SpecifiedTaxRegistration>
+            </SellerTradeParty>
+            <BuyerTradeParty>
+                <ID>IK111111111</ID>
+                <ID schemeID="IK">111111111</ID>
+                <Name>BMW BKK</Name>
+                <PostalTradeAddress>
+                    <PostcodeCode>84130</PostcodeCode>
+                    <LineOne>Mengkofener Str. 6</LineOne>
+                    <CityName>Dingolfing</CityName>
+                    <CountryID>DE</CountryID>
+                </PostalTradeAddress>
+            </BuyerTradeParty>
+        </ApplicableHeaderTradeAgreement>
+        <ApplicableHeaderTradeDelivery>
+            <ActualDeliverySupplyChainEvent>
+                <OccurrenceDateTime>
+                    <ns2:DateTimeString format="102">20210722</ns2:DateTimeString>
+                </OccurrenceDateTime>
+            </ActualDeliverySupplyChainEvent>
+        </ApplicableHeaderTradeDelivery>
+        <ApplicableHeaderTradeSettlement>
+            <CreditorReferenceID schemeID="IK">000000000</CreditorReferenceID>
+            <InvoiceCurrencyCode>EUR</InvoiceCurrencyCode>
+            <SpecifiedTradeSettlementPaymentMeans>
+                <TypeCode>30</TypeCode>
+            </SpecifiedTradeSettlementPaymentMeans>
+            <ApplicableTradeTax>
+                <CalculatedAmount>19.00</CalculatedAmount>
+                <TypeCode>VAT</TypeCode>
+                <BasisAmount>100.00</BasisAmount>
+                <CategoryCode>S</CategoryCode>
+                <RateApplicablePercent>19</RateApplicablePercent>
+            </ApplicableTradeTax>
+            <SpecifiedTradePaymentTerms>
+                <Description></Description>
+            </SpecifiedTradePaymentTerms>
+            <SpecifiedTradeSettlementHeaderMonetarySummation>
+                <LineTotalAmount>100.00</LineTotalAmount>
+                <TaxBasisTotalAmount>100.00</TaxBasisTotalAmount>
+                <TaxTotalAmount currencyID="EUR">19.00</TaxTotalAmount>
+                <GrandTotalAmount>119.00</GrandTotalAmount>
+                <DuePayableAmount>119.00</DuePayableAmount>
+            </SpecifiedTradeSettlementHeaderMonetarySummation>
+        </ApplicableHeaderTradeSettlement>
+    </ns3:SupplyChainTradeTransaction>
+</ns3:CrossIndustryInvoice>
+```
+
+</details>
+
 ## Encryption
 
 Given that we are dealing with patient data, it is required to properly encrypt the data sent within requests.
