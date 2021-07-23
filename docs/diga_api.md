@@ -427,125 +427,940 @@ Request headers:
 
 </details>
 
-<details><summary>Response Data:</summary>
+<details><summary>Raw response Data:</summary>
+
+```xml
+</rep:report>➜  diga-api-client git:(add_documentation_for_verification_api) ✗  cd /Users/srehfeldt/Desktop/repositories/diga-api-client ; /usr/bin/env /Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home/bin/java -agentlib:jdwp=transport=dt_socket,server=n,suspend=y,address=localhost:50207 -Dfile.encoding=UTF-8 @/var/folders/_4/lksyvn0153z0m0hsy9mbc_540000gn/T/cp_55eo6njelbopyxv5n2td61jnl.argfile com.alextherapeutics.diga.Main 
+12:37:29.872 [main] DEBUG nl.altindag.ssl.trustmanager.CompositeX509ExtendedTrustManager - Received the following server certificate: [CN=*.bitmarck-daten.de]
+12:37:39.590 [main] DEBUG nl.altindag.ssl.trustmanager.CompositeX509ExtendedTrustManager - Received the following server certificate: [CN=*.bitmarck-daten.de]<rep:report xmlns:html="http://www.w3.org/1999/xhtml" xmlns:in="http://www.xoev.de/de/validator/framework/1/createreportinput" xmlns:rep="http://www.xoev.de/de/validator/varl/1" xmlns:s="http://www.xoev.de/de/validator/framework/1/scenarios" xmlns:svrl="http://purl.oclc.org/dsdl/svrl" xmlns:xd="http://www.oxygenxml.com/ns/doc/xsl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" varlVersion="1.0.0" valid="false">
+    <rep:engine>
+        <rep:name>KoSIT Validator 1.4.2</rep:name>
+    </rep:engine>
+    <rep:timestamp>2021-07-23T12:37:39.819+02:00</rep:timestamp>
+    <rep:documentIdentification>
+        <rep:documentHash>
+            <rep:hashAlgorithm>SHA-256</rep:hashAlgorithm>
+            <rep:hashValue>xITwAEQ7VL/JYYKbFNdgMfHlDI+Gn8uJNJTviN6TWWU=</rep:hashValue>
+        </rep:documentHash>
+        <rep:documentReference>StreamSource</rep:documentReference>
+    </rep:documentIdentification>
+    <rep:scenarioMatched>
+        <s:scenario>
+            <s:name>DiGA-Rechnung (DRE0-Anfrage) basierend auf EN16931 CIUS XRechnung (UN/CEFACT CII 100.D16B)</s:name>
+            <s:description>
+                <s:p>Voraussetzung für diese Prüfung ist, dass es sich um eine gültige XRechnung gemäß Version 1.2 oder 2.0                 handelt. Bitte verwenden Sie dafür im ersten Schritt die "validator-configuration-xrechnung" in der                 entsprechenden Version, bevor Sie diese Prüfung durchführen.</s:p>
+            </s:description>
+            <s:namespace prefix="ram">urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100</s:namespace>
+            <s:namespace prefix="rep">http://www.xoev.de/de/validator/varl/1</s:namespace>
+            <s:namespace prefix="rsm">urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100</s:namespace>
+            <s:match>/rsm:CrossIndustryInvoice[starts-with(normalize-space(rsm:ExchangedDocumentContext/ram:GuidelineSpecifiedDocumentContextParameter/ram:ID),
+            'urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_')]</s:match>
+            <s:validateWithXmlSchema>
+                <s:resource>
+                    <s:name>XML-Schema-Dummy für das Abrechnen von Freischaltcodes (basierend auf CII)</s:name>
+                    <s:location>xml-schema/dre0/dummy-cii.xsd</s:location>
+                </s:resource>
+            </s:validateWithXmlSchema>
+            <s:validateWithSchematron>
+                <s:resource>
+                    <s:name>Schematron-Regeln für das Abrechnen von Freischaltcodes</s:name>
+                    <s:location>schematron/dre0.xsl</s:location>
+                </s:resource>
+            </s:validateWithSchematron>
+            <s:createReport>
+                <s:resource>
+                    <s:name>Report für das Abrechnen von Freischaltcodes</s:name>
+                    <s:location>report/dre0.xsl</s:location>
+                </s:resource>
+            </s:createReport>
+            <s:acceptMatch>/rep:report/rep:assessment[1]/rep:accept[1]</s:acceptMatch>
+        </s:scenario>
+        <rep:documentData xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+            <seller>manufacturingCompanyName</seller>
+            <id>1</id>
+            <issueDate>20210723</issueDate>
+        </rep:documentData>
+        <rep:validationStepResult id="val-xsd" valid="true">
+            <s:resource>
+                <s:name>XML-Schema-Dummy für das Abrechnen von Freischaltcodes (basierend auf CII)</s:name>
+                <s:location>xml-schema/dre0/dummy-cii.xsd</s:location>
+            </s:resource>
+        </rep:validationStepResult>
+        <rep:validationStepResult id="val-sch.1" valid="true">
+            <s:resource>
+                <s:name>Schematron-Regeln für das Abrechnen von Freischaltcodes</s:name>
+                <s:location>schematron/dre0.xsl</s:location>
+            </s:resource>
+        </rep:validationStepResult>
+        <rep:validationStepResult id="INVER" valid="false">
+            <s:resource>
+                <s:name>Rechnungsprüfung</s:name>
+                <s:location>???</s:location>
+            </s:resource>
+            <rep:message xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" id="INVER-1" code="INVER-1" level="error" xpathLocation="rsm:CrossIndustryInvoice">Freischaltcode / Rezeptcode nicht gefunden: 77AA AAAA AAAA AAAX</rep:message>
+        </rep:validationStepResult>
+    </rep:scenarioMatched>
+    <rep:assessment>
+        <rep:reject>
+            <rep:explanation>
+                <html xmlns="http://www.w3.org/1999/xhtml" data-report-type="report">
+                    <head>
+                        <title>Prüfbericht</title>
+                        <style>
+                body{
+                font-family: Calibri;
+                width: 230mm;
+                }
+                
+                .metadata dt {
+                float: left;
+                width: 230px;
+                clear: left;
+                }
+                
+                .metadata dd {
+                margin-left: 250px;
+                }
+                
+                table{
+                border-collapse: collapse;
+                width: 100%;
+                }
+                
+                table.tbl-errors{
+                font-size: smaller;
+                }
+               
+                table.document{
+                font-size: smaller;
+                }
+               
+                table.document td {vertical-align:top;}
+                
+                .tbl-errors td{
+                border: 1px solid lightgray;
+                padding: 2px;
+                vertical-align: top;
+                }
+                
+                thead{
+                font-weight: bold;
+                background-color: #f0f0f0;
+                padding-top: 6pt;
+                padding-bottom: 2pt;
+                }
+                
+                .tbl-meta td{
+                padding-right: 1em;
+                }
+                
+                td.pos{
+                padding-left: 3pt;
+                width: 5%;
+                color: gray
+                }
+                
+                td.element{
+                width: 95%;
+                word-wrap: break-word;
+                }
+                
+                
+                td.element:before{
+                content: attr(title);
+                color: gray;
+                }
+                
+                
+                div.attribute{
+                display: inline;
+                font-style: italic;
+                color: gray;
+                }
+                div.attribute:before{
+                content: attr(title) '=';
+                }
+                div.val{
+                display: inline;
+                font-weight: bold;
+                }
+                
+                td.level1{
+                padding-left: 2mm;
+                }
+                
+                td.level2{
+                padding-left: 5mm;
+                }
+                
+                td.level3{
+                padding-left: 10mm;
+                }
+                
+                td.level4{
+                padding-left: 15mm;
+                }
+                
+                td.level5{
+                padding-left: 20mm;
+                }
+                td.level6{
+                padding-left: 25mm;
+                }
+                
+                tr{
+                vertical-align: bottom;
+                border-bottom: 1px solid #c0c0c0;
+                }
+                
+                .error{
+                color: red;
+                }
+                
+                .warning{
+                }
+                
+                p.important{
+                font-weight: bold;
+                text-align: left;
+                background-color: #e0e0e0;
+                padding: 3pt;
+                }
+                
+                td.right{
+                text-align: right
+                }</style>
+                    </head>
+                    <body>
+                        <h1>Prüfbericht</h1>
+                        <div class="metadata">
+                            <p class="important">Angaben zum geprüften Dokument</p>
+                            <dl>
+                                <dt>Referenz:</dt>
+                                <dd>StreamSource</dd>
+                                <dt>Zeitpunkt der Prüfung:</dt>
+                                <dd>23.7.2021 12:37:39</dd>
+                                <dt>Erkannter Dokumenttyp:</dt>
+                                <dd>DiGA-Rechnung (DRE0-Anfrage) basierend auf EN16931 CIUS XRechnung (UN/CEFACT CII 100.D16B)</dd>
+                            </dl>
+                            <dl xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ubl="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100">
+                                <dt>Erkannter Rechnungssteller:</dt>
+                                <dd>manufacturingCompanyName</dd>
+                                <dt>Erkannte Rechnungsnummer:</dt>
+                                <dd>1</dd>
+                                <dt>Erkanntes Rechnungsdatum:</dt>
+                                <dd>20210723</dd>
+                            </dl>
+                        </div>
+                        <p class="important">
+                            <b>Konformitätsprüfung: </b>
+                            Das geprüfte Dokument enthält weder Fehler noch Warnungen. Es ist konform zu den formalen Vorgaben.
+                        </p>
+                        <p class="important">Bewertung: Es wird empfohlen das Dokument anzunehmen und weiter zu verarbeiten.</p>
+                        <p class="important">Inhalt des Dokuments:</p>
+                        <table class="document">
+                            <tr class="row" id="0001">
+                                <td class="pos">0001</td>
+                                <td class="element level1" title="CrossIndustryInvoice">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0002">
+                                <td class="pos">0002</td>
+                                <td class="element level2" title="ExchangedDocumentContext">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0003">
+                                <td class="pos">0003</td>
+                                <td class="element level3" title="GuidelineSpecifiedDocumentContextParameter">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0004">
+                                <td class="pos">0004</td>
+                                <td class="element level4" title="ID">
+                                    <div class="val">urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.0</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0005">
+                                <td class="pos">0005</td>
+                                <td class="element level2" title="ExchangedDocument">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0006">
+                                <td class="pos">0006</td>
+                                <td class="element level3" title="ID">
+                                    <div class="val">1</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0007">
+                                <td class="pos">0007</td>
+                                <td class="element level3" title="TypeCode">
+                                    <div class="val">380</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0008">
+                                <td class="pos">0008</td>
+                                <td class="element level3" title="IssueDateTime">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0009">
+                                <td class="pos">0009</td>
+                                <td class="element level4" title="DateTimeString">
+                                    <div class="val">20210723</div>
+                                    <div class="attribute" title="format">102</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0010">
+                                <td class="pos">0010</td>
+                                <td class="element level2" title="SupplyChainTradeTransaction">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0011">
+                                <td class="pos">0011</td>
+                                <td class="element level3" title="IncludedSupplyChainTradeLineItem">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0012">
+                                <td class="pos">0012</td>
+                                <td class="element level4" title="AssociatedDocumentLineDocument">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0013">
+                                <td class="pos">0013</td>
+                                <td class="element level5" title="LineID">
+                                    <div class="val">1</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0014">
+                                <td class="pos">0014</td>
+                                <td class="element level4" title="SpecifiedTradeProduct">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0015">
+                                <td class="pos">0015</td>
+                                <td class="element level5" title="GlobalID">
+                                    <div class="val">12345000</div>
+                                    <div class="attribute" title="schemeID">DiGAVEID</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0016">
+                                <td class="pos">0016</td>
+                                <td class="element level5" title="BuyerAssignedID">
+                                    <div class="val">77AAAAAAAAAAAAAX</div>
+                                    <div class="attribute" title="schemeID">Freischaltcode</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0017">
+                                <td class="pos">0017</td>
+                                <td class="element level5" title="Name">
+                                    <div class="val">digaName</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0018">
+                                <td class="pos">0018</td>
+                                <td class="element level5" title="Description">
+                                    <div class="val">A digaName prescription.</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0019">
+                                <td class="pos">0019</td>
+                                <td class="element level4" title="SpecifiedLineTradeAgreement">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0020">
+                                <td class="pos">0020</td>
+                                <td class="element level5" title="NetPriceProductTradePrice">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0021">
+                                <td class="pos">0021</td>
+                                <td class="element level6" title="ChargeAmount">
+                                    <div class="val">100</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0022">
+                                <td class="pos">0022</td>
+                                <td class="element level4" title="SpecifiedLineTradeDelivery">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0023">
+                                <td class="pos">0023</td>
+                                <td class="element level5" title="BilledQuantity">
+                                    <div class="val">1</div>
+                                    <div class="attribute" title="unitCode">C62</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0024">
+                                <td class="pos">0024</td>
+                                <td class="element level4" title="SpecifiedLineTradeSettlement">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0025">
+                                <td class="pos">0025</td>
+                                <td class="element level5" title="ApplicableTradeTax">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0026">
+                                <td class="pos">0026</td>
+                                <td class="element level6" title="TypeCode">
+                                    <div class="val">VAT</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0027">
+                                <td class="pos">0027</td>
+                                <td class="element level6" title="CategoryCode">
+                                    <div class="val">S</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0028">
+                                <td class="pos">0028</td>
+                                <td class="element level6" title="RateApplicablePercent">
+                                    <div class="val">19</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0029">
+                                <td class="pos">0029</td>
+                                <td class="element level5" title="SpecifiedTradeSettlementLineMonetarySummation">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0030">
+                                <td class="pos">0030</td>
+                                <td class="element level6" title="LineTotalAmount">
+                                    <div class="val">100</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0031">
+                                <td class="pos">0031</td>
+                                <td class="element level3" title="ApplicableHeaderTradeAgreement">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0032">
+                                <td class="pos">0032</td>
+                                <td class="element level4" title="BuyerReference">
+                                    <div class="val">Leitweg-ID</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0033">
+                                <td class="pos">0033</td>
+                                <td class="element level4" title="SellerTradeParty">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0034">
+                                <td class="pos">0034</td>
+                                <td class="element level5" title="ID">
+                                    <div class="val">IK000000000</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0035">
+                                <td class="pos">0035</td>
+                                <td class="element level5" title="ID">
+                                    <div class="val">000000000</div>
+                                    <div class="attribute" title="schemeID">IK</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0036">
+                                <td class="pos">0036</td>
+                                <td class="element level5" title="Name">
+                                    <div class="val">manufacturingCompanyName</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0037">
+                                <td class="pos">0037</td>
+                                <td class="element level5" title="DefinedTradeContact">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0038">
+                                <td class="pos">0038</td>
+                                <td class="element level6" title="PersonName">
+                                    <div class="val">fullName</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0039">
+                                <td class="pos">0039</td>
+                                <td class="element level6" title="TelephoneUniversalCommunication">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0040">
+                                <td class="pos">0040</td>
+                                <td class="element level7" title="CompleteNumber">
+                                    <div class="val">phoneNumber</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0041">
+                                <td class="pos">0041</td>
+                                <td class="element level6" title="EmailURIUniversalCommunication">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0042">
+                                <td class="pos">0042</td>
+                                <td class="element level7" title="URIID">
+                                    <div class="val">svensvensson@awesomedigacompany.com</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0043">
+                                <td class="pos">0043</td>
+                                <td class="element level5" title="PostalTradeAddress">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0044">
+                                <td class="pos">0044</td>
+                                <td class="element level6" title="PostcodeCode">
+                                    <div class="val">postalCode</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0045">
+                                <td class="pos">0045</td>
+                                <td class="element level6" title="LineOne">
+                                    <div class="val">adressLine</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0046">
+                                <td class="pos">0046</td>
+                                <td class="element level6" title="CityName">
+                                    <div class="val">city</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0047">
+                                <td class="pos">0047</td>
+                                <td class="element level6" title="CountryID">
+                                    <div class="val">DE</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0048">
+                                <td class="pos">0048</td>
+                                <td class="element level5" title="SpecifiedTaxRegistration">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0049">
+                                <td class="pos">0049</td>
+                                <td class="element level6" title="ID">
+                                    <div class="val">DE 123 456 789</div>
+                                    <div class="attribute" title="schemeID">VA</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0050">
+                                <td class="pos">0050</td>
+                                <td class="element level4" title="BuyerTradeParty">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0051">
+                                <td class="pos">0051</td>
+                                <td class="element level5" title="ID">
+                                    <div class="val">IK109034270</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0052">
+                                <td class="pos">0052</td>
+                                <td class="element level5" title="ID">
+                                    <div class="val">109034270</div>
+                                    <div class="attribute" title="schemeID">IK</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0053">
+                                <td class="pos">0053</td>
+                                <td class="element level5" title="Name">
+                                    <div class="val">BMW BKK   </div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0054">
+                                <td class="pos">0054</td>
+                                <td class="element level5" title="PostalTradeAddress">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0055">
+                                <td class="pos">0055</td>
+                                <td class="element level6" title="PostcodeCode">
+                                    <div class="val">84130</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0056">
+                                <td class="pos">0056</td>
+                                <td class="element level6" title="LineOne">
+                                    <div class="val">Mengkofener Str. 6</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0057">
+                                <td class="pos">0057</td>
+                                <td class="element level6" title="CityName">
+                                    <div class="val">Dingolfing</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0058">
+                                <td class="pos">0058</td>
+                                <td class="element level6" title="CountryID">
+                                    <div class="val">DE</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0059">
+                                <td class="pos">0059</td>
+                                <td class="element level3" title="ApplicableHeaderTradeDelivery">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0060">
+                                <td class="pos">0060</td>
+                                <td class="element level4" title="ActualDeliverySupplyChainEvent">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0061">
+                                <td class="pos">0061</td>
+                                <td class="element level5" title="OccurrenceDateTime">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0062">
+                                <td class="pos">0062</td>
+                                <td class="element level6" title="DateTimeString">
+                                    <div class="val">20210723</div>
+                                    <div class="attribute" title="format">102</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0063">
+                                <td class="pos">0063</td>
+                                <td class="element level3" title="ApplicableHeaderTradeSettlement">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0064">
+                                <td class="pos">0064</td>
+                                <td class="element level4" title="CreditorReferenceID">
+                                    <div class="val">000000000</div>
+                                    <div class="attribute" title="schemeID">IK</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0065">
+                                <td class="pos">0065</td>
+                                <td class="element level4" title="InvoiceCurrencyCode">
+                                    <div class="val">EUR</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0066">
+                                <td class="pos">0066</td>
+                                <td class="element level4" title="SpecifiedTradeSettlementPaymentMeans">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0067">
+                                <td class="pos">0067</td>
+                                <td class="element level5" title="TypeCode">
+                                    <div class="val">30</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0068">
+                                <td class="pos">0068</td>
+                                <td class="element level4" title="ApplicableTradeTax">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0069">
+                                <td class="pos">0069</td>
+                                <td class="element level5" title="CalculatedAmount">
+                                    <div class="val">19.00</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0070">
+                                <td class="pos">0070</td>
+                                <td class="element level5" title="TypeCode">
+                                    <div class="val">VAT</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0071">
+                                <td class="pos">0071</td>
+                                <td class="element level5" title="BasisAmount">
+                                    <div class="val">100.00</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0072">
+                                <td class="pos">0072</td>
+                                <td class="element level5" title="CategoryCode">
+                                    <div class="val">S</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0073">
+                                <td class="pos">0073</td>
+                                <td class="element level5" title="RateApplicablePercent">
+                                    <div class="val">19</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0074">
+                                <td class="pos">0074</td>
+                                <td class="element level4" title="SpecifiedTradePaymentTerms">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0075">
+                                <td class="pos">0075</td>
+                                <td class="element level5" title="Description" />
+                            </tr>
+                            <tr class="row" id="0076">
+                                <td class="pos">0076</td>
+                                <td class="element level4" title="SpecifiedTradeSettlementHeaderMonetarySummation">
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                    <div class="val"></div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0077">
+                                <td class="pos">0077</td>
+                                <td class="element level5" title="LineTotalAmount">
+                                    <div class="val">100.00</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0078">
+                                <td class="pos">0078</td>
+                                <td class="element level5" title="TaxBasisTotalAmount">
+                                    <div class="val">100.00</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0079">
+                                <td class="pos">0079</td>
+                                <td class="element level5" title="TaxTotalAmount">
+                                    <div class="val">19.00</div>
+                                    <div class="attribute" title="currencyID">EUR</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0080">
+                                <td class="pos">0080</td>
+                                <td class="element level5" title="GrandTotalAmount">
+                                    <div class="val">119.00</div>
+                                </td>
+                            </tr>
+                            <tr class="row" id="0081">
+                                <td class="pos">0081</td>
+                                <td class="element level5" title="DuePayableAmount">
+                                    <div class="val">119.00</div>
+                                </td>
+                            </tr>
+                        </table>
+                        <p class="info">Dieser Prüfbericht wurde erstellt mit KoSIT Validator 1.4.2.</p>
+                    </body>
+                </html>
+            </rep:explanation>
+        </rep:reject>
+    </rep:assessment>
+</rep:report>
+```
+
+</details>
+
+<details><summary>Generated invoice by the diga-api-client:</summary>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns3:CrossIndustryInvoice xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
-                            xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100"
-                            xmlns:ns3="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
-                            xmlns:ns4="urn:un:unece:uncefact:data:standard:QualifiedDataType:100">
-	<ns3:ExchangedDocumentContext>
-		<GuidelineSpecifiedDocumentContextParameter>
-			<ID>urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.0</ID>
-		</GuidelineSpecifiedDocumentContextParameter>
-	</ns3:ExchangedDocumentContext>
-	<ns3:ExchangedDocument>
-		<ID>234</ID>
-		<TypeCode>380</TypeCode>
-		<IssueDateTime>
-			<ns2:DateTimeString format="102">20210723</ns2:DateTimeString>
-		</IssueDateTime>
-	</ns3:ExchangedDocument>
-	<ns3:SupplyChainTradeTransaction>
-		<IncludedSupplyChainTradeLineItem>
-			<AssociatedDocumentLineDocument>
-				<LineID>1</LineID>
-			</AssociatedDocumentLineDocument>
-			<SpecifiedTradeProduct>
-				<GlobalID schemeID="DiGAVEID">12345000</GlobalID>
-				<BuyerAssignedID schemeID="Freischaltcode">77AAAAAAAAAAAAAX</BuyerAssignedID>
-				<Name>PLACEHOLDER</Name>
-				<Description>A PLACEHOLDER prescription.</Description>
-			</SpecifiedTradeProduct>
-			<SpecifiedLineTradeAgreement>
-				<NetPriceProductTradePrice>
-					<ChargeAmount>100</ChargeAmount>
-				</NetPriceProductTradePrice>
-			</SpecifiedLineTradeAgreement>
-			<SpecifiedLineTradeDelivery>
-				<BilledQuantity unitCode="C62">1</BilledQuantity>
-			</SpecifiedLineTradeDelivery>
-			<SpecifiedLineTradeSettlement>
-				<ApplicableTradeTax>
-					<TypeCode>VAT</TypeCode>
-					<CategoryCode>S</CategoryCode>
-					<RateApplicablePercent>19</RateApplicablePercent>
-				</ApplicableTradeTax>
-				<SpecifiedTradeSettlementLineMonetarySummation>
-					<LineTotalAmount>100</LineTotalAmount>
-				</SpecifiedTradeSettlementLineMonetarySummation>
-			</SpecifiedLineTradeSettlement>
-		</IncludedSupplyChainTradeLineItem>
-		<ApplicableHeaderTradeAgreement>
-			<BuyerReference>Leitweg-ID</BuyerReference>
-			<SellerTradeParty>
-				<ID>IK000000000</ID>
-				<ID schemeID="IK">000000000</ID>
-				<Name>PLACEHOLDER</Name>
-				<DefinedTradeContact>
-					<PersonName>PLACEHOLDER</PersonName>
-					<TelephoneUniversalCommunication>
-						<CompleteNumber>PLACEHOLDER</CompleteNumber>
-					</TelephoneUniversalCommunication>
-					<EmailURIUniversalCommunication>
-						<URIID>a@b.de</URIID>
-					</EmailURIUniversalCommunication>
-				</DefinedTradeContact>
-				<PostalTradeAddress>
-					<PostcodeCode>12345</PostcodeCode>
-					<LineOne>PLACEHOLDER</LineOne>
-					<CityName>PLACEHOLDER</CityName>
-					<CountryID>DE</CountryID>
-				</PostalTradeAddress>
-				<SpecifiedTaxRegistration>
-					<ID schemeID="VA">PLACEHOLDER</ID>
-				</SpecifiedTaxRegistration>
-			</SellerTradeParty>
-			<BuyerTradeParty>
-				<ID>IK111111111</ID>
-				<ID schemeID="IK">111111111</ID>
-				<Name>AOK NordWest - Die Gesundheitskasse</Name>
-				<PostalTradeAddress>
-					<PostcodeCode>44269</PostcodeCode>
-					<LineOne>Kopenhagener Str. 1</LineOne>
-					<CityName>Dortmund</CityName>
-					<CountryID>DE</CountryID>
-				</PostalTradeAddress>
-			</BuyerTradeParty>
-		</ApplicableHeaderTradeAgreement>
-		<ApplicableHeaderTradeDelivery>
-			<ActualDeliverySupplyChainEvent>
-				<OccurrenceDateTime>
-					<ns2:DateTimeString format="102">20210723</ns2:DateTimeString>
-				</OccurrenceDateTime>
-			</ActualDeliverySupplyChainEvent>
-		</ApplicableHeaderTradeDelivery>
-		<ApplicableHeaderTradeSettlement>
-			<CreditorReferenceID schemeID="IK">000000000</CreditorReferenceID>
-			<InvoiceCurrencyCode>EUR</InvoiceCurrencyCode>
-			<SpecifiedTradeSettlementPaymentMeans>
-				<TypeCode>30</TypeCode>
-			</SpecifiedTradeSettlementPaymentMeans>
-			<ApplicableTradeTax>
-				<CalculatedAmount>19.00</CalculatedAmount>
-				<TypeCode>VAT</TypeCode>
-				<BasisAmount>100.00</BasisAmount>
-				<CategoryCode>S</CategoryCode>
-				<RateApplicablePercent>19</RateApplicablePercent>
-			</ApplicableTradeTax>
-			<SpecifiedTradePaymentTerms>
-				<Description></Description>
-			</SpecifiedTradePaymentTerms>
-			<SpecifiedTradeSettlementHeaderMonetarySummation>
-				<LineTotalAmount>100.00</LineTotalAmount>
-				<TaxBasisTotalAmount>100.00</TaxBasisTotalAmount>
-				<TaxTotalAmount currencyID="EUR">19.00</TaxTotalAmount>
-				<GrandTotalAmount>119.00</GrandTotalAmount>
-				<DuePayableAmount>119.00</DuePayableAmount>
-			</SpecifiedTradeSettlementHeaderMonetarySummation>
-		</ApplicableHeaderTradeSettlement>
-	</ns3:SupplyChainTradeTransaction>
+<ns3:CrossIndustryInvoice xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" xmlns:ns3="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:ns4="urn:un:unece:uncefact:data:standard:QualifiedDataType:100">
+    <ns3:ExchangedDocumentContext>
+        <GuidelineSpecifiedDocumentContextParameter>
+            <ID>urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.0</ID>
+        </GuidelineSpecifiedDocumentContextParameter>
+    </ns3:ExchangedDocumentContext>
+    <ns3:ExchangedDocument>
+        <ID>1</ID>
+        <TypeCode>380</TypeCode>
+        <IssueDateTime>
+            <ns2:DateTimeString format="102">20210723</ns2:DateTimeString>
+        </IssueDateTime>
+    </ns3:ExchangedDocument>
+    <ns3:SupplyChainTradeTransaction>
+        <IncludedSupplyChainTradeLineItem>
+            <AssociatedDocumentLineDocument>
+                <LineID>1</LineID>
+            </AssociatedDocumentLineDocument>
+            <SpecifiedTradeProduct>
+                <GlobalID schemeID="DiGAVEID">12345000</GlobalID>
+                <BuyerAssignedID schemeID="Freischaltcode">77AAAAAAAAAAAAAX</BuyerAssignedID>
+                <Name>digaName</Name>
+                <Description>A digaName prescription.</Description>
+            </SpecifiedTradeProduct>
+            <SpecifiedLineTradeAgreement>
+                <NetPriceProductTradePrice>
+                    <ChargeAmount>100</ChargeAmount>
+                </NetPriceProductTradePrice>
+            </SpecifiedLineTradeAgreement>
+            <SpecifiedLineTradeDelivery>
+                <BilledQuantity unitCode="C62">1</BilledQuantity>
+            </SpecifiedLineTradeDelivery>
+            <SpecifiedLineTradeSettlement>
+                <ApplicableTradeTax>
+                    <TypeCode>VAT</TypeCode>
+                    <CategoryCode>S</CategoryCode>
+                    <RateApplicablePercent>19</RateApplicablePercent>
+                </ApplicableTradeTax>
+                <SpecifiedTradeSettlementLineMonetarySummation>
+                    <LineTotalAmount>100</LineTotalAmount>
+                </SpecifiedTradeSettlementLineMonetarySummation>
+            </SpecifiedLineTradeSettlement>
+        </IncludedSupplyChainTradeLineItem>
+        <ApplicableHeaderTradeAgreement>
+            <BuyerReference>Leitweg-ID</BuyerReference>
+            <SellerTradeParty>
+                <ID>IK000000000</ID>
+                <ID schemeID="IK">000000000</ID>
+                <Name>manufacturingCompanyName</Name>
+                <DefinedTradeContact>
+                    <PersonName>fullName</PersonName>
+                    <TelephoneUniversalCommunication>
+                        <CompleteNumber>phoneNumber</CompleteNumber>
+                    </TelephoneUniversalCommunication>
+                    <EmailURIUniversalCommunication>
+                        <URIID>svensvensson@awesomedigacompany.com</URIID>
+                    </EmailURIUniversalCommunication>
+                </DefinedTradeContact>
+                <PostalTradeAddress>
+                    <PostcodeCode>postalCode</PostcodeCode>
+                    <LineOne>adressLine</LineOne>
+                    <CityName>city</CityName>
+                    <CountryID>DE</CountryID>
+                </PostalTradeAddress>
+                <SpecifiedTaxRegistration>
+                    <ID schemeID="VA">DE 123 456 789</ID>
+                </SpecifiedTaxRegistration>
+            </SellerTradeParty>
+            <BuyerTradeParty>
+                <ID>IK111111111</ID>
+                <ID schemeID="IK">111111111</ID>
+                <Name>AOK NordWest - Die Gesundheitskasse</Name>
+                <PostalTradeAddress>
+                    <PostcodeCode>44269</PostcodeCode>
+                    <LineOne>Kopenhagener Str. 1</LineOne>
+                    <CityName>Dortmund</CityName>
+                    <CountryID>DE</CountryID>
+                </PostalTradeAddress>
+            </BuyerTradeParty>
+        </ApplicableHeaderTradeAgreement>
+        <ApplicableHeaderTradeDelivery>
+            <ActualDeliverySupplyChainEvent>
+                <OccurrenceDateTime>
+                    <ns2:DateTimeString format="102">20210723</ns2:DateTimeString>
+                </OccurrenceDateTime>
+            </ActualDeliverySupplyChainEvent>
+        </ApplicableHeaderTradeDelivery>
+        <ApplicableHeaderTradeSettlement>
+            <CreditorReferenceID schemeID="IK">000000000</CreditorReferenceID>
+            <InvoiceCurrencyCode>EUR</InvoiceCurrencyCode>
+            <SpecifiedTradeSettlementPaymentMeans>
+                <TypeCode>30</TypeCode>
+            </SpecifiedTradeSettlementPaymentMeans>
+            <ApplicableTradeTax>
+                <CalculatedAmount>19.00</CalculatedAmount>
+                <TypeCode>VAT</TypeCode>
+                <BasisAmount>100.00</BasisAmount>
+                <CategoryCode>S</CategoryCode>
+                <RateApplicablePercent>19</RateApplicablePercent>
+            </ApplicableTradeTax>
+            <SpecifiedTradePaymentTerms>
+                <Description></Description>
+            </SpecifiedTradePaymentTerms>
+            <SpecifiedTradeSettlementHeaderMonetarySummation>
+                <LineTotalAmount>100.00</LineTotalAmount>
+                <TaxBasisTotalAmount>100.00</TaxBasisTotalAmount>
+                <TaxTotalAmount currencyID="EUR">19.00</TaxTotalAmount>
+                <GrandTotalAmount>119.00</GrandTotalAmount>
+                <DuePayableAmount>119.00</DuePayableAmount>
+            </SpecifiedTradeSettlementHeaderMonetarySummation>
+        </ApplicableHeaderTradeSettlement>
+    </ns3:SupplyChainTradeTransaction>
 </ns3:CrossIndustryInvoice>
 ```
 
