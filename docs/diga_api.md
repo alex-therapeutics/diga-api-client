@@ -427,6 +427,130 @@ Request headers:
 
 </details>
 
+<details><summary>Response Data:</summary>
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CrossIndustryInvoice xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                            xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100"
+                            xmlns:ns3="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                            xmlns:ns4="urn:un:unece:uncefact:data:standard:QualifiedDataType:100">
+	<ns3:ExchangedDocumentContext>
+		<GuidelineSpecifiedDocumentContextParameter>
+			<ID>urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.0</ID>
+		</GuidelineSpecifiedDocumentContextParameter>
+	</ns3:ExchangedDocumentContext>
+	<ns3:ExchangedDocument>
+		<ID>234</ID>
+		<TypeCode>380</TypeCode>
+		<IssueDateTime>
+			<ns2:DateTimeString format="102">20210723</ns2:DateTimeString>
+		</IssueDateTime>
+	</ns3:ExchangedDocument>
+	<ns3:SupplyChainTradeTransaction>
+		<IncludedSupplyChainTradeLineItem>
+			<AssociatedDocumentLineDocument>
+				<LineID>1</LineID>
+			</AssociatedDocumentLineDocument>
+			<SpecifiedTradeProduct>
+				<GlobalID schemeID="DiGAVEID">12345000</GlobalID>
+				<BuyerAssignedID schemeID="Freischaltcode">77AAAAAAAAAAAAAX</BuyerAssignedID>
+				<Name>PLACEHOLDER</Name>
+				<Description>A PLACEHOLDER prescription.</Description>
+			</SpecifiedTradeProduct>
+			<SpecifiedLineTradeAgreement>
+				<NetPriceProductTradePrice>
+					<ChargeAmount>100</ChargeAmount>
+				</NetPriceProductTradePrice>
+			</SpecifiedLineTradeAgreement>
+			<SpecifiedLineTradeDelivery>
+				<BilledQuantity unitCode="C62">1</BilledQuantity>
+			</SpecifiedLineTradeDelivery>
+			<SpecifiedLineTradeSettlement>
+				<ApplicableTradeTax>
+					<TypeCode>VAT</TypeCode>
+					<CategoryCode>S</CategoryCode>
+					<RateApplicablePercent>19</RateApplicablePercent>
+				</ApplicableTradeTax>
+				<SpecifiedTradeSettlementLineMonetarySummation>
+					<LineTotalAmount>100</LineTotalAmount>
+				</SpecifiedTradeSettlementLineMonetarySummation>
+			</SpecifiedLineTradeSettlement>
+		</IncludedSupplyChainTradeLineItem>
+		<ApplicableHeaderTradeAgreement>
+			<BuyerReference>Leitweg-ID</BuyerReference>
+			<SellerTradeParty>
+				<ID>IK000000000</ID>
+				<ID schemeID="IK">000000000</ID>
+				<Name>PLACEHOLDER</Name>
+				<DefinedTradeContact>
+					<PersonName>PLACEHOLDER</PersonName>
+					<TelephoneUniversalCommunication>
+						<CompleteNumber>PLACEHOLDER</CompleteNumber>
+					</TelephoneUniversalCommunication>
+					<EmailURIUniversalCommunication>
+						<URIID>a@b.de</URIID>
+					</EmailURIUniversalCommunication>
+				</DefinedTradeContact>
+				<PostalTradeAddress>
+					<PostcodeCode>12345</PostcodeCode>
+					<LineOne>PLACEHOLDER</LineOne>
+					<CityName>PLACEHOLDER</CityName>
+					<CountryID>DE</CountryID>
+				</PostalTradeAddress>
+				<SpecifiedTaxRegistration>
+					<ID schemeID="VA">PLACEHOLDER</ID>
+				</SpecifiedTaxRegistration>
+			</SellerTradeParty>
+			<BuyerTradeParty>
+				<ID>IK111111111</ID>
+				<ID schemeID="IK">111111111</ID>
+				<Name>AOK NordWest - Die Gesundheitskasse</Name>
+				<PostalTradeAddress>
+					<PostcodeCode>44269</PostcodeCode>
+					<LineOne>Kopenhagener Str. 1</LineOne>
+					<CityName>Dortmund</CityName>
+					<CountryID>DE</CountryID>
+				</PostalTradeAddress>
+			</BuyerTradeParty>
+		</ApplicableHeaderTradeAgreement>
+		<ApplicableHeaderTradeDelivery>
+			<ActualDeliverySupplyChainEvent>
+				<OccurrenceDateTime>
+					<ns2:DateTimeString format="102">20210723</ns2:DateTimeString>
+				</OccurrenceDateTime>
+			</ActualDeliverySupplyChainEvent>
+		</ApplicableHeaderTradeDelivery>
+		<ApplicableHeaderTradeSettlement>
+			<CreditorReferenceID schemeID="IK">000000000</CreditorReferenceID>
+			<InvoiceCurrencyCode>EUR</InvoiceCurrencyCode>
+			<SpecifiedTradeSettlementPaymentMeans>
+				<TypeCode>30</TypeCode>
+			</SpecifiedTradeSettlementPaymentMeans>
+			<ApplicableTradeTax>
+				<CalculatedAmount>19.00</CalculatedAmount>
+				<TypeCode>VAT</TypeCode>
+				<BasisAmount>100.00</BasisAmount>
+				<CategoryCode>S</CategoryCode>
+				<RateApplicablePercent>19</RateApplicablePercent>
+			</ApplicableTradeTax>
+			<SpecifiedTradePaymentTerms>
+				<Description></Description>
+			</SpecifiedTradePaymentTerms>
+			<SpecifiedTradeSettlementHeaderMonetarySummation>
+				<LineTotalAmount>100.00</LineTotalAmount>
+				<TaxBasisTotalAmount>100.00</TaxBasisTotalAmount>
+				<TaxTotalAmount currencyID="EUR">19.00</TaxTotalAmount>
+				<GrandTotalAmount>119.00</GrandTotalAmount>
+				<DuePayableAmount>119.00</DuePayableAmount>
+			</SpecifiedTradeSettlementHeaderMonetarySummation>
+		</ApplicableHeaderTradeSettlement>
+	</ns3:SupplyChainTradeTransaction>
+</ns3:CrossIndustryInvoice>
+```
+
+</details>
+
 ## Encryption
 
 Given that we are dealing with patient data, it is required to properly encrypt the data sent within requests.
