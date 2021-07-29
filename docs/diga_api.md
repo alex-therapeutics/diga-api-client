@@ -27,6 +27,7 @@ Information on how to use these solutions is provided in their readmes and code 
   - [What can I do if I dont know the IK number yet and still want to test the client?](#what-can-i-do-if-i-dont-know-the-ik-number-yet-and-still-want-to-test-the-client)
   - [Are there solutions for non-java users?](#are-there-solutions-for-non-java-users)
   - [My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?](#my-diga-app-is-only-valid-for-30-days-can-users-request-a-fresh-code-from-their-insurer-while-their-existing-code-is-still-valid)
+  - [What are expected response times for the requests?](#what-are-expected-response-times-for-the-requests)
   - [How can we handle error responses with codes 201 or 202?](#how-can-we-handle-error-responses-with-codes-201-or-202)
 - [Glossary](#glossary)
 
@@ -1437,10 +1438,18 @@ It also comes with a Dockerfile to facilitate integration into your system.
 - Can they already request a new code while still being active?
 - How will the verification and billing api handle these cases?
 - Is the `TagDerLeistungserbringung` the date on which the request is made or is this set by the insurer when issuing the prescription code?
+
+## What are expected response times for the requests?
+
+The official documentation mentions SLOs of 5.6sec, 98% from Monday-Friday 8-20 and 90% outside.
+According to some requests from running in production the response times range from ~1-8 seconds.
+The times differ significantly between insurances (bitmark api is fastest and used by most insurances) but also between code validation and billing requests.
+Billing usually takes ~1-4 seconds longer.
+
 ## How can we handle error responses with codes 201 or 202?
 
 The status codes refer to `Server Error` and `Memory Error` and are expected if e.g. the connection drops.
-Can we simply retry the requests?
+In general it is no problem to retry validation and billing requests in those cases.
 
 # Glossary
 
