@@ -28,7 +28,6 @@ import javax.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
@@ -268,7 +267,6 @@ public final class DigaApiClient {
     }
   }
 
-  @SneakyThrows(IOException.class) // IOUtils specify this exception as "never occurs" so..
   private DigaInvoiceResponse performDigaInvoicingAgainstApi(
       DigaBillingInformation billingInformation, byte[] xmlInvoice, DigaProcessCode processCode)
       throws DigaEncryptionException, DigaHttpClientException, DigaDecryptionException,
@@ -302,7 +300,6 @@ public final class DigaApiClient {
     return response;
   }
 
-  @SneakyThrows(IOException.class)
   private DigaInvoiceResponse buildManualInvoicingResponse(
       DigaBillingInformation billingInformation, byte[] xmlInvoice) {
     return DigaInvoiceResponse.builder()
@@ -368,7 +365,6 @@ public final class DigaApiClient {
     return response;
   }
 
-  @SneakyThrows(IOException.class)
   private DigaInvoiceResponse buildInvoiceResponseFromException(
       byte[] xmlRequest, Throwable error, DigaBillingInformation information) {
     var response =
