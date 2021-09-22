@@ -17,10 +17,16 @@ Also, if you have information on how to solve existing issues but don't want to 
 All contributions are welcome, we do not expect you to commit code if you do not want to.
 
 ## Project Status
-The first version of the project has been released. Currently, the DiGA code validation works against 97/103 health insurance companies and invoicing works against 98/103 companies. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
-For insurance companies which do not support API invoicing (5/103) the library will return a response which indicates what to do next (invoice via email or post).
+The first version of the project has been released. Currently, the DiGA code validation works against 98/104 health insurance companies and invoicing works against 99/104 companies. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
+For insurance companies which do not support API invoicing (5/104) the library will return a response which indicates what to do next (invoice via email or post).
 
 ## Get Started
+
+To communicate with the DiGA api companies **must request an IK number and certificates for encryption**.
+These two prerequisites cannot be requested in parallel and it takes up to four weeks to get them.
+Therefore, make sure to request them as early as possible.
+Please see the [docs](docs/diga_api.md#Requesting-an-IK-number) folder for more information.
+
 ### Prerequisites
 * PKCS12 keystores for the certificates of all the health insurance companies as well as your private key and certificate that you applied for from ITSG.
   You must give your private key/certificate an alias to use it with the library, and all health insurance certificates must have the company's IK number as an alias
@@ -144,7 +150,7 @@ var testCodeValidationResponse = apiClient.sendTestRequest(DigaApiTestCode.VALID
 // send a test invoice to the insurance company with prefix "BY". note that test bills never return as completely valid by the APIs 
 // at the moment. you will at best get a response like "code not found" or "wrong check digit"
 var testInvoiceResponse = apiClient.sendTestInvoiceRequest(
-        DigaInvoice.builder().invoiceId("1").validatedDigaCode(DigaApiTestCode.VALID).build(),
+        DigaInvoice.builder().invoiceId("1").validatedDigaCode(DigaApiTestCode.VALID.getCode()).build(),
         "BY"
 );
 ```
