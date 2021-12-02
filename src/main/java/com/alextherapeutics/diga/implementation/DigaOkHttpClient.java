@@ -76,6 +76,11 @@ public class DigaOkHttpClient implements DigaHttpClient {
 
   private DigaApiHttpResponse parseResponse(Response okHttpResponse) throws IOException {
     var responseBuilder = DigaApiHttpResponse.builder().statusCode(okHttpResponse.code());
+    if (okHttpResponse.body() == null) {
+      throw new IOException(
+          String.format(
+              "Request returned with an empty body and status code %d", okHttpResponse.code()));
+    }
     var multiPartReader = new MultipartReader(okHttpResponse.body());
     MultipartReader.Part nextPart = null;
     do {
