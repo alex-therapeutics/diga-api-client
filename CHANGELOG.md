@@ -2,6 +2,14 @@
 
 ### Snapshot
 
+### 1.2.2
+
+- fix bug where some apis would return without a body, now the client picks these up as an error response
+
+### 1.2.1
+
+- update dependencies
+
 ### 1.2.0
 
 - add check character code validation
