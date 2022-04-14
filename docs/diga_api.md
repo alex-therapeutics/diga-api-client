@@ -1433,11 +1433,10 @@ It also comes with a Dockerfile to facilitate integration into your system.
 
 ## My DiGA (app) is only valid for 30 days. Can users request a fresh code from their insurer while their existing code is still valid?
 
-**TODO** Hopefully, users want to continue using your DiGA after their initial prescription code expired.
-
-- Can they already request a new code while still being active?
-- How will the verification and billing api handle these cases?
-- Is the `TagDerLeistungserbringung` the date on which the request is made or is this set by the insurer when issuing the prescription code?
+Yes, even when there is an active prescription, a new DiGA code can already be validated.
+The day of service provision will be the date on which the validation request is made.
+The digavid will be incremented compared to the digavid of the previous request.
+The initial digavid is `<diga_id>000` and the second digavid is `<diga_id>001` and so on.
 
 ## What are expected response times for the requests?
 
