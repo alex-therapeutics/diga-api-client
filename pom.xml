@@ -251,7 +251,7 @@
                         <!-- for lombok to work with javadoc plugin it has to be.. delomboked -->
                         <groupId>org.projectlombok</groupId>
                         <artifactId>lombok-maven-plugin</artifactId>
-                        <version>1.18.18.0</version>
+                        <version>1.18.20.0</version>
                         <configuration>
                             <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
                             <outputDirectory>${delombok.output}</outputDirectory>
