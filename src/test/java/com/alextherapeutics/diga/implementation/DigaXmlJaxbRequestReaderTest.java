@@ -30,8 +30,8 @@ import org.junit.jupiter.api.Test;
 class DigaXmlJaxbRequestReaderTest {
   private static final String sampleCodeValidationAnswer =
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-          + "<Pruefung_Freischaltcode xmlns=\"http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/2.0.0\"\n"
-          + "                         version=\"002.000.000\" gueltigab=\"2020-07-01\" verfahrenskennung=\"TDFC0\" nachrichtentyp=\"ANT\"\n"
+          + "<Pruefung_Freischaltcode xmlns=\"http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/3.0\"\n"
+          + "                         version=\"003.000.000\" gueltigab=\"2022-08-25\" verfahrenskennung=\"TDFC0\" nachrichtentyp=\"ANT\"\n"
           + "                         absender=\"987654321\" empfaenger=\"123456789\">\n"
           + "    <Antwort>\n"
           + "        <IK_DiGA_Hersteller>123456789</IK_DiGA_Hersteller>\n"

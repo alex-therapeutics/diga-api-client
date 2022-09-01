@@ -28,9 +28,9 @@ class DigaHealthInsuranceDirectoryFromXmlTest {
   private static final String sampleInsuranceCompanyMappingXml =
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
           + "<n1:Kostentraeger_Mappingverzeichnis xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-          + "                                     xmlns:n1=\"http://www.gkv-datenaustausch.de/XML-Schema/EDRE0_MVZ/2.0.0\"\n"
-          + "                                     xmlns:bas=\"http://www.gkv-datenaustausch.de/XMLSchema/EDFC0-basis/2.0.0\"\n"
-          + "                                     version=\"002.000.000\" gueltigab=\"2020-07-01\" xsi:schemaLocation=\"\">\n"
+          + "                                     xmlns:n1=\"http://www.gkv-datenaustausch.de/XML-Schema/EDRE0_MVZ/3.0\"\n"
+          + "                                     xmlns:bas=\"http://www.gkv-datenaustausch.de/XMLSchema/EDFC0-basis/3.0\"\n"
+          + "                                     version=\"003.000.000\" gueltigab=\"2022-08-25\" xsi:schemaLocation=\"http://www.gkv-datenaustausch.de/XML-Schema/EDRE0_MVZ/3.0 EDRE0-MVZ_3.0.0.xsd\">\n"
           + "\t\t<n1:Krankenkasseninformation Nummer=\"ID1\">\n"
           + "\t\t\t\t<bas:Kostentraegerkuerzel>CH</bas:Kostentraegerkuerzel>\n"
           + "\t\t\t\t<bas:Kostentraegerkennung>109034270</bas:Kostentraegerkennung>\n"

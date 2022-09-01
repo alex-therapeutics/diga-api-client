@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- THIS FILE WAS PROVIDED BY GKV DATENAUSTAUSCH AT https://www.gkv-datenaustausch.de/leistungserbringer/digitale_gesundheitsanwendungen/digitale_gesundheitsanwendungen.jsp -->
-<!-- AND IS COPYRIGHTED BY ITS ORIGINAL AUTHORS -->
-<!-- IT HAS NOT BEEN MODIFIED OTHER THAN INCLUDING THIS NOTICE -->
-
-<!-- Mit XMLSpy v2020 rel. 2 (x64) (http://www.altova.com), Stand vom 01.07.2020 - Entwurfstatus -->
+<!-- Mit XMLSpy v2013 sp1 (http://www.altova.com) von Claudia Pawel (GKV-Spitzenverband) bearbeitet -->
+<!-- edited with XMLSpy v2007 sp2 (http://www.altova.com) by Andreas Meier (ITSG GmbH) -->
 <xs:schema xmlns:dd="GI4X:/data-dictionary" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:GI4X-basis="GI4X:/xml-schema/GI4X-basis/2.0" targetNamespace="GI4X:/xml-schema/GI4X-basis/2.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0.0">
 	<xs:annotation>
 		<xs:documentation>
