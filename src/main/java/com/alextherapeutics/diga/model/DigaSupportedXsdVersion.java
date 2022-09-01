@@ -22,8 +22,8 @@ import lombok.Getter;
 
 /** Supported xsd version constants. These are the versions currently supported by this library. */
 public enum DigaSupportedXsdVersion {
-  DIGA_CODE_VALIDATION_VERSION("002.000.000"),
-  DIGA_CODE_VALIDATION_DATE("2020-07-01");
+  DIGA_CODE_VALIDATION_VERSION("003.000.000"),
+  DIGA_CODE_VALIDATION_DATE("2022-08-25");
 
   @Getter private final String value;
 
