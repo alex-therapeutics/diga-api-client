@@ -67,6 +67,12 @@ public class DigaOkHttpClient implements DigaHttpClient {
   public DigaApiHttpResponse post(DigaApiHttpRequest request) throws DigaHttpClientException {
     try {
       var httpResponse = client.newCall(toOkHttpRequest(request)).execute();
+
+      if (httpResponse.code() != 200) {
+        throw new DigaHttpClientException(
+            new Exception(
+                String.format("Request returned with http status code %d", httpResponse.code())));
+      }
       return parseResponse(httpResponse);
     } catch (IOException e) {
       log.error("Http request failed", e);
@@ -77,9 +83,7 @@ public class DigaOkHttpClient implements DigaHttpClient {
   private DigaApiHttpResponse parseResponse(Response okHttpResponse) throws IOException {
     var responseBuilder = DigaApiHttpResponse.builder().statusCode(okHttpResponse.code());
     if (okHttpResponse.body() == null) {
-      throw new IOException(
-          String.format(
-              "Request returned with an empty body and status code %d", okHttpResponse.code()));
+      throw new IOException("Request returned with an empty body");
     }
     var multiPartReader = new MultipartReader(okHttpResponse.body());
     MultipartReader.Part nextPart = null;
