@@ -348,7 +348,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     var paymentMeansCodeType = billingObjectFactory.createPaymentMeansCodeType();
     paymentMeansCodeType.setValue(
         "57"); // a code from https://unece.org/fileadmin/DAM/trade/untdid/d16b/tred/tred4461.htm
-    // 30 means "Credit transfer: payment by credit movement of funds from one account to another
+    // 57 means "Standing agreement"
     specifiedTradeSettlementPaymentMeans.setTypeCode(paymentMeansCodeType);
 
     var settlementApplicableTradeTax = billingObjectFactory.createTradeTaxType();
