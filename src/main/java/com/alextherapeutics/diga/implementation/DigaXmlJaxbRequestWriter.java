@@ -384,14 +384,6 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     specifiedTradeSettlementHeaderMonetarySummation
         .getDuePayableAmount()
         .add(createAmountType(grandTotal));
-
-/*
-    applicableHeaderTradeSettlement.setPayeeTradeParty(
-        createTradeParty(
-            digaInformation.getManufacturingCompanyIk(),
-            "XR03")); // creditor - this needs to be the IK of the entity that sends the invoice
-*/
-
     applicableHeaderTradeSettlement.setPayeeTradeParty(
             createTradeParty(
                     DigaTradeParty.builder()
@@ -400,8 +392,6 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
                             .companyIk(digaInformation.getManufacturingCompanyIk())
                             .companyName(digaInformation.getManufacturingCompanyName())
                             .build())); // creditor - this needs to be the IK of the entity that sends the invoice
-
-
     applicableHeaderTradeSettlement.setInvoiceCurrencyCode(
         createCurrencyCodeType(digaInvoice.getInvoiceCurrencyCode()));
     applicableHeaderTradeSettlement
