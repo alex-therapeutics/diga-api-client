@@ -148,7 +148,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     var exchangedDocumentContext = billingObjectFactory.createExchangedDocumentContextType();
     var guideline = billingObjectFactory.createDocumentContextParameterType();
     var guidelineId =
-        createIdType("urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.2#conformant#urn:xoev-de:kosit:extension:xrechnung_2.2");
+        createIdType(
+            "urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.2#conformant#urn:xoev-de:kosit:extension:xrechnung_2.2");
     guideline.setID(guidelineId);
     exchangedDocumentContext.getGuidelineSpecifiedDocumentContextParameter().add(guideline);
     return exchangedDocumentContext;
@@ -200,8 +201,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
     var tradeProduct = billingObjectFactory.createTradeProductType();
     tradeProduct.setGlobalID(createIdType(digaInvoice.getDigavEid(), "XR01"));
-    tradeProduct.setBuyerAssignedID(
-        createIdType(digaInvoice.getValidatedDigaCode(), "XR02"));
+    tradeProduct.setBuyerAssignedID(createIdType(digaInvoice.getValidatedDigaCode(), "XR02"));
     tradeProduct.getName().add(createTextType(digaInformation.getDigaName()));
     tradeProduct.setDescription(
         createTextType(
@@ -385,13 +385,14 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         .getDuePayableAmount()
         .add(createAmountType(grandTotal));
     applicableHeaderTradeSettlement.setPayeeTradeParty(
-            createTradeParty(
-                    DigaTradeParty.builder()
-                            .companyId(
-                                    DigaUtils.ikNumberWithPrefix(digaInformation.getManufacturingCompanyIk()))
-                            .companyIk(digaInformation.getManufacturingCompanyIk())
-                            .companyName(digaInformation.getManufacturingCompanyName())
-                            .build())); // creditor - this needs to be the IK of the entity that sends the invoice
+        createTradeParty(
+            DigaTradeParty.builder()
+                .companyId(
+                    DigaUtils.ikNumberWithPrefix(digaInformation.getManufacturingCompanyIk()))
+                .companyIk(digaInformation.getManufacturingCompanyIk())
+                .companyName(digaInformation.getManufacturingCompanyName())
+                .build())); // creditor - this needs to be the IK of the entity that sends the
+    // invoice
     applicableHeaderTradeSettlement.setInvoiceCurrencyCode(
         createCurrencyCodeType(digaInvoice.getInvoiceCurrencyCode()));
     applicableHeaderTradeSettlement
