@@ -426,7 +426,6 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
   private TradePartyType createTradeParty(DigaTradeParty partyInformation) {
     var tradeParty = billingObjectFactory.createTradePartyType();
-    tradeParty.getID().add(createIdType(partyInformation.getCompanyId()));
     tradeParty.getID().add(createIdType(partyInformation.getCompanyIk(), "XR03"));
     tradeParty.setName(createTextType(partyInformation.getCompanyName()));
 
