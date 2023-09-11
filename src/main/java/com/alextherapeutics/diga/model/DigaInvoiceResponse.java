@@ -38,6 +38,7 @@ public class DigaInvoiceResponse extends AbstractDigaApiResponse {
    * the invoice manually or in your program.
    */
   @NonNull private String generatedInvoice;
+
   /**
    * Whether this invoice requires manual action This is true when the target insurance company does
    * not support the DiGA API invoicing process, but require the manufacturer to send invoices via

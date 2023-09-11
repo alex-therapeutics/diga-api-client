@@ -32,6 +32,7 @@ import lombok.experimental.SuperBuilder;
 public class DigaCodeValidationResponse extends AbstractDigaApiResponse {
   /** The code which was validated. This field is only set if validation was successful. */
   private String validatedDigaCode;
+
   /**
    * The full DiGAVEid which was validated. It consists of your DiGAID + 3 numbers. It is unclear
    * what the last 3 digits mean so far, but you need to put this DiGAVEid in the invoice you send

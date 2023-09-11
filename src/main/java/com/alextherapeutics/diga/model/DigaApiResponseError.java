@@ -53,6 +53,7 @@ public interface DigaApiResponseError {
       return null;
     }
   }
+
   /**
    * Return this error cast as a {@link DigaInvoiceResponseError} object.
    *
@@ -65,6 +66,7 @@ public interface DigaApiResponseError {
       return null;
     }
   }
+
   /**
    * Return this error cast as a {@link DigaApiExceptionError} object.
    *

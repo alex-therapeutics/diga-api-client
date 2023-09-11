@@ -30,6 +30,7 @@ import lombok.experimental.SuperBuilder;
 public class DigaCodeInformation extends AbstractDigaInsuranceInformation {
   /** The full (unparsed) 16 character diga code. */
   private final String fullDigaCode;
+
   /** The individual 12 character part of the diga code (Krankenkassenindividueller Code) */
   private final String personalDigaCode;
 }

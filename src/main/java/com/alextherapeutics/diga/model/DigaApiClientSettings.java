@@ -32,20 +32,25 @@ public class DigaApiClientSettings {
    * https://kkv.gkv-diga.de/
    */
   @NonNull private final InputStream healthInsuranceMappingFile;
+
   /**
    * The contents of the keystore file (PKCS12, .p12 extension) containing the sender company's
    * private key for signing requests and for decrypting responses
    */
   @NonNull private final InputStream privateKeyStoreFile;
+
   /**
    * The contents of a keystore file (PKCS12, .p12 extension) containing all health insurance
    * companies certificates for encrypting requests
    */
   @NonNull private final InputStream healthInsurancePublicKeyStoreFile;
+
   /** Password to the private key store file */
   @NonNull private final String privateKeyStorePassword;
+
   /** Alias of the private key in the private key store file */
   @NonNull private final String privateKeyAlias;
+
   /** Password to the health insurance companies key store file */
   @NonNull private final String healthInsurancePublicKeyStorePassword;
 }

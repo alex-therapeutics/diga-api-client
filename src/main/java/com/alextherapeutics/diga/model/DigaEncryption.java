@@ -35,8 +35,10 @@ import lombok.extern.slf4j.Slf4j;
 public class DigaEncryption {
   /** The encrypting subscriber */
   @NonNull private final Subscriber subscriber;
+
   /** The input to encrypt */
   @NonNull private final byte[] encryptionTarget;
+
   /** The alias of the key in the public key directory */
   @NonNull private final String recipientAlias;
 

@@ -28,10 +28,13 @@ import lombok.experimental.SuperBuilder;
 public abstract class AbstractDigaInsuranceInformation {
   /** The IK number of the insurance company that generated this code. */
   @NonNull private final String insuranceCompanyIKNumber;
+
   /** The clearing centers IK number of the insurance that generated this code. */
   @NonNull private final String clearingCenterIKNumber;
+
   /** The name of the insurance company that generated this code. */
   @NonNull private final String insuranceCompanyName;
+
   /** The API endpoint of the insurance company that generated this code. */
   @NonNull private final String endpoint;
 }
