@@ -31,6 +31,7 @@ public class DigaInvoice {
    * The ID of the invoice. You set this to something unique which fits with your billing system.
    */
   @NonNull private final String invoiceId;
+
   /** The invoice issue date. Defaults to now() */
   @Builder.Default private final Date issueDate = new Date();
 

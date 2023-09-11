@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DigaDecryption {
   /** The decrypting subscriber */
   @NonNull private final Subscriber subscriber;
+
   /** The body to decrypt */
   @NonNull private final byte[] decryptionTarget;
 
