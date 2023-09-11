@@ -10,15 +10,14 @@ The DiGA API is currently in an early stage and lacks documentation - especially
 We hope that creating an open source project will be a way for DiGA manufacturers to work together and share our experiences to maintain a stable DiGA API integration.
 [Contributions](CONTRIBUTING.md) are very welcome!
 
-Currently, the DiGA API endpoints seem to differ from eachother in some respects, so it will take an effort to create a stable integration against all of them.
+Often, the DiGA API endpoints seem to differ from eachother in some respect, so it is a continuous effort to create a stable integration against all of them.
 If you discover a case which has not been considered yet in this library, please open an [Issue](https://github.com/alex-therapeutics/diga-api-client/issues/new) here on GitHub -  and perhaps also consider [contributing](CONTRIBUTING.md) with a Pull Request to handle it! :)
 
 Also, if you have information on how to solve existing issues but don't want to get involved with actual coding, please don't hesitate to comment on the issue anyway, to make it easier for someone else to solve! 
 All contributions are welcome, we do not expect you to commit code if you do not want to.
 
 ## Project Status
-The first version of the project has been released. Currently, the DiGA code validation works against 98/104 health insurance companies and invoicing works against 99/104 companies. However, there are still issues with a few endpoints. You can track this further [here](ENDPOINT_STATUS.md) and there is also an issue for each non-working endpoint.
-For insurance companies which do not support API invoicing (5/104) the library will return a response which indicates what to do next (invoice via email or post).
+The first version (versions `1.x.x`) of the project is stable and working against all current insurance endpoints. There is an update scheduled for the insurance endpoints on 10/1-2023. The plan is to support this in the next major version of this library, `2.x.x`. While we are working on this, we will release beta versions under `2.0.0-beta.x`. It will be moved to a stable version once it is working against all endpoints. Contributions are welcome!
 
 ## Get Started
 
@@ -43,7 +42,7 @@ Import it using Maven in your `pom.xml`:
 <dependency>
     <groupId>com.alextherapeutics</groupId>
     <artifactId>diga-api-client</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.6</version>
 </dependency>
 ```
 It is also uploaded to Github packages if you wish to use that
