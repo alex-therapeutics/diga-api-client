@@ -33,21 +33,28 @@ public class DigaBillingInformation extends AbstractDigaInsuranceInformation {
    * https://github.com/alex-therapeutics/diga-api-client/issues/12#issuecomment-796721204
    */
   public static final String INFORMATION_MISSING = "Information Missing";
+
   /**
    * The IK for billing, to the creditor of the company being billed. This is sometimes not the same
    * as the company IK.
    */
   @NonNull private final String buyerCompanyCreditorIk;
+
   /** How the company accepts invoices */
   @NonNull private final DigaInvoiceMethod buyerInvoicingMethod;
+
   /** The postal code of the company being billed. */
   private final String buyerCompanyPostalCode;
+
   /** The address line of the company being billed. F.e "Teststreet 1" */
   private final String buyerCompanyAddressLine;
+
   /** The name of the company being billed. */
   private final String buyerCompanyCity;
+
   /** The country code of the company being billed. */
   @Builder.Default private final String buyerCompanyCountryCode = "DE";
+
   /**
    * The company's invoice email This can be null as it only affects companies which have {@link
    * DigaInvoiceMethod#EMAIL}

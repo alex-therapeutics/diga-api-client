@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2020 rel. 2 (x64) (http://www.altova.com) von Alexandra Dieste (GKV Spitzenverband) bearbeitet -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/3.0" xmlns:bas="http://www.gkv-datenaustausch.de/XMLSchema/EDFC0-basis/3.0" xmlns:GI4X-basis="GI4X:/xml-schema/GI4X-basis/2.0" targetNamespace="http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/3.0" elementFormDefault="qualified" attributeFormDefault="unqualified" version="3.0.0">
+    <xs:import namespace="http://www.gkv-datenaustausch.de/XMLSchema/EDFC0-basis/3.0" schemaLocation="EDFC0-basis_3.0.0.xsd"/>
+    <xs:import namespace="GI4X:/xml-schema/GI4X-basis/2.0" schemaLocation="GI4X-basis-2.0.0.xsd"/>
+    <!-- elements -->
+    <xs:element name="Pruefung_Freischaltcode">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="Anfrage">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="IK_DiGA_Hersteller" type="GI4X-basis:IK_Stp">
+                                <xs:annotation>
+                                    <xs:documentation>IK des DiGA Herstellers</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="IK_Krankenkasse" type="GI4X-basis:IK_Stp">
+                                <xs:annotation>
+                                    <xs:documentation>IK der Krankenkasse</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="DiGAID" type="bas:DiGA_ID_Stp">
+                                <xs:annotation>
+                                    <xs:documentation>Eindeutige DiGa-ID gemäß Verzeichnis nach §139e SGB V</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="Freischaltcode" type="bas:Base32_16__Stp">
+                                <xs:annotation>
+                                    <xs:documentation>Freischaltcode gemäß Richtlinie nach §302 Abs. 2 SGB V für DiGA</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Antwort">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="IK_DiGA_Hersteller" type="GI4X-basis:IK_Stp">
+                                <xs:annotation>
+                                    <xs:documentation>IK des DiGA Herstellers</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="IK_Krankenkasse" type="GI4X-basis:IK_Stp">
+                                <xs:annotation>
+                                    <xs:documentation>IK der Krankenkasse</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="DiGAVEID" type="bas:DiGA_VE_ID_Stp">
+                                <xs:annotation>
+                                    <xs:documentation>Eindeutige DiGa-VE-ID gemäß Verzeichnis nach §139e SGB V</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="Freischaltcode" type="bas:Base32_16__Stp">
+                                <xs:annotation>
+                                    <xs:documentation>Freischaltcode gemäß Richtlinie nach §302 Abs. 2 SGB V für DiGA</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="Tag_der_Leistungserbringung" type="GI4X-basis:Datum_Stp">
+                                <xs:annotation>
+                                    <xs:documentation>Tag der Leistungserbringung im Format: jjjj-mm-tt</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Fehlerinformation" maxOccurs="99">
+                    <xs:annotation>
+                        <xs:documentation>Enthält die Fehlernummer und ggf. einen Fehlertext und/oder einen XPath-Ausdruck</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Fehlernummer" type="bas:Fehlercode_Stp">
+                                <xs:annotation>
+                                    <xs:documentation>Fehlernummer gemäß Schlüsselverzeichnis Anhang 5 der Richtlinie nach §302 Abs. 2 SGB V DiGA</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="Fehlertext" type="bas:Fehlertext_Stp" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Fehlertext gemäß Schlüsselverzeichnis Anhang 5 der Richtlinie nach §302 Abs. 2 SGB V DiGA</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="XPath" type="bas:Fehlertext_Stp" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>ggf. XPath-Ausdruck der das fehlerhafte Element identifiziert</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:choice>
+            <xs:attribute name="version" type="bas:Version_Stp" use="required" fixed="003.000.000">
+                <xs:annotation>
+                    <xs:documentation>Gibt die Version an</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="gueltigab" type="GI4X-basis:Datum_Stp" use="required" fixed="2022-08-25">
+                <xs:annotation>
+                    <xs:documentation>Gibt das Datum an, ab wann die Version gültig ist</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attributeGroup ref="bas:header"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

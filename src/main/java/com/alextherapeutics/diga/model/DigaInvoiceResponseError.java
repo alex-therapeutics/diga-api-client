@@ -27,10 +27,12 @@ import lombok.ToString;
 @Getter
 @ToString
 public class DigaInvoiceResponseError implements DigaApiResponseError {
-  /** The ID of the validation step that errored */
+  /** The ID of the validation step that errored. May be null if no scenario was matched. */
   private final String validationStepId;
+
   /** The messages received for the error in the report */
   private final String messages;
+
   /**
    * The "Resource" that was not valid. This will give information on which schema/schematron/xsl
    * was used for validating this error.

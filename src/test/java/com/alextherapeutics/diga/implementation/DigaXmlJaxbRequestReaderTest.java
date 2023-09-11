@@ -18,11 +18,18 @@
 
 package com.alextherapeutics.diga.implementation;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.alextherapeutics.diga.DigaXmlReaderException;
+import com.alextherapeutics.diga.model.generatedxml.billingreport.Report;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,8 +37,8 @@ import org.junit.jupiter.api.Test;
 class DigaXmlJaxbRequestReaderTest {
   private static final String sampleCodeValidationAnswer =
       "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
-          + "<Pruefung_Freischaltcode xmlns=\"http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/2.0.0\"\n"
-          + "                         version=\"002.000.000\" gueltigab=\"2020-07-01\" verfahrenskennung=\"TDFC0\" nachrichtentyp=\"ANT\"\n"
+          + "<Pruefung_Freischaltcode xmlns=\"http://www.gkv-datenaustausch.de/XML-Schema/EDFC0_Pruefung/3.0\"\n"
+          + "                         version=\"003.000.000\" gueltigab=\"2022-08-25\" verfahrenskennung=\"TDFC0\" nachrichtentyp=\"ANT\"\n"
           + "                         absender=\"987654321\" empfaenger=\"123456789\">\n"
           + "    <Antwort>\n"
           + "        <IK_DiGA_Hersteller>123456789</IK_DiGA_Hersteller>\n"
@@ -303,5 +310,51 @@ class DigaXmlJaxbRequestReaderTest {
         reader.readCodeValidationResponse(
             new ByteArrayInputStream(sampleCodeValidationAnswer.getBytes(StandardCharsets.UTF_8)));
     Assertions.assertNotNull(response);
+  }
+
+  @Test
+  void testCanHandleNoScenarioMatchedReport()
+      throws NoSuchFieldException, IllegalAccessException, JAXBException, DigaXmlReaderException {
+    var unMarshallerMock = mock(Unmarshaller.class);
+    // some ugly reflection here due to JAXB instantiation structure, mocking is complicated
+    var unmarshallerField = reader.getClass().getDeclaredField("billingReportUnmarshaller");
+    unmarshallerField.setAccessible(true);
+    unmarshallerField.set(reader, unMarshallerMock);
+
+    var report = new Report();
+    report.setValid(false);
+    report.setScenarioMatched(null);
+    var noScenarioMatched = new Report.NoScenarioMatched();
+    report.setNoScenarioMatched(noScenarioMatched);
+
+    when(unMarshallerMock.unmarshal(any(ByteArrayInputStream.class))).thenReturn(report);
+
+    var result = reader.readBillingReport(new ByteArrayInputStream("".getBytes()));
+    assertTrue(result.isHasError());
+    var errors = result.getErrors();
+    assertEquals(1, errors.size());
+    assertNotNull(errors.get(0).asInvoiceResponseError().getMessages());
+    assertFalse(errors.get(0).asInvoiceResponseError().getMessages().isEmpty());
+  }
+
+  @Test
+  void testCanHandleNullValuesInReport()
+      throws NoSuchFieldException, IllegalAccessException, JAXBException, DigaXmlReaderException {
+    var unMarshallerMock = mock(Unmarshaller.class);
+    // some ugly reflection here due to JAXB instantiation structure, mocking is complicated
+    var unmarshallerField = reader.getClass().getDeclaredField("billingReportUnmarshaller");
+    unmarshallerField.setAccessible(true);
+    unmarshallerField.set(reader, unMarshallerMock);
+
+    var report = new Report();
+    report.setValid(false);
+    when(unMarshallerMock.unmarshal(any(ByteArrayInputStream.class))).thenReturn(report);
+
+    var result = reader.readBillingReport(new ByteArrayInputStream("".getBytes()));
+    assertTrue(result.isHasError());
+    var errors = result.getErrors();
+    assertEquals(1, errors.size());
+    assertNotNull(errors.get(0).asInvoiceResponseError().getMessages());
+    assertFalse(errors.get(0).asInvoiceResponseError().getMessages().isEmpty());
   }
 }

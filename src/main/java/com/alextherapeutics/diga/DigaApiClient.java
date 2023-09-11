@@ -269,7 +269,9 @@ public final class DigaApiClient {
 
   private DigaInvoiceResponse performDigaInvoicingAgainstApi(
       DigaBillingInformation billingInformation, byte[] xmlInvoice, DigaProcessCode processCode)
-      throws DigaEncryptionException, DigaHttpClientException, DigaDecryptionException,
+      throws DigaEncryptionException,
+          DigaHttpClientException,
+          DigaDecryptionException,
           DigaXmlReaderException {
     var encryptionAttempt =
         encryptionFactory

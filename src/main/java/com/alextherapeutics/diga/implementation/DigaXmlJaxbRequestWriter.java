@@ -148,7 +148,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     var exchangedDocumentContext = billingObjectFactory.createExchangedDocumentContextType();
     var guideline = billingObjectFactory.createDocumentContextParameterType();
     var guidelineId =
-        createIdType("urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.0");
+        createIdType(
+            "urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_2.2#conformant#urn:xoev-de:kosit:extension:xrechnung_2.2");
     guideline.setID(guidelineId);
     exchangedDocumentContext.getGuidelineSpecifiedDocumentContextParameter().add(guideline);
     return exchangedDocumentContext;
@@ -199,9 +200,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     // in this case theres always 1, so put "1"
 
     var tradeProduct = billingObjectFactory.createTradeProductType();
-    tradeProduct.setGlobalID(createIdType(digaInvoice.getDigavEid(), "DiGAVEID"));
-    tradeProduct.setBuyerAssignedID(
-        createIdType(digaInvoice.getValidatedDigaCode(), "Freischaltcode"));
+    tradeProduct.setGlobalID(createIdType(digaInvoice.getDigavEid(), "XR01"));
+    tradeProduct.setBuyerAssignedID(createIdType(digaInvoice.getValidatedDigaCode(), "XR02"));
     tradeProduct.getName().add(createTextType(digaInformation.getDigaName()));
     tradeProduct.setDescription(
         createTextType(
@@ -307,7 +307,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
       legal.setID(
           createIdType(
               DigaUtils.ikNumberWithoutPrefix(billingInformation.getInsuranceCompanyIKNumber()),
-              "IK"));
+              "XR03"));
       legal.setTradingBusinessName(
           createTextType(billingInformation.getInsuranceCompanyName().trim()));
       buyer.setSpecifiedLegalOrganization(legal);
@@ -347,8 +347,8 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
         billingObjectFactory.createTradeSettlementPaymentMeansType();
     var paymentMeansCodeType = billingObjectFactory.createPaymentMeansCodeType();
     paymentMeansCodeType.setValue(
-        "30"); // a code from https://unece.org/fileadmin/DAM/trade/untdid/d16b/tred/tred4461.htm
-    // 30 means "Credit transfer: payment by credit movement of funds from one account to another
+        "57"); // a code from https://unece.org/fileadmin/DAM/trade/untdid/d16b/tred/tred4461.htm
+    // 57 means "Standing agreement"
     specifiedTradeSettlementPaymentMeans.setTypeCode(paymentMeansCodeType);
 
     var settlementApplicableTradeTax = billingObjectFactory.createTradeTaxType();
@@ -384,12 +384,15 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     specifiedTradeSettlementHeaderMonetarySummation
         .getDuePayableAmount()
         .add(createAmountType(grandTotal));
-
-    applicableHeaderTradeSettlement.setCreditorReferenceID(
-        createIdType(
-            digaInformation.getManufacturingCompanyIk(),
-            "IK")); // creditor - this needs to be the IK of the entity that sends the invoice
-
+    applicableHeaderTradeSettlement.setPayeeTradeParty(
+        createTradeParty(
+            DigaTradeParty.builder()
+                .companyId(
+                    DigaUtils.ikNumberWithPrefix(digaInformation.getManufacturingCompanyIk()))
+                .companyIk(digaInformation.getManufacturingCompanyIk())
+                .companyName(digaInformation.getManufacturingCompanyName())
+                .build())); // creditor - this needs to be the IK of the entity that sends the
+    // invoice
     applicableHeaderTradeSettlement.setInvoiceCurrencyCode(
         createCurrencyCodeType(digaInvoice.getInvoiceCurrencyCode()));
     applicableHeaderTradeSettlement
@@ -423,8 +426,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
 
   private TradePartyType createTradeParty(DigaTradeParty partyInformation) {
     var tradeParty = billingObjectFactory.createTradePartyType();
-    tradeParty.getID().add(createIdType(partyInformation.getCompanyId()));
-    tradeParty.getID().add(createIdType(partyInformation.getCompanyIk(), "IK"));
+    tradeParty.getID().add(createIdType(partyInformation.getCompanyIk(), "XR03"));
     tradeParty.setName(createTextType(partyInformation.getCompanyName()));
 
     if (partyInformation.getPostalAddress() != null) {
