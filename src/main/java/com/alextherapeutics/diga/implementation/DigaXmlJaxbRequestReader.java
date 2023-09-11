@@ -152,18 +152,43 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
   }
 
   private List<DigaApiResponseError> getInvoiceErrors(Report report) {
-    return report.isValid()
-        ? Collections.emptyList()
-        : report.getScenarioMatched().getValidationStepResult().stream()
-            .filter(Predicate.not(ValidationStepResultType::isValid))
-            .map(
-                validationStepResult ->
-                    DigaInvoiceResponseError.builder()
-                        .validationStepId(validationStepResult.getId())
-                        .resources(createResourceInfoFromError(validationStepResult.getResource()))
-                        .messages(createMessagesFromError(validationStepResult.getMessage()))
-                        .build())
-            .collect(Collectors.toList());
+    return report.isValid() ? Collections.emptyList() : buildErrorResponsesFromReport(report);
+  }
+
+  private List<DigaApiResponseError> buildErrorResponsesFromReport(Report report) {
+    if (report.getScenarioMatched() == null && report.getNoScenarioMatched() == null) {
+      return List.of(
+          DigaInvoiceResponseError.builder()
+              .validationStepId(null)
+              .messages(
+                  "Validator "
+                      + getEngineNameFromReport(report)
+                      + " returned neither scenarioMatched or noScenarioMatched for the invoice.")
+              .build());
+    }
+    if (report.getScenarioMatched() == null) {
+      return List.of(
+          DigaInvoiceResponseError.builder()
+              .messages(
+                  "Validator "
+                      + getEngineNameFromReport(report)
+                      + " returned 'noScenarioMatched' for the invoice.")
+              .build());
+    }
+    return report.getScenarioMatched().getValidationStepResult().stream()
+        .filter(Predicate.not(ValidationStepResultType::isValid))
+        .map(
+            validationStepResult ->
+                DigaInvoiceResponseError.builder()
+                    .validationStepId(validationStepResult.getId())
+                    .resources(createResourceInfoFromError(validationStepResult.getResource()))
+                    .messages(createMessagesFromError(validationStepResult.getMessage()))
+                    .build())
+        .collect(Collectors.toList());
+  }
+
+  private String getEngineNameFromReport(Report report) {
+    return report.getEngine() == null ? "null" : report.getEngine().getName();
   }
 
   private String createMessagesFromError(List<MessageType> messages) {
