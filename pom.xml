@@ -43,8 +43,8 @@
     </developers>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <delombok.output>${project.build.directory}/javadoc-delombok</delombok.output>
         <javadoc.generated-sources-path>${project.build.directory}/generated/src/main/java</javadoc.generated-sources-path>

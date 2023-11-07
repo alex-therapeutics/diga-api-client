@@ -34,7 +34,7 @@ Please see the [docs](docs/diga_api.md#Requesting-an-IK-number) folder for more 
   get a single keystore which you can use as both the private key store file and public health insurance public key store file (see Usage).
 * The XML mapping file for the health insurance companies which contains information on endpoints, IK numbers, code prefixes, etc.
   [This page](https://kkv.gkv-diga.de/) should provide an up-to-date file. __Important!__ read [here](https://github.com/alex-therapeutics/diga-api-client/wiki/Modifying-the-insurance-company-mapping-file-(Krankenkassenverzeichnis_DiGA.xml)) for the modifications you have to make to this file.
-* Java 11 or higher. Do you need Java 8? Submit an issue and tell us! There is still room to make such changes.
+* Java 17 or higher.
 
 ### Installation
 Import it using Maven in your `pom.xml`:
