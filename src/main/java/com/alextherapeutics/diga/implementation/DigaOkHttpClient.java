@@ -110,7 +110,8 @@ public class DigaOkHttpClient implements DigaHttpClient {
                 "anfrage.cms",
                 RequestBody.create(
                     digaApiHttpRequest.getEncryptedContent(),
-                    MediaType.parse("application/octet-stream"))).build();
+                    MediaType.parse("application/octet-stream")))
+           .build();
     return new Request.Builder().url(digaApiHttpRequest.getUrl()).post(body).build();
   }
 
