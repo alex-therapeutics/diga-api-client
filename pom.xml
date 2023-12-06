@@ -173,6 +173,9 @@
                     <java>
                         <googleJavaFormat />
                         <removeUnusedImports />
+                        <excludes>
+                            <exclude>**/target/generated/**</exclude>
+                        </excludes>
                     </java>
                 </configuration>
                 <executions>
