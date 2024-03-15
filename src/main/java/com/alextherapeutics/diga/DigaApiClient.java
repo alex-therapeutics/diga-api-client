@@ -127,6 +127,48 @@ public final class DigaApiClient {
     return performDigaInvoicing(invoice, billingInformation, DigaProcessCode.BILLING);
   }
 
+  public DigaInvoiceResponse digaInvoiceCorrection(DigaCorrectionInvoice invoice)
+      throws DigaCodeValidationException, DigaXmlWriterException {
+
+    var billingInformation = codeParser.parseCodeForBilling(invoice.getValidatedDigaCode());
+    return performDigaInvoiceCorrection(invoice, billingInformation, DigaProcessCode.BILLING);
+  }
+
+  public DigaInvoiceResponse digaTestInvoiceCorrection(
+      DigaCorrectionInvoice invoice, String insuranceCompanyPrefix) throws DigaXmlWriterException {
+
+    var healthInsuranceInformation =
+        healthInsuranceDirectory.getInformation(insuranceCompanyPrefix);
+    var billingInformation =
+        DigaBillingInformation.builder()
+            .endpoint(healthInsuranceInformation.getEndpunktKommunikationsstelle())
+            .insuranceCompanyIKNumber(healthInsuranceInformation.getKostentraegerkennung())
+            .clearingCenterIKNumber(healthInsuranceInformation.getIKAbrechnungsstelle())
+            .buyerCompanyCreditorIk(healthInsuranceInformation.getIKDesRechnungsempfaengers())
+            .insuranceCompanyName(healthInsuranceInformation.getNameDesKostentraegers())
+            .buyerCompanyPostalCode(
+                healthInsuranceInformation.getPLZ() != null
+                    ? healthInsuranceInformation.getPLZ()
+                    : DigaBillingInformation.INFORMATION_MISSING)
+            .buyerCompanyAddressLine(
+                healthInsuranceInformation.getStrassePostfach() != null
+                    ? healthInsuranceInformation.getStrassePostfach()
+                        + " "
+                        + healthInsuranceInformation.getHausnummerPostfachnummer()
+                    : DigaBillingInformation.INFORMATION_MISSING)
+            .buyerCompanyCity(
+                healthInsuranceInformation.getOrt() != null
+                    ? healthInsuranceInformation.getOrt()
+                    : DigaBillingInformation.INFORMATION_MISSING)
+            .buyerInvoicingMethod(
+                DigaInvoiceMethod.fromIdentifier(
+                    healthInsuranceInformation.getVersandart().intValue()))
+            .buyerInvoicingEmail(healthInsuranceInformation.getEMailKostentraeger())
+            .build();
+
+    return performDigaInvoiceCorrection(invoice, billingInformation, DigaProcessCode.BILLING_TEST);
+  }
+
   /**
    * Send a test request to the endpoint of the company of the provided company prefix
    *
@@ -260,6 +302,30 @@ public final class DigaApiClient {
         | DigaXmlReaderException e) {
       log.error(
           "Failed to invoice DiGA API for invoice id {}, code {}",
+          invoice.getInvoiceId(),
+          invoice.getValidatedDigaCode(),
+          e);
+      return buildInvoiceResponseFromException(xmlInvoice, e, billingInformation);
+    }
+  }
+
+  private DigaInvoiceResponse performDigaInvoiceCorrection(
+      DigaCorrectionInvoice invoice,
+      DigaBillingInformation billingInformation,
+      DigaProcessCode processCode)
+      throws DigaXmlWriterException {
+    var xmlInvoice = xmlRequestWriter.createInvoiceCorrectionRequest(invoice, billingInformation);
+    if (!billingInformation.getBuyerInvoicingMethod().equals(DigaInvoiceMethod.API)) {
+      return buildManualInvoicingResponse(billingInformation, xmlInvoice);
+    }
+    try {
+      return performDigaInvoicingAgainstApi(billingInformation, xmlInvoice, processCode);
+    } catch (DigaHttpClientException
+        | DigaDecryptionException
+        | DigaEncryptionException
+        | DigaXmlReaderException e) {
+      log.error(
+          "Failed to correct an invoice DiGA API for new invoice id {}, code {}",
           invoice.getInvoiceId(),
           invoice.getValidatedDigaCode(),
           e);
