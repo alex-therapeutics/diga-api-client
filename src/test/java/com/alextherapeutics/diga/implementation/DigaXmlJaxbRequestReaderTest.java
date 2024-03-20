@@ -25,11 +25,11 @@ import static org.mockito.Mockito.when;
 
 import com.alextherapeutics.diga.DigaXmlReaderException;
 import com.alextherapeutics.diga.model.generatedxml.billingreport.Report;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
