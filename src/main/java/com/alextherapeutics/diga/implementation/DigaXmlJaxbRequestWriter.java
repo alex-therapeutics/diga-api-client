@@ -214,7 +214,7 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     if (digaCorrectionInvoice.getCorrectionCodeReason() != null
         && digaCorrectionInvoice.getCorrectionCodeReason().length > 0) {
       correctionCode += ":";
-      correctionCode += String.join("+", digaCorrectionInvoice.getCorrectionCodeReason());
+      correctionCode += String.join("+", digaCorrectionInvoice.getCorrectionCode());
     }
     textType.setValue(correctionCode);
     var noteType = billingObjectFactory.createNoteType();

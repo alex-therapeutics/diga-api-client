@@ -18,43 +18,19 @@
 
 package com.alextherapeutics.diga.model;
 
-import java.util.Date;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
 /** A DiGA correction invoice request */
-@Builder
+@SuperBuilder
 @Getter
-public class DigaCorrectionInvoice {
-  /**
-   * The ID of the corrected invoice. You set this to something unique which fits with your billing
-   * system.
-   */
-  @NonNull private final String invoiceId;
-
+public class DigaCorrectionInvoice extends DigaInvoice {
   /**
    * The ID of the reference invoice. You set this to the original invoice id to reference it in
    * your billing system.
    */
   private final String referenceInvoiceId;
-
-  /** The invoice issue date. Defaults to now() */
-  @Builder.Default private final Date issueDate = new Date();
-
-  /** The DiGA code you are charging for. */
-  @NonNull private final String validatedDigaCode;
-
-  /** Date of service provision "Tag der Leistungserbringung" */
-  @NonNull private final Date dateOfServiceProvision;
-
-  /**
-   * The DiGAVEid that was validated by this code. You will find this in the response to the code
-   * validation request at {@link DigaCodeValidationResponse#getValidatedDigaveid()}
-   */
-  @NonNull private final String digavEid;
-
-  @Builder.Default private final String invoiceCurrencyCode = "EUR";
 
   @NonNull private final String correctionCode;
 

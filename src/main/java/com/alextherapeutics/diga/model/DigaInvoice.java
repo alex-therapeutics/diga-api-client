@@ -22,9 +22,10 @@ import java.util.Date;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
 /** A DiGA invoice request */
-@Builder
+@SuperBuilder
 @Getter
 public class DigaInvoice {
   /**
