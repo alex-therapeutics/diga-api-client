@@ -74,7 +74,7 @@
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -140,10 +140,6 @@
                             <goal>xsdtojava</goal>
                         </goals>
                         <configuration>
-                            <extensions>
-                                <extension>org.jvnet.jaxb2_commons:jaxb2-value-constructor:3.0</extension>
-                                <extension>org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1</extension>
-                            </extensions>
                             <xsdOptions>
                                 <xsdOption>
                                     <xsdDir>${basedir}/src/main/resources/code-xsd/</xsdDir>
@@ -167,7 +163,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>2.22.2</version>
             </plugin>
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
