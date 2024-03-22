@@ -153,9 +153,9 @@ public final class DigaApiClient {
   }
 
   /**
-   * Send a test invoice correction to the specified insurance company. Note that currently the DiGA APIs do
-   * not seem to respond with 'valid' to test requests, even using valid test codes. If you are
-   * successful, you will receive a response which validated all the XML schemas, but it has an
+   * Send a test invoice correction to the specified insurance company. Note that currently the DiGA
+   * APIs do not seem to respond with 'valid' to test requests, even using valid test codes. If you
+   * are successful, you will receive a response which validated all the XML schemas, but it has an
    * error like "could not find the code".
    *
    * @param invoice - the corrected invoice to send
@@ -293,10 +293,9 @@ public final class DigaApiClient {
       DigaInvoice invoice, DigaBillingInformation billingInformation, DigaProcessCode processCode)
       throws DigaXmlWriterException {
     var xmlInvoice =
-            invoice instanceof DigaCorrectionInvoice correctionInvoice
-                    ? xmlRequestWriter.createInvoiceCorrectionRequest(
-                    correctionInvoice, billingInformation)
-                    : xmlRequestWriter.createBillingRequest(invoice, billingInformation);
+        invoice instanceof DigaCorrectionInvoice correctionInvoice
+            ? xmlRequestWriter.createInvoiceCorrectionRequest(correctionInvoice, billingInformation)
+            : xmlRequestWriter.createBillingRequest(invoice, billingInformation);
     if (!billingInformation.getBuyerInvoicingMethod().equals(DigaInvoiceMethod.API)) {
       return buildManualInvoicingResponse(billingInformation, xmlInvoice);
     }
