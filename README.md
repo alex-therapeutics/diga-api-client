@@ -17,7 +17,8 @@ Also, if you have information on how to solve existing issues but don't want to 
 All contributions are welcome, we do not expect you to commit code if you do not want to.
 
 ## Project Status
-The first version (versions `1.x.x`) of the project is stable and working against all current insurance endpoints. There is an update scheduled for the insurance endpoints on 10/1-2023. The plan is to support this in the next major version of this library, `2.x.x`. While we are working on this, we will release beta versions under `2.0.0-beta.x`. It will be moved to a stable version once it is working against all endpoints. Contributions are welcome!
+
+Currently, the client is stable and working against all insurance endpoints!
 
 ## Get Started
 
@@ -42,7 +43,7 @@ Import it using Maven in your `pom.xml`:
 <dependency>
     <groupId>com.alextherapeutics</groupId>
     <artifactId>diga-api-client</artifactId>
-    <version>1.2.6</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 It is also uploaded to Github packages if you wish to use that
