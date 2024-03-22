@@ -129,6 +129,28 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     }
   }
 
+  @Override
+  public byte[] createInvoiceCorrectionRequest(
+      DigaCorrectionInvoice digaCorrectionInvoice, DigaBillingInformation billingInformation)
+      throws DigaXmlWriterException {
+    try {
+
+      var invoice = billingObjectFactory.createCrossIndustryInvoiceType();
+      invoice.setExchangedDocumentContext(createExchangedDocumentContext());
+      invoice.setExchangedDocument(createInvoiceCorrectionExchangedDocument(digaCorrectionInvoice));
+      invoice.setSupplyChainTradeTransaction(
+          createInvoiceCorrectionSupplyChainTradeTransaction(
+              digaCorrectionInvoice, billingInformation));
+      var root = billingObjectFactory.createCrossIndustryInvoice(invoice);
+      try (var res = new ByteArrayOutputStream()) {
+        billingMarshaller.marshal(root, res);
+        return res.toByteArray();
+      }
+    } catch (JAXBException | IOException e) {
+      throw new DigaXmlWriterException(e);
+    }
+  }
+
   private void init() throws JAXBException {
     datatypeFactory = DatatypeFactory.newDefaultInstance();
 
@@ -173,6 +195,36 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     return exchangedDocument;
   }
 
+  // metadata for the document
+  private ExchangedDocumentType createInvoiceCorrectionExchangedDocument(
+      DigaCorrectionInvoice digaCorrectionInvoice) {
+    // ExchangedDocument
+    var exchangedDocument = billingObjectFactory.createExchangedDocumentType();
+    exchangedDocument.setID(
+        createIdType(
+            digaCorrectionInvoice
+                .getInvoiceId())); // pretty sure this is an invoice id/number, so we set it
+    // ourselves but must be unique
+    var typeCode = billingObjectFactory.createDocumentCodeType();
+    typeCode.setValue("384"); // should always be 384 here, means "invoice correction"
+    exchangedDocument.setTypeCode(typeCode);
+
+    var textType = billingObjectFactory.createTextType();
+    var correctionCode = digaCorrectionInvoice.getCorrectionCode();
+    if (digaCorrectionInvoice.getCorrectionCodeReason() != null
+        && digaCorrectionInvoice.getCorrectionCodeReason().length > 0) {
+      correctionCode += ":";
+      correctionCode += String.join("+", digaCorrectionInvoice.getCorrectionCode());
+    }
+    textType.setValue(correctionCode);
+    var noteType = billingObjectFactory.createNoteType();
+    noteType.getContent().add(textType);
+    exchangedDocument.getIncludedNote().add(noteType);
+
+    exchangedDocument.setIssueDateTime(createDateTime(digaCorrectionInvoice.getIssueDate()));
+    return exchangedDocument;
+  }
+
   // the data of the actual transaction being invoiced
   private SupplyChainTradeTransactionType createSupplyChainTradeTransaction(
       DigaInvoice digaInvoice, DigaBillingInformation billingInformation) {
@@ -185,6 +237,38 @@ public class DigaXmlJaxbRequestWriter implements DigaXmlRequestWriter {
     transaction.setApplicableHeaderTradeDelivery(createApplicableHeaderTradeDelivery(digaInvoice));
     transaction.setApplicableHeaderTradeSettlement(
         createApplicableHeaderTradeSettlement(digaInvoice));
+    return transaction;
+  }
+
+  // the data of the actual transaction being invoiced
+  private SupplyChainTradeTransactionType createInvoiceCorrectionSupplyChainTradeTransaction(
+      DigaCorrectionInvoice digaCorrectionInvoice, DigaBillingInformation billingInformation) {
+    var transaction = billingObjectFactory.createSupplyChainTradeTransactionType();
+    var invoice =
+        DigaInvoice.builder()
+            .invoiceId(digaCorrectionInvoice.getInvoiceId())
+            .validatedDigaCode(digaCorrectionInvoice.getValidatedDigaCode())
+            .digavEid(digaCorrectionInvoice.getDigavEid())
+            .dateOfServiceProvision(digaCorrectionInvoice.getDateOfServiceProvision())
+            .issueDate(digaCorrectionInvoice.getIssueDate())
+            .invoiceCurrencyCode(digaCorrectionInvoice.getInvoiceCurrencyCode())
+            .build();
+    transaction
+        .getIncludedSupplyChainTradeLineItem()
+        .add(createIncludedSupplyChainTradeItem(invoice));
+    transaction.setApplicableHeaderTradeAgreement(
+        createApplicableHeaderTradeAgreement(invoice, billingInformation));
+    transaction.setApplicableHeaderTradeDelivery(createApplicableHeaderTradeDelivery(invoice));
+
+    var applicableHeaderTradeSettlement = createApplicableHeaderTradeSettlement(invoice);
+    if (digaCorrectionInvoice.getReferenceInvoiceId() != null) {
+      var invoiceReferencedDocument = billingObjectFactory.createReferencedDocumentType();
+      invoiceReferencedDocument.setIssuerAssignedID(
+          createIdType(digaCorrectionInvoice.getReferenceInvoiceId()));
+      applicableHeaderTradeSettlement.setInvoiceReferencedDocument(invoiceReferencedDocument);
+    }
+    transaction.setApplicableHeaderTradeSettlement(applicableHeaderTradeSettlement);
+
     return transaction;
   }
 
