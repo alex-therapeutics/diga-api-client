@@ -21,10 +21,10 @@ package com.alextherapeutics.diga;
 import com.alextherapeutics.diga.implementation.*;
 import com.alextherapeutics.diga.model.*;
 import de.tk.opensource.secon.SeconException;
+import jakarta.xml.bind.JAXBException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Collections;
-import javax.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
@@ -125,6 +125,50 @@ public final class DigaApiClient {
       throws DigaCodeValidationException, DigaXmlWriterException {
     var billingInformation = codeParser.parseCodeForBilling(invoice.getValidatedDigaCode());
     return performDigaInvoicing(invoice, billingInformation, DigaProcessCode.BILLING);
+  }
+
+  /**
+   * Send an Invoice correction for a DiGA prescription.
+   *
+   * @param invoice - individual corrected invoice details
+   * @return An object containing details on the response to the invoice request, the generated
+   *     invoice itself, as well as request details such as which insurance company was sent to,
+   *     which endpoint, IK, etc. This response may contain errors, in which case there are error
+   *     messages in the object.
+   *     <p>You can check that the invoice request succeeded by checking if (response.hasError())
+   *     {}. If hasError is false, the invoice was successful.
+   *     <p>You should check {@link DigaInvoiceResponse#isRequiresManualAction()} to see whether the
+   *     invoice needs to be handled manually, in the cases when the target insurance company does
+   *     not support sending invoices via the API.
+   *     <p>The contents of the Invoice itself is located in {@link
+   *     DigaInvoiceResponse#getGeneratedInvoice()}, you can fetch that and use it for accounting
+   *     needs both when invoicing was successful and when it was not.
+   * @throws DigaCodeValidationException if given an invalid DiGA code
+   * @throws DigaXmlWriterException if we fail to create the XML request body (the XRechnung
+   *     invoice)
+   */
+  public DigaInvoiceResponse digaInvoiceCorrection(DigaCorrectionInvoice invoice)
+      throws DigaCodeValidationException, DigaXmlWriterException {
+    return this.invoiceDiga(invoice);
+  }
+
+  /**
+   * Send a test invoice correction to the specified insurance company. Note that currently the DiGA
+   * APIs do not seem to respond with 'valid' to test requests, even using valid test codes. If you
+   * are successful, you will receive a response which validated all the XML schemas, but it has an
+   * error like "could not find the code".
+   *
+   * @param invoice - the corrected invoice to send
+   * @param insuranceCompanyPrefix - the prefix of the company to send it to, as listed in the
+   *     insurance company mapping file
+   * @return An object containing details on the response as well as the request details. See
+   *     'digaInvoiceCorrection' method.
+   * @throws DigaXmlWriterException if we fail to create the XML request body (the XRechnung
+   *     invoice)
+   */
+  public DigaInvoiceResponse digaTestInvoiceCorrection(
+      DigaCorrectionInvoice invoice, String insuranceCompanyPrefix) throws DigaXmlWriterException {
+    return this.sendTestInvoiceRequest(invoice, insuranceCompanyPrefix);
   }
 
   /**
@@ -248,7 +292,10 @@ public final class DigaApiClient {
   private DigaInvoiceResponse performDigaInvoicing(
       DigaInvoice invoice, DigaBillingInformation billingInformation, DigaProcessCode processCode)
       throws DigaXmlWriterException {
-    var xmlInvoice = xmlRequestWriter.createBillingRequest(invoice, billingInformation);
+    var xmlInvoice =
+        invoice instanceof DigaCorrectionInvoice correctionInvoice
+            ? xmlRequestWriter.createInvoiceCorrectionRequest(correctionInvoice, billingInformation)
+            : xmlRequestWriter.createBillingRequest(invoice, billingInformation);
     if (!billingInformation.getBuyerInvoicingMethod().equals(DigaInvoiceMethod.API)) {
       return buildManualInvoicingResponse(billingInformation, xmlInvoice);
     }

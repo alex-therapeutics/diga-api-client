@@ -20,6 +20,7 @@ package com.alextherapeutics.diga;
 
 import com.alextherapeutics.diga.model.DigaBillingInformation;
 import com.alextherapeutics.diga.model.DigaCodeInformation;
+import com.alextherapeutics.diga.model.DigaCorrectionInvoice;
 import com.alextherapeutics.diga.model.DigaInvoice;
 
 /** Creates raw XML data bodies containing code validation requests or DiGA invoices. */
@@ -44,5 +45,18 @@ public interface DigaXmlRequestWriter {
    * @throws DigaXmlWriterException - if the request body couldn't be created
    */
   byte[] createBillingRequest(DigaInvoice invoice, DigaBillingInformation billingInformation)
+      throws DigaXmlWriterException;
+
+  /**
+   * Create a XML request body containing a DiGA correction invoice (an "XRechnung" invoice
+   * conforming to UN/CEFACT standard)
+   *
+   * @param correctionInvoice - information required to create the invoice
+   * @param billingInformation - information on the buyer
+   * @return A byte array containing a (non-encrypted) XRechnung XML invoice
+   * @throws DigaXmlWriterException - if the request body couldn't be created
+   */
+  byte[] createInvoiceCorrectionRequest(
+      DigaCorrectionInvoice correctionInvoice, DigaBillingInformation billingInformation)
       throws DigaXmlWriterException;
 }

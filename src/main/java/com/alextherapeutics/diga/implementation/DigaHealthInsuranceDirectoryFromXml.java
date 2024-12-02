@@ -21,12 +21,12 @@ package com.alextherapeutics.diga.implementation;
 import com.alextherapeutics.diga.DigaHealthInsuranceDirectory;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.KostentraegerMappingverzeichnis;
 import com.alextherapeutics.diga.model.generatedxml.codevalidation.KrankenkasseninformationCtp;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 /**
  * Unmarshals the contents of the health insurance data mapping file provided by gkv at
