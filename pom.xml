@@ -115,7 +115,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.11.3</version>
+            <version>5.13.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -131,7 +131,7 @@
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-xjc-plugin</artifactId>
-                <version>4.0.2</version>
+                <version>4.1.0</version>
                 <executions>
                     <execution>
                         <id>xjc</id>
@@ -168,7 +168,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.43.0</version>
+                <version>2.44.5</version>
                 <configuration>
                     <java>
                         <googleJavaFormat />
@@ -286,7 +286,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>3.11.1</version>
+                        <version>3.11.2</version>
                         <configuration>
                             <sourcepath>${delombok.output}</sourcepath>
                             <sourcepath>${javadoc.generated-sources-path}</sourcepath>

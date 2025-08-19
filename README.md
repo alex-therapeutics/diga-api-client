@@ -43,7 +43,7 @@ Import it using Maven in your `pom.xml`:
 <dependency>
     <groupId>com.alextherapeutics</groupId>
     <artifactId>diga-api-client</artifactId>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
 </dependency>
 ```
 It is also uploaded to Github packages if you wish to use that
