@@ -6,16 +6,12 @@ jobs:
   deploy:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v4
         with:
           java-version: 17
-      - uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          distribution: corretto
+          cache: maven
       - run: mvn org.codehaus.mojo:versions-maven-plugin:2.7:set -DnewVersion=${GITHUB_REF##*/}
       - run: mvn -Prelease deploy
         env:
