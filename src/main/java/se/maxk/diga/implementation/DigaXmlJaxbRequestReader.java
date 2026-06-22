@@ -23,6 +23,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -61,14 +62,12 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
   public DigaInvoiceResponse readBillingReport(InputStream decryptedReport)
       throws DigaXmlReaderException {
     try {
-      XMLStreamReader xmlStream =
-          XMLInputFactory.newInstance().createXMLStreamReader(decryptedReport);
-      var encoding = xmlStream.getEncoding();
-      var charset = Charset.forName(encoding);
+      var rawBytes = decryptedReport.readAllBytes();
+      var charset = getCharsetFromBytes(rawBytes);
 
       // xml is not always properly encoded despite the stated encoding in the xml
       // therefore we re-encode based on the specified encoding
-      var bytes = new String(decryptedReport.readAllBytes(), charset).getBytes();
+      var bytes = new String(rawBytes, charset).getBytes();
 
       var report = (Report) billingReportUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
       return DigaInvoiceResponse.builder()
@@ -219,5 +218,15 @@ public class DigaXmlJaxbRequestReader implements DigaXmlRequestReader {
               sb.append("\n");
             });
     return sb.toString();
+  }
+
+  private Charset getCharsetFromBytes(byte[] bytes) throws IOException, XMLStreamException {
+    var charset = StandardCharsets.UTF_8;
+    try (var in = new ByteArrayInputStream(bytes)) {
+      XMLStreamReader xmlStream = XMLInputFactory.newInstance().createXMLStreamReader(in);
+      var encoding = xmlStream.getEncoding();
+      charset = Charset.forName(encoding);
+    }
+    return charset;
   }
 }
