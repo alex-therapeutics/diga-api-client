@@ -1,6 +1,7 @@
 on:
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -15,4 +16,6 @@ jobs:
       - name: Run Linting
         run: mvn spotless:check
       - name: Run Tests
-        run: mvn test
+        run: mvn clean test
+      - name: Run Xml Parser Tests
+        run: mvn clean test -P woodstox-parser
