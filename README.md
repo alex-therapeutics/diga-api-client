@@ -49,7 +49,7 @@ Import it using Maven in your `pom.xml`:
 <dependency>
     <groupId>se.maxk</groupId>
     <artifactId>diga-api-client</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
 </dependency>
 ```
 It is also uploaded to Github packages if you wish to use that
