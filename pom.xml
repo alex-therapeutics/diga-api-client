@@ -54,7 +54,7 @@
         <dependency>
             <groupId>de.tk.opensource</groupId>
             <artifactId>secon-tool</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.3</version>
         </dependency>
 
         <!-- http -->
